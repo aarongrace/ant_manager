@@ -17,6 +17,6 @@ app.add_middleware(
 
 @app.get("/")
 async def welcome() -> dict:
-    """welcome reclaimer"""
-    return {"msg": "Greetings, reclaimer."}
+    """welcome ant boss"""
+    return {"msg": "Greetings, ant boss."}
 
