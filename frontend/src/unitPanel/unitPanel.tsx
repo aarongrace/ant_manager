@@ -12,7 +12,7 @@ const UnitPanel: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (message === "advance time cycle") {
+        if (message ==="refetch please") {
             // advanceTimeCycle(); not in use
             console.log("Should be updating units")
             fetchUnits(setUnits); // rerender after the units have been updated
@@ -72,7 +72,8 @@ const UnitBubble: React.FC<{ unit: Unit }> = ({ unit }) => {
         <div className={`unit-bubble ${unitClassification.toLowerCase()}`}>
             <h4>{unitClassification} {unit.name}</h4>
             {unit instanceof AdultUnit && <p>Productivity: {unit.productivity}</p>}
-            <p>Age: {unit.age}</p>
+            {unit instanceof BroodUnit && <p>Potential: {unit.potential}</p>}
+            <p>Age: {unit.age} {unit.age <= 1 ? 'day' : 'days'} </p>
             {unit instanceof AdultUnit && (
                 <div className="task-container">
                     <p>Task:</p>

@@ -1,8 +1,10 @@
 from enum import Enum
+import random
 from typing import List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator, ValidationError
 from base_classes import Unit
+from ant_names import ant_names
 
 adults_router = APIRouter()
 
@@ -41,9 +43,55 @@ class AdultUnit(Unit):
             raise ValueError(f'Soldiers can only do idle, forage, or patrol tasks, not {task}')
         return task
 
+    def advance_time_cycle(self):
+        super().advance_time_cycle()
+        luck = random.random()
+        death_factor = self.get_death_factor()
+        if luck * death_factor < self.age:
+            self.die()
+        self.do_tasks()
+
+    # average age is basically death_factor/2
+
+    def get_death_factor(self) -> int:
+        if self.unit_type == UnitType.queen:
+            return 12000  # 16.4years
+        elif self.unit_type == UnitType.worker:
+            return 400 # 6.6 months
+        elif self.unit_type == UnitType.soldier:
+            return 600  # 10 months
+        return 1000  # Default factor
+
+    def die(self):
+        print(self.name, "died")
+        adults_list.remove(self)
+
+    def do_tasks(self):
+        luck = random.random()
+        if luck * 50 < self.productivity:  # Chance of doing the task
+            if self.task == TaskType.lay_eggs:
+                self.lay_egg(random.random() * 5 + 1)
+
+    def lay_egg(self, egg_count):
+        while egg_count>0:
+
+            from broods import add_brood_unit, StageType
+            new_name = random.choice(ant_names)
+            potential = random.randint(1, 100)
+            add_brood_unit(new_name, StageType.egg, 0, potential, caredBy=0)
+
+            egg_count -= 1
+
 adults_list: List[AdultUnit] = []
 
 def add_adult_unit(name: str, unit_type: UnitType, productivity: int, task: TaskType, age: int) -> AdultUnit:
+
+    if unit_type == UnitType.queen:
+        queen_count = len([u for u in adults_list if u.unit_type == UnitType.queen])
+        if (queen_count >= 2):
+            unit_type = UnitType.worker
+            task = TaskType.forage
+
     new_unit = AdultUnit(name=name, unit_type=unit_type, productivity=productivity, task=task, age=age)
     adults_list.append(new_unit)
     return new_unit
@@ -64,7 +112,6 @@ async def get_adult_unit(unit_id: int) -> AdultUnit:
 
 @adults_router.put("/{unit_id}")
 async def update_adult_unit(unit_id: int, unit: AdultUnit) -> AdultUnit:
-    print("here")
     for i, u in enumerate(adults_list):
         if u.id == unit_id:
             adults_list[i] = unit

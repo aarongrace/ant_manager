@@ -15,3 +15,21 @@ export const postAdvanceTimeCycle = async (time: number) => {
         throw error;
     }
 }
+
+
+export const postResetUnits = async () => {
+    try {
+        const response = await fetch(`http://localhost:8000/units/reset`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Failure to reset');
+        }
+    } catch (error) {
+        console.error('Failure to reset:', error);
+        throw error;
+    }
+}

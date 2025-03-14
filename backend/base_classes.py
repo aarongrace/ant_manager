@@ -1,6 +1,7 @@
 from typing import Any, ClassVar, Dict, List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator, ValidationError, model_validator, root_validator
+import random
 
 """
 This file contains the base classes and functions that are used by the other files in the project.
@@ -32,11 +33,10 @@ class Unit(BaseModel):
     def advance_time_cycle(self):
         self.age += 1
 
+
     # this tells pydantic to treat class attributes as fields
     class Config:
         from_attributes = True
-
-
 
 class advanceTimeCycleRequest(BaseModel):
     time: int
@@ -45,4 +45,4 @@ class advanceTimeCycleRequest(BaseModel):
     def validate_time(cls, time):
         if time < 1:
             raise ValueError('Time must be at least 1')
-        return time     
+        return time

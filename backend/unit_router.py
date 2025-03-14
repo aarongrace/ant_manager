@@ -16,6 +16,13 @@ unit_router.include_router(broods_router, prefix="/broods")
 async def get_units() -> dict:
     return unit_list
 
+@unit_router.post("/reset")
+async def reset_units():
+    broods_list.clear()
+    adults_list.clear()
+    initialize_default_unit_list()
+
+
 def advance_units(times: int) -> None:
     while times > 0:
         for unit in adults_list:
@@ -23,6 +30,7 @@ def advance_units(times: int) -> None:
         for unit in broods_list:
             unit.advance_time_cycle()
         times -= 1
+
 
 
 def initialize_default_unit_list():

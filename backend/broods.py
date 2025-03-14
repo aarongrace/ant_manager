@@ -2,6 +2,7 @@ from enum import Enum
 from typing import List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator, ValidationError
+import random
 
 from base_classes import Unit 
 
@@ -23,6 +24,38 @@ class BroodUnit(Unit):
             raise ValueError('Potential must be between 1 and 100')
         return potential
 
+    def advance_time_cycle(self):
+        super().advance_time_cycle()
+        maturation_chance = random.random()
+        
+        # here we have the chance of maturing increase until it reaches 100%
+        if self.stage_type == StageType.egg:
+            if self.age >= 3 and maturation_chance < (self.age - 2) / 3:  # 3 to 5 days
+                self.stage_type = StageType.larva
+                self.age = 0 
+        elif self.stage_type == StageType.larva:
+            if self.age >= 7 and maturation_chance < (self.age - 6) / 14:  # 1 to 3 weeks
+                self.stage_type = StageType.pupa
+                self.age = 0 
+        elif self.stage_type == StageType.pupa:
+            if self.age >= 7 and maturation_chance < (self.age - 6) / 14:  # 1 to 2 weeks
+                self.transform_to_adult()
+
+    def transform_to_adult(self):
+        from adults import add_adult_unit, UnitType, TaskType
+        luck = random.random()
+        if luck < 0.015:
+            unit_type = UnitType.queen
+            task = TaskType.lay_eggs
+        elif luck < 0.20:
+            unit_type = UnitType.soldier
+            task = random.choice([TaskType.idle, TaskType.forage, TaskType.patrol])
+        else:
+            unit_type = UnitType.worker
+            task = random.choice([TaskType.idle, TaskType.forage, TaskType.build])
+        add_adult_unit(self.name, unit_type, self.potential, task, 0)
+        broods_list.remove(self)
+
 broods_list: List[BroodUnit] = []
 
 def add_brood_unit(name: str, stage: StageType, age: int, potential: int, caredBy: int = 0) -> BroodUnit:
@@ -35,7 +68,6 @@ async def get_brood_units(stage_type: StageType = None) -> List[BroodUnit]:
     filtered_units = broods_list
     if stage_type:
         filtered_units = [unit for unit in filtered_units if unit.stage_type == stage_type]
-    print(filtered_units)
     return filtered_units
 
 @broods_router.get("/{unit_id}", response_model=BroodUnit)
