@@ -2,10 +2,11 @@ from enum import Enum
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from units import unit_router
+from unit_router import unit_router
 
 app = FastAPI()
-app.include_router(unit_router, tags=["units"], prefix="/units")
+
+app.include_router(unit_router, prefix="/units")
 
 app.add_middleware(
     CORSMiddleware,
