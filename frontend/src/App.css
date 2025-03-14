@@ -1,0 +1,15 @@
+body {
+    background-color: #472b1e; /* Dark brown background color */
+    color: white; /* Default text color */
+    font-family: sans-serif; /* Default font family */
+    margin: 0; /* Remove default body margin */
+    padding: 0; /* Remove default body padding */
+}
+
+.game-title {
+    font-size: 2em; /* Larger font size for the title */
+    margin: 12px 20px; /* Add some margin around the title */
+    text-align: left;
+}
+
+/* You can add more styles for specific elements as needed */

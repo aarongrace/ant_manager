@@ -1,0 +1,221 @@
+import { stringify } from "querystring";
+
+export enum UnitType {
+    Queen = "Queen",
+    Worker = "Worker",
+    Soldier = "Soldier",
+    Brood = "Brood"
+}
+
+export enum TaskType {
+    Idle = "Idle",
+    Forage = "Forage",
+    Build = "Build",
+    Patrol = "Patrol",
+    LayEggs = "Lay Eggs"
+}
+
+export enum StageType {
+    Egg = "Egg",
+    Larva = "Larva",
+    Pupa = "Pupa"
+}
+
+export const getAllowedTasks = (unit_type: UnitType): TaskType[] => {
+    switch (unit_type) {
+        case UnitType.Queen:
+            return [TaskType.LayEggs, TaskType.Idle];
+        case UnitType.Worker:
+            return [TaskType.Idle, TaskType.Forage, TaskType.Build];
+        case UnitType.Soldier:
+            return [TaskType.Idle, TaskType.Forage, TaskType.Patrol];
+        case UnitType.Brood:
+            return [TaskType.Idle];
+        default:
+            return [TaskType.Idle];
+    }
+};
+
+const getEndPoint = (unit: Unit): String  => {
+    if (unit instanceof AdultUnit) {
+        return 'adults';   
+    } else {
+        return 'broods';
+    }
+}
+
+export const fetchUnits = async (setUnits: React.Dispatch<React.SetStateAction<Unit[]>>) => {
+    try {
+        // we can either fetch from the separate endpoints
+        // or directly from units/ endpoint
+        const [adultsResponse, broodsResponse] = await Promise.all([
+            fetch('http://localhost:8000/units/adults'),
+            fetch('http://localhost:8000/units/broods')
+        ]);
+        const adultsList = await adultsResponse.json();
+        const broodsList = await broodsResponse.json();
+
+        console.log('Adult units fetched:', adultsList);
+        console.log('Brood units fetched:', broodsList);
+
+        const adultUnits = adultsList.map((unit: any) => new AdultUnit(unit.id, unit.name, unit.unit_type, unit.age, unit.productivity, unit.task));
+        const broodUnits = broodsList.map((unit: any) => new BroodUnit(unit.id, unit.name, unit.stage_type, unit.age, unit.caredBy, unit.potential));
+
+        const units = [...adultUnits, ...broodUnits];
+        console.log('Units initialized:', units);
+        setUnits(units);
+    } catch (error) {
+        console.error('Error fetching units:', error);
+    }
+};
+
+
+
+//not in use
+export const postUnit = async (unit: Unit) => {
+    try {
+        console.log(JSON.stringify(unit)); 
+
+        const response = await fetch(`http://localhost:8000/units/${getEndPoint(unit)}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(unit),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to add unit');
+        }
+    } catch (error) {
+        console.error('Error adding unit:', error);
+    }
+};
+
+export const deleteUnit = async (unit: Unit) => {
+    try {
+        await fetch(`http://localhost:8000/units/${unit.id}`, {
+            method: 'DELETE',
+        });
+    } catch (error) {
+        console.error('Error deleting unit:', error);
+    }
+};
+
+export const putUnit = async (unit: Unit) => {
+    try {
+        const response = await fetch(`http://localhost:8000/units/${getEndPoint(unit)}/${unit.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(unit),
+        });
+        if (!response.ok) {
+            throw new Error('Failed to update unit');
+        }
+    } catch (error) {
+        console.error('Error updating unit:', error);
+        throw error;
+    }
+};
+
+export abstract class Unit {
+    id: number;
+    name: string;
+    age: number;
+    
+    constructor(id: number, name: string, age: number) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
+    advanceTimeCycle(): void {
+        this.age += 1;
+    }
+
+    async update(): Promise<void> {
+        await putUnit(this);
+    }
+
+    die(): void {
+        deleteUnit(this);
+    }
+}
+
+export class AdultUnit extends Unit {
+    unit_type: UnitType;
+    productivity: number;
+    task: TaskType;
+
+    constructor(id: number, name: string, unitType: UnitType, age: number, productivity: number, task: TaskType) {
+        super(id, name, age);
+        this.unit_type = unitType;
+        this.productivity = productivity;
+        this.task = task;
+    }
+
+    advanceTimeCycle(): void {
+        super.advanceTimeCycle();
+        const luck = Math.random();
+        if (luck * 1000 < this.age) {
+            this.die();
+        }
+
+        this.doTask();
+    }
+
+    doTask(): void {
+        const luck = Math.random();
+        if (luck * 50 < this.productivity) {
+            switch (this.task) {
+                case TaskType.LayEggs:
+                    const newName = `${Date.now()}`;
+                    const newBrood = new BroodUnit(
+                        Date.now(),
+                        newName,
+                        StageType.Egg,
+                        60,
+                        null,
+                        50
+                    );
+                    postUnit(newBrood);
+                    break;
+                case TaskType.Build:
+                case TaskType.Forage:
+                case TaskType.Patrol:
+                case TaskType.Idle:
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+export class BroodUnit extends Unit {
+    stage_type: StageType;
+    cared_by: number | null;
+    potential: number;
+
+    constructor(id: number, name: string, stage_type: StageType, age: number, cared_by: number | null, potential: number) {
+        super(id, name, age);
+        this.stage_type = stage_type;
+        this.cared_by = cared_by;
+        this.potential = potential;
+    }
+
+// const luck = Math.ran.om();
+    // if (luck * 1000 < this.age) {
+    //     this.die();
+    // } else if (luck * 200 < this age) {
+    //     const newAdultUnit = new AdultUnit(
+    //         this.id,
+    //         this.name,
+    //         UnitType.Worker,
+    //         this.age,
+    //         10,
+    //         TaskType.Idle
+    //     );
+    //     putUnit(newAdultUnit);
+    // }
+}
