@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator, ValidationError
 from broods import StageType, add_brood_unit, broods_list, broods_router
 from adults import TaskType, add_adult_unit, UnitType, adults_list, adults_router
+from base_classes import Unit
 
 unit_list = {"adults": adults_list, "broods": broods_list}
 
@@ -15,6 +16,13 @@ unit_router.include_router(broods_router, prefix="/broods")
 async def get_units() -> dict:
     return unit_list
 
+def advance_units(times: int) -> None:
+    while times > 0:
+        for unit in adults_list:
+            unit.advance_time_cycle()
+        for unit in broods_list:
+            unit.advance_time_cycle()
+        times -= 1
 
 
 def initialize_default_unit_list():

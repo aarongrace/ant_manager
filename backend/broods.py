@@ -3,14 +3,14 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator, ValidationError
 
-from unit_base_class import Unit 
+from base_classes import Unit 
 
 broods_router = APIRouter()
+
 class StageType(str, Enum):
     egg = "Egg"
     larva = "Larva"
     pupa = "Pupa"
-
 
 class BroodUnit(Unit):
     stage_type: StageType
@@ -23,15 +23,12 @@ class BroodUnit(Unit):
             raise ValueError('Potential must be between 1 and 100')
         return potential
 
-broods_list = []
+broods_list: List[BroodUnit] = []
 
 def add_brood_unit(name: str, stage: StageType, age: int, potential: int, caredBy: int = 0) -> BroodUnit:
-    print("here")
     new_unit = BroodUnit(name=name, stage_type=stage, age=age, potential=potential, caredBy=caredBy)
-    print(new_unit)
     broods_list.append(new_unit)
     return new_unit
-
 
 @broods_router.get("", response_model=List[BroodUnit])
 async def get_brood_units(stage_type: StageType = None) -> List[BroodUnit]:
@@ -56,7 +53,7 @@ async def update_brood_unit(unit_id: int, unit: BroodUnit) -> BroodUnit:
             return unit
     raise HTTPException(status_code=404, detail="Unit not found")
 
-@broods_router.post("")
+@broods_router.post("", response_model=BroodUnit)
 async def add_brood_unit_endpoint(unit_data: dict) -> BroodUnit:
     try:
         return add_brood_unit(unit_data["name"], unit_data["stageType"], unit_data["age"], unit_data["potential"], unit_data["caredBy"])

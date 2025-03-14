@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator, ValidationError
-from unit_base_class import Unit
+from base_classes import Unit
 
 adults_router = APIRouter()
 
@@ -41,7 +41,7 @@ class AdultUnit(Unit):
             raise ValueError(f'Soldiers can only do idle, forage, or patrol tasks, not {task}')
         return task
 
-adults_list = []
+adults_list: List[AdultUnit] = []
 
 def add_adult_unit(name: str, unit_type: UnitType, productivity: int, task: TaskType, age: int) -> AdultUnit:
     new_unit = AdultUnit(name=name, unit_type=unit_type, productivity=productivity, task=task, age=age)
@@ -62,8 +62,9 @@ async def get_adult_unit(unit_id: int) -> AdultUnit:
             return unit
     raise HTTPException(status_code=404, detail="Unit not found")
 
-@adults_router.put("/{unit_id}", response_model=AdultUnit)
+@adults_router.put("/{unit_id}")
 async def update_adult_unit(unit_id: int, unit: AdultUnit) -> AdultUnit:
+    print("here")
     for i, u in enumerate(adults_list):
         if u.id == unit_id:
             adults_list[i] = unit
@@ -71,9 +72,9 @@ async def update_adult_unit(unit_id: int, unit: AdultUnit) -> AdultUnit:
     raise HTTPException(status_code=404, detail="Unit not found")
 
 @adults_router.post("", response_model=AdultUnit)
-async def add_adult_unit_endpoint(unit: AdultUnit) -> AdultUnit:
+async def add_adult_unit_endpoint(unit_data: dict) -> AdultUnit:
     try:
-        new_unit = AdultUnit(**unit.model_dump())
+        new_unit = AdultUnit(**unit_data)
         adults_list.append(new_unit)
         return new_unit
     except ValidationError as e:
