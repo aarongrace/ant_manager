@@ -88,9 +88,9 @@ export const postUnit = async (unit: Unit) => {
 };
 
 
-export const deleteUnit = async (unit: Unit) => {
+export const deleteUnit = async (unit_id: number) => {
     try {
-        await fetch(`http://localhost:8000/units/${unit.id}`, {
+        await fetch(`http://localhost:8000/units/${unit_id}`, {
             method: 'DELETE',
         });
     } catch (error) {
@@ -128,16 +128,8 @@ export abstract class Unit {
         this.age = age;
     }
 
-    advanceTimeCycle(): void {
-        this.age += 1;
-    }
-
     async update(): Promise<void> {
         await putUnit(this);
-    }
-
-    die(): void {
-        deleteUnit(this);
     }
 }
 
@@ -166,19 +158,4 @@ export class BroodUnit extends Unit {
         this.cared_by = cared_by;
         this.potential = potential;
     }
-
-// const luck = Math.ran.om();
-    // if (luck * 1000 < this.age) {
-    //     this.die();
-    // } else if (luck * 200 < this age) {
-    //     const newAdultUnit = new AdultUnit(
-    //         this.id,
-    //         this.name,
-    //         UnitType.Worker,
-    //         this.age,
-    //         10,
-    //         TaskType.Idle
-    //     );
-    //     putUnit(newAdultUnit);
-    // }
 }

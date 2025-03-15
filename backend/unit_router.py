@@ -16,6 +16,24 @@ unit_router.include_router(broods_router, prefix="/broods")
 async def get_units() -> dict:
     return unit_list
 
+@unit_router.get("/{unit_id}")
+async def get_unit(unit_id: int) -> Unit:
+    for unit_type in unit_list:
+        for unit in unit_list[unit_type]:
+            if unit.id == unit_id:
+                return unit
+    raise HTTPException(status_code=404, detail="Unit not found")
+
+
+@unit_router.delete("/{unit_id}")
+async def delete_unit(unit_id: int) -> dict:
+    for unit_type in unit_list:
+        for i, unit in enumerate(unit_list[unit_type]):
+            if unit.id == unit_id:
+                del unit_list[unit_type][i]
+                return {"msg": "unit deleted"}
+
+
 @unit_router.post("/reset")
 async def reset_units():
     broods_list.clear()

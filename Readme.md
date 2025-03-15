@@ -1,4 +1,6 @@
-# Game Overview
+# Ant Manager
+![demo](./ant_manager_demo.gif)
+## Game Overview
 This game simulates a colony of ants. Players manages two main types of units:
 
 ### Adult Units
@@ -23,12 +25,27 @@ Brood units are the developmental stages of ants. They include:
 
 Brood units mature into adult units through these stages, and once fully mature, they can take on roles like **Workers**, **Soldiers**, or **Queens**. The roles are determined by chance, and they each start out with a random task, except for the queen, which always starts out laying eggs
 
+## How to Run the Application
+##### Activate .venv
+Navigate to the root folder of the project and activate the python virtual environment:
 
-# Frontend Setup
+   - On macOS/Linux:
+     ```bash
+     source .venv/bin/activate
+     ```
+   - On Windows:
+     ```bash
+     .\.venv\Scripts\activate
+     ```
 
-The frontend uses **React** with two main components: **CommandPanel** and **UnitPanel**. These communicate via **App Context**, which is important as the units have to be refethced once the commands are sent to the backend which updates the units
+##### Staring the Frontend and Backend
+Run ```npm start``` in the root folder, which will launch the npm concurrently module. The frontend should be hosted at ```http://localhost:3000``` and the backend at ```http://localhost:8000```.
 
-#### Key Components
+### Frontend Setup
+
+The frontend uses **React** with two main components: **CommandPanel** and **UnitPanel**, defined in their respective folders in /src. These communicate via **App Context**, which is important as the units have to be refethced once the commands are sent to the backend which updates the units
+
+##### Key Components
 
 1. **CommandPanel**  
    - Sends requests to the backend to trigger actions (e.g., advancing the time cycle or resetting the units).
@@ -36,7 +53,7 @@ The frontend uses **React** with two main components: **CommandPanel** and **Uni
 2. **UnitPanel**  
    - Displays unit information (adults and broods) and allowing for operations such as changing tasks or kicking specific ants out of the colony
 
-# Backend Setup
+### Backend Setup
 
 The backend is built with **FastAPI**, which handles all routes and business logic. The main router connects to various other routers, including the **unit router**, and will eventually handle **resources** and **buildings** routers as well.
 
@@ -48,25 +65,72 @@ The backend is built with **FastAPI**, which handles all routes and business log
 #### Unit Router
 
 - The **unit router** handles actions specific to **units** (adults and broods). It supports **GET** and **DELETE** operations, while **POST** and **PUT** requests are restricted to specific unit categories.
-- Once the time cycle is advanced, the **unit router** fetches the updated unit data and returns it to the frontend for re-rendering.
+- Once the "advance" message is received , the **unit router** cycles through the units and call the advance_time_cycle() of each. After the units have been updated, the main router returns the ready message, which then allows the units to be refetched.
 
 This setup ensures clear separation of concerns, with the **main router** handling time advancement and coordination with other routers, while the **unit router** focuses on unit-specific actions.
 
 - The **unit router** supports **GET** and **DELETE** operations for both the **units/** endpoint and the category-specific routers. It forwards **GET** and **DELETE** requests to the appropriate category router based on the unit ID.
 - However, **PUT** and **POST** operations are restricted and can only be performed on the specific category router for that unit type (e.g., adults or broods).
 
+#### Adults API
 
-## unit_base_class.py
-the base class from which broods and adults will inherit
-importantly, it keeps a global counter of ids, which increment whenever a new unit is created
-the id is assigned with model validator so that the id does not have to be declared when generating a new object
+This file defines the API endpoints and logic for managing adult units in the ant colony simulation. It uses FastAPI to handle HTTP requests and Pydantic for data validation.
 
-# Development Notes
+##### AdultUnit Class
+- Represents an adult unit with attributes: `unit_type`, `productivity`, and `task`.
+- Includes `field_validator` for `productivity` to ensure it is between 1 and 100.
+- Includes `field_validator` for `task` to ensure it is valid for the unit type.
+- Defines the `advance_time_cycle` method to handle the aging and task execution of adult units.
+
+##### advance_time_cycle Method
+- Increments the age of the adult unit.
+- Uses a random chance to determine if the unit dies based on its `death_factor`.
+- Calls `do_tasks` to perform the unit's assigned task.
+
+##### get_death_factor Method
+- Returns the death factor based on the unit type:
+  - **Queen**: 12000 (16.4 years)
+  - **Worker**: 400 (6.6 months)
+  - **Soldier**: 600 (10 months)
+  - **Default**: 1000
+
+##### do_tasks Method
+- Uses a random chance to determine if the unit performs its task.
+- If the task is `lay_eggs`, calls `lay_egg`.
+
+##### lay_egg Method
+- Adds new brood units based on the number of eggs laid.
+
+### Broods API
+
+This file defines the API endpoints and logic for managing brood units in the ant colony simulation. It uses FastAPI to handle HTTP requests and Pydantic for data validation.
+
+
+##### BroodUnit Class
+- Represents a brood unit with attributes: `stage_type`, `caredBy`, and `potential`.
+- Includes a `field_validator` for `potential` to ensure it is between 1 and 100.
+- Defines the `advance_time_cycle` method to handle the maturation process of brood units.
+
+##### advance_time_cycle Method
+- Increments the age of the brood unit.
+- Uses a random chance to determine if the unit matures to the next stage.
+  - **Egg to Larva**: 3 to 5 days.
+  - **Larva to Pupa**: 1 to 3 weeks.
+  - **Pupa to Adult**: 1 to 2 weeks.
+- Calls `transform_to_adult` when the unit matures from pupa to adult.
+
+##### transform_to_adult Method
+- Determines the type of adult unit (Queen, Soldier, Worker) based on random chance.
+- Assigns a task to the new adult unit.
+- Adds the new adult unit and removes the matured brood unit from the list.
+
+
+## Development Notes
 The conversion between camel case and snake case is NOT automatic when sending data between frontend and backend. Please only use snake case for all class fields relating to backend data such as tasks or units!!! Mismatches in field names will result in **422 Unprocessable Entity** when sending objects.
 
-# Versions
+## Versions
 
-## 2.0
+### 2.0
 The whole project has been completely refactored such that all game behavior related functions are relegated to the backend
 Instead of creating new units and sending them to the backend, the new approach is to have the frontend send a message to advance the time cycle to the main router, which then deals with the logic
 This is so that Unit objects would not be passed back and forth between the front end and the back end, which causes endless headaches with pydantic, as the front end class declarations do not clearly line up with those from the back end. Deserialization and serialization work extremely poorly when dealing with abstract classes and inheritance, as pydantic requires precision
