@@ -41,6 +41,8 @@ Navigate to the root folder of the project and activate the python virtual envir
 ##### Staring the Frontend and Backend
 Run ```npm start``` in the root folder, which will launch the npm concurrently module. The frontend should be hosted at ```http://localhost:3000``` and the backend at ```http://localhost:8000```.
 
+If there are missing modules, use ```npm install``` to install them.
+
 ### Frontend Setup
 
 The frontend uses **React** with two main components: **CommandPanel** and **UnitPanel**, defined in their respective folders in /src. These communicate via **App Context**, which is important as the units have to be refethced once the commands are sent to the backend which updates the units
