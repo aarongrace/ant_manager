@@ -63,7 +63,6 @@ class AdultUnit(Unit):
         return 1000  # Default factor
 
     def die(self):
-        print(self.name, "died")
         adults_list.remove(self)
 
     def do_tasks(self):
