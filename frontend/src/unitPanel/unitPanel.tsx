@@ -1,26 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { fetchUnits, getAllowedTasks, TaskType, Unit, AdultUnit, BroodUnit, deleteUnit } from './units.service';
+import React, { useEffect } from 'react';
+import { getAllowedTasks, TaskType, Unit, AdultUnit, BroodUnit, deleteUnit, fetchUnits } from './units.service';
 import './unitPanel.css';
-import { useAppContext } from '../App';
+import { useMessageContext } from '../App';
+import { useUnitsContext } from '../App'; // Import the UnitsContext
 import deleteIcon from './delete_icon.png'; // Import the delete icon
 
 const UnitPanel: React.FC = () => {
-    const [units, setUnits] = useState<Unit[]>([]);
-    const { message, setMessage } = useAppContext();
+    const { units, setUnits, refetchUnits } = useUnitsContext();
+    const { message, setMessage } = useMessageContext();
 
     useEffect(() => {
-        fetchUnits(setUnits);
+        refetchUnits();
     }, []);
-
-    useEffect(() => {
-        if (message ==="refetch please") {
-            // advanceTimeCycle(); not in use
-            console.log("Should be updating units")
-            fetchUnits(setUnits); // rerender after the units have been updated
-            setMessage("");
-        } 
-    }, [message, setMessage]);
-
     // not in use 
     // const advanceTimeCycle = () => {
     //     setUnits(prevUnits => 
@@ -44,7 +35,7 @@ const UnitPanel: React.FC = () => {
 };
 
 const UnitBubble: React.FC<{ unit: Unit }> = ({ unit }) => {
-    const { setMessage } = useAppContext();
+    const { units, setUnits, refetchUnits } = useUnitsContext();
 
     const updateTask = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newTask = event.target.value as TaskType;
@@ -52,13 +43,13 @@ const UnitBubble: React.FC<{ unit: Unit }> = ({ unit }) => {
             unit.task = newTask;
             await unit.update();
         }
-        setMessage("refetch please");
+        refetchUnits();
     };
 
     const handleDelete = async () => {
         console.log(`Deleting unit with id: ${unit.id}`);
         await deleteUnit(unit.id);
-        setMessage("refetch please");
+        refetchUnits();
     };
     
 // for god knows what reason instanceof is not working randomly

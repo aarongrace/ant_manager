@@ -45,15 +45,57 @@ If there are missing modules, use ```npm install``` to install them.
 
 ### Frontend Setup
 
-The frontend uses **React** with two main components: **CommandPanel** and **UnitPanel**, defined in their respective folders in /src. These communicate via **App Context**, which is important as the units have to be refethced once the commands are sent to the backend which updates the units
+The frontend uses **React** with several key components and features, including **React Router** for navigation and **Contexts** for global state management.
 
-##### Key Components
+#### React Router Setup
+
+The application uses **React Router** to manage navigation between different pages. The following routes are defined:
+
+1. `/` - **Dashboard**  
+   - Displays a placeholder dashboard for the application.
+
+2. `/profile` - **Profile**  
+   - Displays a placeholder profile page for the user.
+
+3. `/units` - **UnitPanel**  
+   - Displays unit information (adults and broods) and allows for operations such as changing tasks or removing specific ants from the colony.
+
+The navigation links are displayed in the header, allowing users to switch between these pages seamlessly.
+
+#### Contexts
+
+The application uses **React Context** to manage global state. Two contexts are defined:
+
+1. **UnitsContext**  
+   - Manages the state of all units (adults and broods) in the colony.
+   - Provides the following:
+     - `units`: The current list of units.
+     - `setUnits`: A function to update the list of units.
+     - `refetchUnits`: A function to fetch the latest units from the backend.
+   - This context is used across components like `UnitPanel` and `CommandPanel` to ensure consistent and centralized state management.
+
+2. **MessageContext** (Currently Unused)  
+   - Previously used for app-wide messaging, but its functionality has been replaced by `UnitsContext`. It remains in the codebase but is not actively used.
+
+---
+
+### Key Components
 
 1. **CommandPanel**  
    - Sends requests to the backend to trigger actions (e.g., advancing the time cycle or resetting the units).
+- Uses `UnitsContext` to refetch the updated list of units after backend operations.
    
 2. **UnitPanel**  
-   - Displays unit information (adults and broods) and allowing for operations such as changing tasks or kicking specific ants out of the colony
+   - Displays unit information (adults and broods) and allows for operations such as changing tasks or removing specific ants from the colony.
+   - Uses `UnitsContext` to access and manage the global `units` state.
+
+3. **Dashboard**  
+   - A placeholder component rendered at the `/` route.
+
+4. **Profile**  
+   - A placeholder component rendered at the `/profile` route.
+
+---
 
 ### Backend Setup
 
@@ -129,6 +171,9 @@ This file defines the API endpoints and logic for managing brood units in the an
 
 ## Development Notes
 The conversion between camel case and snake case is NOT automatic when sending data between frontend and backend. Please only use snake case for all class fields relating to backend data such as tasks or units!!! Mismatches in field names will result in **422 Unprocessable Entity** when sending objects.
+
+### npm Modules
+If you want to install a npm module for the frontend, you need to cd to the frontend folder and install it there with npm install .... The npm package.json and node modules in the root folder are only used for concurrently and installing packages there might confuse VSCode into thinking that certain modules are enabled for the frontend when they are not
 
 ## Versions
 

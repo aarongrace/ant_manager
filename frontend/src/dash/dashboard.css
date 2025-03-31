@@ -1,0 +1,39 @@
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 60vh;
+  width: 80%;
+  font-family: 'Arial', sans-serif;
+  background-color: #f7f3e9; /* Light beige for an earthy theme */
+}
+
+.dashboard-header {
+  background-color: #6b4226; /* Dark brown for the header */
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  font-size: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-body {
+  display: flex;
+  flex: 1;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  border-left: 2px solid #d4a373;
+}
+
+.dashboard-content h2 {
+  color: #6b4226;
+}
+
+.dashboard-content p {
+  color: #333;
+}
