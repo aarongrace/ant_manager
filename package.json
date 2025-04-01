@@ -3,8 +3,8 @@
     "private": true,
     "scripts": {
         "start": "concurrently \"npm run start-react\" \"npm run start-backend\"",
-        "start-react": "cd frontend && npm start",
-        "start-backend": "cd backend && uvicorn main:app --reload",
+        "start-react": "cd frontend && npm run dev",
+        "start-backend": "cd backend && python3 -m uvicorn main:app --reload",
         "install-all": "npm install --prefix frontend && npm install --prefix backend"
     },
     "devDependencies": {
