@@ -18,6 +18,7 @@
     /* --background: #0a0a0a; */
     --background: #f6f0e1;
     --foreground: #000000;
+    --textColor: #a65723;
   }
 }
 
@@ -32,3 +33,6 @@ img {
   pointer-events: auto; 
 }
 
+.text-textColor {
+  color: var(--textColor);
+}

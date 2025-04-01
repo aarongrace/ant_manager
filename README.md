@@ -15,10 +15,21 @@ The frontend is built using React written in TypeScript. The backend is written 
 To run first clone the repository. Then inside the root directory run
 ```bash
 npm i
-source .venv/bin/activate
+python3 -m venv venv
+source venv/bin/activate
 pip3 install -r requirements.txt
+```
+
+In `/frontend`:
+```bash
+npm i
+```
+
+Then finally back in the root folder:
+```bash
 npm start
 ```
+
 You should now see the frontend running on port `3000` and the backend on port `8000`.
 
 ## Developers

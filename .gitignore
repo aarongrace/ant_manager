@@ -2,3 +2,8 @@
 .DS_Store
 __pycache__/
 mangoPW.txt
+# this is for liao since .venv was throwing errors
+/venv/
+
+# also it's not good to track virtual environments in git, so adding this
+.venv/
