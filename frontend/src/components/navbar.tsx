@@ -6,7 +6,7 @@ import usePlayerStatsStore from "../context/playerStatsStore";
 
 const Navbar = () => {
 
-    const { ants, food, sand, land, maxAnts } = usePlayerStatsStore();
+    const { ants, food, sand, landLvl, maxAnts } = usePlayerStatsStore();
 
     if (usePathname() === "/") {
         return <></>
@@ -14,13 +14,13 @@ const Navbar = () => {
     return (
         <div className="w-full z-50 flex justify-between items-center border-b-2 h-12 px-3">
             <div className="flex justify-center items-center gap-2">
-                <p><span className="text-orange-800">Ants:</span> {ants} {ants === maxAnts && <span className="text-red-500">MAX</span>}</p>
+                <p><span className="text-orange-800">Ants:</span> {ants} {ants === maxAnts[landLvl] && <span className="text-red-500">MAX</span>}</p>
                 |
                 <p><span className="text-orange-800">Food:</span> {food}</p>
                 |
                 <p><span className="text-orange-800">Sand:</span> {sand}</p>
                 |
-                <p><span className="text-orange-800">Land:</span> {land}</p>
+                <p><span className="text-orange-800">Land Lvl:</span> {landLvl}</p>
             </div>
             <div className="flex justify-center items-center gap-2">
                 <Link href="/map" className="transition duration-300 hover:text-green-600">MAP</Link>

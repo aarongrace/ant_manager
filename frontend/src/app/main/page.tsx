@@ -4,15 +4,16 @@ import { useShallow } from "zustand/shallow";
 
 const Main = () => {
     // get current state of player stats that we care about
-    const { ants, food, maxAnts, updateStats } = usePlayerStatsStore(useShallow((state) => ({
+    const { ants, food, landLvl, maxAnts, updateStats } = usePlayerStatsStore(useShallow((state) => ({
         ants: state.ants,
         food: state.food,
+        landLvl: state.landLvl,
         maxAnts: state.maxAnts,
         updateStats: state.updateStats
     }))); // need the useShallow to avoid recursive infinite loops
 
     const addAnt = () => {
-        if (ants < maxAnts && food > 0) {
+        if (ants < maxAnts[landLvl] && food > 0) {
             updateStats("food", food - 1);
             updateStats("ants", ants + 1);
         }
