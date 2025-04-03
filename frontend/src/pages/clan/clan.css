@@ -1,0 +1,96 @@
+/* Container for the clan page */
+.clan-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4e4c1; /* Light beige background */
+  color: #333; /* Dark text color */
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Title styling */
+.clan-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #7c691f; /* Earthy brown color */
+}
+
+/* Description styling */
+.clan-description {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+/* Section styling */
+.clan-section {
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 600px;
+  text-align: left;
+}
+
+/* Subtitle styling */
+.clan-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #4c4008; /* Darker brown color */
+}
+
+/* Form styling */
+.clan-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.clan-input {
+  padding: 0.75rem;
+  border: 2px solid #3f3f3f;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.clan-submit {
+  padding: 0.75rem;
+  background-color: #4caf50; /* Green background */
+  color: #fff; /* White text */
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.clan-submit:hover {
+  background-color: #388e3c; /* Darker green on hover */
+}
+
+/* Leader options styling */
+.clan-leader-options {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+/* Back button styling */
+.clan-back-button {
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #4caf50; /* Green background */
+  color: #fff; /* White text */
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.clan-back-button:hover {
+  background-color: #388e3c; /* Darker green on hover */
+}

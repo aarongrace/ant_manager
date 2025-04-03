@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+/* Navbar container */
+.App-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 2rem;
+  background-color: #fdf5e6; /* Light beige background */
+  border-bottom: 4px solid #d4a373; /* Soft brown border */
+  white-space: nowrap; /* Ensure the title stays on one line */
+}
+
+/* Game title styling */
+.game-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000; /* Black text */
+  text-shadow: 2px 2px #d4a373; /* Soft brown shadow for a playful effect */
+  margin: 0; /* Remove extra margin to keep it aligned */
+}
+
+/* Navigation links container */
+.nav-links {
+  display: flex;
+  gap: 1.5rem; /* Space between links */
+}
+
+/* Individual link styling */
+.nav-link {
+  text-transform: uppercase; /* Uppercase text */
+  font-family: 'Patrick Hand', 'Comic Sans MS', cursive; /* Whimsical cartoony font */
+  font-size: 1.2rem;
+  color: #000; /* Black text */
+  text-decoration: none; /* Remove underline */
+  font-weight: bold;
+  transition: all 0.3s ease; /* Smooth hover transition */
+}
+
+.nav-link:hover {
+  background-color: #d4a373; /* Soft brown background on hover */
+  color: #fff; /* White text on hover */
+  border-color: #000; /* Black border on hover */
+}
+
+/* Icon links (e.g., CircleHelp) */
+.nav-link svg {
+  vertical-align: middle;
+  transition: transform 0.3s ease; /* Smooth scaling effect */
+}
+
+.nav-link:hover svg {
+  transform: scale(1.2); /* Slightly enlarge the icon on hover */
+}
