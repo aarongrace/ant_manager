@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator, ValidationError
 from base_classes import Unit
-from ant_names import ant_names
+from backend.game_logic.ant_names import ant_names
 
 adults_router = APIRouter()
 

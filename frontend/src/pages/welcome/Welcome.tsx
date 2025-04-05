@@ -2,13 +2,24 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CircleHelp } from "lucide-react";
 import "./welcome.css"; // Updated CSS file name
+import { setUserID } from "../../contexts/userStore";
 
 const Welcome = () => {
   const navigate = useNavigate();
 
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Placeholder logic for log in
+    navigate("/dashboard");
+
+  };
+
+  const handlePlayAsGuest = () => {
+    // Placeholder logic for playing as a guest
+    console.log("Playing as guest...");
+    setUserID("guest");
+
     navigate("/dashboard");
   };
 
@@ -36,10 +47,10 @@ const Welcome = () => {
         <Link to="/dashboard" className="welcome-button sign-up">
           <p>Sign Up</p>
         </Link>
-        <Link to="/guide" className="welcome-button guide">
-          <p className="guide-text">Guide</p>
+        <button onClick={handlePlayAsGuest} className="welcome-button guest">
+          <p className="guest-text">Play as Guest</p>
           <CircleHelp size={20} />
-        </Link>
+        </button>
       </div>
     </div>
   );

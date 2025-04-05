@@ -51,19 +51,17 @@
   border-color: #000; /* Black border on hover */
 }
 
-/* Guide button */
-.login-button.guide {
+.login-button.guest {
   background-color: #e53935; /* Red background */
   gap: 0.5rem; /* Space between text and icon */
 }
 
-.login-button.guide:hover {
+.login-button.guest:hover {
   background-color: #b71c1c; /* Darker red on hover */
   border-color: #000; /* Black border on hover */
 }
 
-/* Guide text */
-.guide-text {
+.guest-text {
   margin: 0;
   line-height: 1; /* Align text vertically */
 }
@@ -156,19 +154,17 @@
   border-color: #000; /* Black border on hover */
 }
 
-/* Guide button */
-.welcome-button.guide {
+.welcome-button.guest {
   background-color: #e53935; /* Red background */
   gap: 0.5rem; /* Space between text and icon */
 }
 
-.welcome-button.guide:hover {
+.welcome-button.guest:hover {
   background-color: #b71c1c; /* Darker red on hover */
   border-color: #000; /* Black border on hover */
 }
 
-/* Guide text */
-.guide-text {
+.guest-text {
   margin: 0;
   line-height: 1; /* Align text vertically */
 }

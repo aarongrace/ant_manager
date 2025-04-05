@@ -1,7 +1,21 @@
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import './dashboard.css';
+import { makeAnt } from './dashboard.services';
+import { useColonyStore } from '../../contexts/colonyStore';
 
 const Dashboard: React.FC = () => {
+
+  const { name: colonyName, ants, eggs, food, sand, age, map, perkPurchased, fetchColonyInfo } = useColonyStore();
+  // const colony = colonyStore.item;
+  // const { item, fetchItem } = useColonyStore((state) => ({
+  //   item: state.item,
+  //   fetchItem: state.fetchItem,
+  // }));
+
+  useEffect(() => {
+    fetchColonyInfo();
+  }, []);
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -11,21 +25,31 @@ const Dashboard: React.FC = () => {
         <main className="dashboard-content">
           <p>Manage your colony and dominate the leaderboard!</p>
 
+          {/* Colony Overview */}
+          <section className="dashboard-section colony-overview">
+        
+            <h3>Colony Overview</h3>
+            <p><strong>Colony Name:</strong> {colonyName}</p>
+            <p><strong>Colony Age:</strong> {age} days</p>
+            <p><strong>Number of Ants:</strong> {ants}</p>
+            <p><strong>Perks Purchased:</strong> {perkPurchased.join(', ')}</p>
+          </section>
+
+
           {/* Resource Panel */}
           <section className="dashboard-section resource-panel">
             <h3>Resource Panel</h3>
             <ul>
-              <li>Food: 500</li>
-              <li>Sand: 300</li>
-              <li>Ants: 120</li>
+              <li>Food: {food} </li>
+              <li>Sand: {sand} </li>
             </ul>
           </section>
 
           {/* Reproduction Panel */}
           <section className="dashboard-section reproduction-panel">
             <h3>Reproduction Panel</h3>
-            <p>Eggs: 10</p>
-            <button>Make Ant</button>
+            <p>Eggs: {eggs}</p>
+            <button onClick={()=>makeAnt()}>Make Ant</button>
           </section>
 
           {/* Map */}

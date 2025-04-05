@@ -1,15 +1,29 @@
-from enum import Enum
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from unit_router import unit_router, advance_units
+from database import initialize_database
 
-from pydantic import BaseModel, field_validator, ValidationError
-from base_classes import advanceTimeCycleRequest
+from routers.colony import colonyRouter
+from routers.profile import profileRouter
+from routers.actions import actionsRouter
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan event handler for the FastAPI application.
+    This function is called when the application starts up and shuts down.
+    """
+    # Perform startup actions here
+    await initialize_database()
+    yield
+    # Perform shutdown actions here
 
 
-app = FastAPI()
-app.include_router(unit_router, prefix="/units")
+app = FastAPI(title="Clash of Colonies", version="0.1.0", lifespan=lifespan)
+app.include_router(colonyRouter, prefix="/colonies")
+app.include_router(actionsRouter, prefix="/actions")
+app.include_router(profileRouter, prefix="/profiles")
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,13 +37,3 @@ app.add_middleware(
 async def welcome() -> dict:
     """welcome ant boss"""
     return {"msg": "Greetings, ant boss."}
-
-
-@app.post("/advance")
-async def advance_time_cycle(request: advanceTimeCycleRequest) -> dict:
-    # the main hub for the advance time cycle
-    # eventually the advance command would also be passed to //
-    # resources, buildings, pictures and etc.
-    time = request.time
-    advance_units(time)
-    return {"msg": "Time cycle advanced."}
