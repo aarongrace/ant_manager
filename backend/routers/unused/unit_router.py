@@ -2,7 +2,6 @@ from enum import Enum
 from typing import List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, field_validator, ValidationError
-from broods import StageType, add_brood_unit, broods_list, broods_router
 from adults import TaskType, add_adult_unit, UnitType, adults_list, adults_router
 from base_classes import Unit
 
@@ -10,7 +9,6 @@ unit_list = {"adults": adults_list, "broods": broods_list}
 
 unit_router = APIRouter()
 unit_router.include_router(adults_router, prefix="/adults")
-unit_router.include_router(broods_router, prefix="/broods")
 
 @unit_router.get("", response_model=dict)
 async def get_units() -> dict:
@@ -36,7 +34,6 @@ async def delete_unit(unit_id: int) -> dict:
 
 @unit_router.post("/reset")
 async def reset_units():
-    broods_list.clear()
     adults_list.clear()
     initialize_default_unit_list()
 
@@ -44,8 +41,6 @@ async def reset_units():
 def advance_units(times: int) -> None:
     while times > 0:
         for unit in adults_list:
-            unit.advance_time_cycle()
-        for unit in broods_list:
             unit.advance_time_cycle()
         times -= 1
 
@@ -56,7 +51,6 @@ def initialize_default_unit_list():
     add_adult_unit("Alice", UnitType.worker, 50, TaskType.idle, 2)
     add_adult_unit("Bob", UnitType.worker, 50, TaskType.forage, 3)
     add_adult_unit("Charlie", UnitType.soldier, 60, TaskType.patrol, 4)
-    add_brood_unit("Broodity", StageType.egg, 0, 50)
 
 is_initialized = False
 if not is_initialized:
