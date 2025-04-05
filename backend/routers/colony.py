@@ -70,7 +70,7 @@ async def get_colony(id: str):
 #     return {"message": f"Colony with ID '{id}' has been deleted"}
 
 
-async def ensure_guest_exists():
+async def ensure_guest_colony_exists():
     guest_colony = await Colony.get("guest")
     if not guest_colony:
         guest_colony = Colony.initialize_default("guest")

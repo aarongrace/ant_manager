@@ -15,7 +15,6 @@ type ColonyStore = {
   fetchColonyInfo: () => Promise<void>;
 };
 
-// Update this to use FastAPI backend and reference userID from userStore
 export const useColonyStore = create<ColonyStore>((set, get) => ({
   id: "",
   name: "",
@@ -29,7 +28,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
   // Fetch a colony from the backend
   fetchColonyInfo: async () => {
-    const userID = useUserStore.getState().userID; // Access userID dynamically
+    const userID = useUserStore.getState().userID;
     if (!userID) {
       throw new Error("User ID is not set");
     }
@@ -44,7 +43,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       id: data.id,
       name: data.name,
       ants: data.ants,
-      eggs: data.eggs, // Include eggs in the fetched data
+      eggs: data.eggs,
       food: data.food,
       sand: data.sand,
       age: data.age,
