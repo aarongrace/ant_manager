@@ -25,15 +25,16 @@ export const SurfaceCanvas: React.FC = (props) => {
     }, [])
 
 
-    const establishContext = (ctx: CanvasRenderingContext2D) => {
+    const establishContext = (context: CanvasRenderingContext2D) => {
         console.log("Establishing context");
-        setCtx(ctx);
+        setCtx(context);
     }
 
 
 
     function draw(delta: number) {
         console.log("Drawing frame:", delta);
+        console.log("context:", ctx);
         if (ctx) {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             drawBackground(ctx, () => {

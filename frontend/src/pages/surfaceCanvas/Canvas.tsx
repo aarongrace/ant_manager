@@ -30,20 +30,22 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
 
     animationFrameId.current = requestAnimationFrame(animate);
   }
+
+  useEffect(()=> {
+    lastFrameTime.current = performance.now();
+    animationFrameId.current = requestAnimationFrame(animate);
+    return () => { cancelAnimationFrame(animationFrameId.current); }
+  })
   
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d');
+    console.log("Canvas context:", ctx);
     if (ctx) {
       establishContext(ctx);
     } else {
       console.error("Canvas context not available");
     }
-
-
-    lastFrameTime.current = performance.now();
-    animationFrameId.current = requestAnimationFrame(animate);
-    return () => { cancelAnimationFrame(animationFrameId.current); }
-  },[ canvasRef, establishContext ]);
+  },[ establishContext ]);
 
   useEffect(() => {
     console.log("preloading images");
