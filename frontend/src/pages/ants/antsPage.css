@@ -16,7 +16,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
-    width: 190px;
+    /* width: 190px; */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     color: black;
     background-color: #d4e157; /* Light yellowish-green background */

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from .colony import Colony
+from game_logic.ant import make_new_ant
 actionsRouter = APIRouter()
 
 
@@ -19,6 +20,6 @@ async def make_ant(id: str):
 
     colony.food -= 10
     colony.eggs -= 1
-    colony.ants += 1
+    colony.ants.append(make_new_ant())
     await colony.save()
     return {"message": "Ant created successfully"}

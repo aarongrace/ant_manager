@@ -1,11 +1,13 @@
 import { create } from "zustand";
 import { useUserStore } from "./userStore";
 
+import { Ant, TaskEnum } from "../baseClasses/Ant"; 
+
 // Can't destructure without this
 type ColonyStore = {
   id: string;
   name: string;
-  ants: number;
+  ants: Ant[];
   eggs: number; // Added eggs property
   food: number;
   sand: number;
@@ -18,7 +20,7 @@ type ColonyStore = {
 export const useColonyStore = create<ColonyStore>((set, get) => ({
   id: "",
   name: "",
-  ants: 0,
+  ants: [],
   eggs: 5, // Default eggs set to 5
   food: 0,
   sand: 0,

@@ -1,5 +1,5 @@
 import React from 'react';
-import UnitPanel from './pages/units/unitPanel';
+import AntsPage from './pages/ants/AntsPage';
 import Dashboard from './pages/dashboard/Dashboard';
 import Profile from './pages/profile/Profile';
 import './globals.css';
@@ -21,7 +21,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/guide" element={<Guide />} />
-          <Route path="/units" element={<UnitPanel />} />
+          <Route path="/ants" element={<AntsPage />} />
           <Route path="/clan" element={<Clan />} />
           <Route path="/store" element={<Store />} />
           <Route path="/admin" element={<Admin />} />

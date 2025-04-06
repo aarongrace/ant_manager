@@ -2,10 +2,12 @@ from fastapi import APIRouter, HTTPException
 from typing import List
 from beanie import Document
 
+from game_logic.ant import Ant
+
 class Colony(Document):
     id: str  # The colony ID should always be the same as the user ID
     name: str  # Name of the colony
-    ants: int  # Number of ants in the colony
+    ants: List[Ant]  # Number of ants in the colony
     eggs: int = 5  # Number of eggs in the colony, defaulted to 5
     food: float  # Amount of food available
     sand: float  # Amount of sand available
@@ -18,13 +20,37 @@ class Colony(Document):
 
     @classmethod
     def initialize_default(cls, userId: str) -> "Colony":
+
+        ants = [
+            Ant(
+                id="guest_ant_1",
+                name="Marge",
+                age=2,
+                type="queen",
+                color="#00008B",  # Hex color for dark blue
+                task="idle",
+                position={"x": 0.2, "y": 0.5},
+                destination="",
+            ),
+            Ant(
+                id="guest_ant_2",
+                name="Bart",
+                age=2,
+                type="soldier",
+                color="#00008B",  # Hex color for dark blue
+                task="idle",
+                position={"x": 0.3, "y": 0.8},
+                destination="",
+            ),
+        ]     
+        
         return cls(
             id=userId,
             name="Antopia",
-            ants=5,
-            eggs=5,  # Default eggs set to 5
-            food=100.0,
-            sand=100.0,
+            ants=ants,
+            eggs=50,
+            food=600,
+            sand=800,
             age=0,
             map="uninitialized",
             perkPurchased=[]

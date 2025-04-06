@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import './dashboard.css';
 import { makeAnt } from './dashboard.services';
 import { useColonyStore } from '../../contexts/colonyStore';
+import SurfaceCanvas from '../surfaceCanvas/SurfaceCanvas';
+import { TaskEnum, TypeEnum } from '../../baseClasses/Ant';
+
 
 const Dashboard: React.FC = () => {
   const { name: colonyName, ants, eggs, food, sand, age, perkPurchased, fetchColonyInfo } = useColonyStore();
@@ -9,6 +12,14 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     fetchColonyInfo();
   }, []);
+
+  
+  const taskCounts = ants.reduce((acc: Record<string, number>, ant) => {
+    if (ant.type != TypeEnum.Queen) { // queen should not be counted as she technically doesn't have a task
+      acc[ant.task] = (acc[ant.task] || 0) + 1;
+    }
+    return acc;
+  }, {} as Record<string, number>);
 
   return (
     <div className="dashboard-container">
@@ -20,35 +31,37 @@ const Dashboard: React.FC = () => {
             <h3>Colony Overview</h3>
             <p><strong>Colony Name:</strong> {colonyName}</p>
             <p><strong>Colony Age:</strong> {age} days</p>
-            <p><strong>Number of Ants:</strong> {ants}</p>
+            <p><strong>Number of Ants:</strong> {ants.length}</p>
             <p><strong>Perks Purchased:</strong> {perkPurchased.join(', ')}</p>
+            <p><strong>Food:</strong> {food}</p>
+            <p><strong>Sand:</strong> {sand}</p>
           </section>
 
           {/* Reproduction Panel */}
           <section className="dashboard-section reproduction-panel">
-            <h3>Reproduction Panel</h3>
+            <h3>Reproduction</h3>
             <p>Eggs: {eggs}</p>
             <button onClick={() => makeAnt()}>Make Ant</button>
           </section>
 
           {/* Resource Panel */}
           <section className="dashboard-section resource-panel">
-            <h3>Resource Panel</h3>
+            <h3>Tasks</h3>
             <ul>
-              <li>Food: {food}</li>
-              <li>Sand: {sand}</li>
+              {Object.entries(taskCounts).map(([task, count]) =>(
+                <li key={task}>
+                  {task.charAt(0).toUpperCase() + task.slice(1)}: {count}
+                </li>
+              ))
+
+              }
             </ul>
           </section>
 
         </main>
       </div>
-
-      {/* Map Container */}
       <div className="map-container">
-        <section className="dashboard-section map-panel">
-          <h3>Map</h3>
-          <div className="map-placeholder">[Map Placeholder]</div>
-        </section>
+        <SurfaceCanvas />
       </div>
     </div>
   );
