@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import AntsPage from './pages/ants/AntsPage';
 import Dashboard from './pages/dashboard/Dashboard';
 import Profile from './pages/profile/Profile';
@@ -10,8 +10,13 @@ import Guide from './pages/guide/guide';
 import Clan from './pages/clan/Clan';
 import Store from './pages/store/Store';
 import Admin from './pages/admin/Admin';
+import { usePreloadedImages } from './contexts/preloadImages';
 
 function App() {
+  const { preloadImages } = usePreloadedImages();
+  useEffect(() => {
+    preloadImages();
+  } , []);
   return (
     <div className="App">
       <Navbar />

@@ -1,0 +1,60 @@
+import React, { use, useEffect, useRef } from 'react';
+import { useColonyStore } from '../../contexts/colonyStore';
+import { Ant } from '../../baseClasses/Ant';
+import antImgUrl from '../../assets/imgs/ant.png'
+import { usePreloadedImages } from '../../contexts/preloadImages';
+
+
+interface CanvasProps {
+  draw: (delta: number) => void;
+  establishContext: (ctx: CanvasRenderingContext2D) => void;
+}
+
+const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const canvasWidth = 550;
+  const canvasHeight = 400;
+  
+
+  const { isLoaded, images } = usePreloadedImages();
+
+  const animationFrameId= React.useRef<number>(0);
+  const lastFrameTime = React.useRef<number>(0);
+
+
+  const animate = (timestamp: number) => {
+    console.log("Animation frame:", timestamp);
+    const delta = timestamp - lastFrameTime.current;
+    lastFrameTime.current = timestamp;
+    draw(delta);
+
+    animationFrameId.current = requestAnimationFrame(animate);
+  }
+  
+  useEffect(() => {
+    const ctx = canvasRef.current?.getContext('2d');
+    if (ctx) {
+      establishContext(ctx);
+    } else {
+      console.error("Canvas context not available");
+    }
+
+
+    lastFrameTime.current = performance.now();
+    animationFrameId.current = requestAnimationFrame(animate);
+    return () => { cancelAnimationFrame(animationFrameId.current); }
+  },[ canvasRef, establishContext ]);
+
+  useEffect(() => {
+    console.log("preloading images");
+    console.log( isLoaded)
+    console.log( images)
+  }, [ isLoaded, images ]);
+
+  return <canvas ref={canvasRef} 
+    width = {canvasWidth} height = {canvasHeight} 
+    style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}
+    />;
+};
+
+export default Canvas;

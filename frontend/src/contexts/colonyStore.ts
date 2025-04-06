@@ -14,6 +14,7 @@ type ColonyStore = {
   age: number;
   map: string;
   perkPurchased: string[];
+  updateAnts: (deltaTime: number) => void;
   fetchColonyInfo: () => Promise<void>;
 };
 
@@ -54,20 +55,16 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     });
   },
 
-  // not in used, should be handled in the backend
-  // // // Add an ant (increases ants by 1 and decreases food by 20)
-  // // addAnt: () => {
-  // //   const { ants, food, eggs } = get();
-  //   if (food < 20) {
-  //     throw new Error("Not enough food to add an ant");
-  //   }
-  //   if (eggs <= 0) {
-  //     throw new Error("No eggs available to hatch an ant");
-  //   }
-  //   set({
-  //     ants: ants + 1,
-  //     food: food - 20,
-  //     eggs: Math.max(0, get().eggs - 1),
-  //   });
+  updateAnts: ( deltaTime: number) => {
+      console.log("Updating ants with deltaTime:", deltaTime);
+      const ants = get().ants.map((ant: Ant) => ({
+        ...ant,
+        position:{
+          ...ant.position,
+          x:  (ant.position.x + 0.00008 * deltaTime) % 1 ,
+        }
+      }));
+      set({ ants: ants });
+  }
  
  }));

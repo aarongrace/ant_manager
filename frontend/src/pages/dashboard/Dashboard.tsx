@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import './dashboard.css';
 import { makeAnt } from './dashboard.services';
 import { useColonyStore } from '../../contexts/colonyStore';
-import SurfaceCanvas from '../surfaceCanvas/SurfaceCanvas';
 import { TaskEnum, TypeEnum } from '../../baseClasses/Ant';
+import SurfaceCanvas from '../surfaceCanvas/Surface';
 
 
 const Dashboard: React.FC = () => {
