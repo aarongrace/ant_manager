@@ -139,17 +139,6 @@ A series of manual tests and unit tests will be implemented for operations such 
 
 ---
 
-### Contact and Responsibilities
-
-| Name             | Email                       | Responsibilities                                   |
-|------------------|-----------------------------|--------------------------------------------------|
-| **Mitchell Gage** | Mitchell-R-Gage@uiowa.edu   | Admin page and functions, player statistics page |
-| **Aaron Wang**    | aaron-wang@uiowa.edu        | Dashboard, units view, store, backend            |
-| **Liao Zhu**      | Liaozhu@uiowa.edu           | Clan, leaderboard, auth, user profile            |
-
-Team meetings will be conducted over Discord and in-person.
-
----
 
 ## Development Notes
 
