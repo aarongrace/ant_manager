@@ -1,18 +1,27 @@
 import { useColonyStore } from '../../contexts/colonyStore';
 import { Ant } from '../../baseClasses/Ant';
 import { default as CustomCanvas } from "./Canvas";
-import React, { use, useEffect } from 'react';
-import bgImgUrl from '../../assets/imgs/bg3.jpg'
-import antImgUrl from '../../assets/imgs/ant.png'
+import React, { useEffect } from 'react';
+import { MapEntity } from '../../baseClasses/MapEntity';
+
+// Dynamically import all images from the imgs directory
+const importAllImages = (requireContext: __WebpackModuleApi.RequireContext) => {
+    const images: string[] = [];
+    requireContext.keys().forEach((key) => {
+        images.push(requireContext(key));
+    });
+    return images;
+};
+
+const imgUrls = importAllImages(require.context('../../assets/imgs', false, /\.(png|jpe?g|svg)$/));
 
 export const SurfaceCanvas: React.FC = (props) => {
     const [ctx, setCtx] = React.useState<CanvasRenderingContext2D | null>(null);
-    const { ants, updateAnts } = useColonyStore();
-    const [ images, setImages ] = React.useState<{ [key: string]: HTMLImageElement }>({});
+    const { ants, updateAnts, mapEntities, updateMapEntities } = useColonyStore();
+    const [images, setImages] = React.useState<{ [key: string]: HTMLImageElement }>({});
 
     useEffect(() => {
         const loadedImages: { [key: string]: HTMLImageElement } = {};
-        const imgUrls = [antImgUrl, bgImgUrl];
         imgUrls.forEach((url) => {
             // Extract the filename without the extension
             const filenameWithExtension = url.split('/').pop() || url;
@@ -22,15 +31,12 @@ export const SurfaceCanvas: React.FC = (props) => {
             loadedImages[filename] = img;
         });
         setImages(loadedImages);
-    }, [])
-
+    }, []);
 
     const establishContext = (context: CanvasRenderingContext2D) => {
         console.log("Establishing context");
         setCtx(context);
-    }
-
-
+    };
 
     function draw(delta: number) {
         console.log("Drawing frame:", delta);
@@ -39,12 +45,14 @@ export const SurfaceCanvas: React.FC = (props) => {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             drawBackground(ctx, () => {
                 drawAnts(ctx, ants);
+                drawMapEntities(ctx);
             });
             updateAnts(delta);
         } else {
             console.log("in drawing Context not established yet");
         }
     }
+
     function drawBackground(ctx: CanvasRenderingContext2D, callback: () => void) {
         console.log("Drawing background");
         const bgImage = images["bg3"];
@@ -56,6 +64,26 @@ export const SurfaceCanvas: React.FC = (props) => {
         ctx.drawImage(bgImage, 0, 0, ctx.canvas.width, ctx.canvas.height);
         callback();
     }
+
+    function drawMapEntities(ctx: CanvasRenderingContext2D) {
+        console.log("Drawing map entities:", mapEntities);
+
+        mapEntities.forEach((entity) => {
+            const img = images[entity.imgName];
+            if (!img) {
+                console.error(`Image for entity ${entity.id} not loaded`);
+                return;
+            }
+
+            const pos_x = entity.position.x * ctx.canvas.width;
+            const pos_y = entity.position.y * ctx.canvas.height;
+
+            const left = pos_x - entity.size.width / 2;
+            const top = pos_y - entity.size.height / 2;
+
+            ctx.drawImage(img, left, top, entity.size.width, entity.size.height);
+        });
+    };
 
     function drawAnts(ctx: CanvasRenderingContext2D, ants: Ant[]) {
         console.log("Drawing ants:", ants);
@@ -80,12 +108,11 @@ export const SurfaceCanvas: React.FC = (props) => {
             ctx.drawImage(antImage, left, top, width, height);
             console.log(pos_x, pos_y);
             console.log("Drawing ant at:", left, top, width, height);
-
         });
     }
 
-    return <CustomCanvas draw={draw} establishContext={establishContext} />
-}
+    return <CustomCanvas draw={draw} establishContext={establishContext} />;
+};
 
 export default SurfaceCanvas;
 

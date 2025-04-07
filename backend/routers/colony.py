@@ -3,11 +3,13 @@ from typing import List
 from beanie import Document
 
 from game_logic.ant import Ant
+from game_logic.map_entity import MapEntity, EntityTypeEnum, initialize_guest_map_entities
 
 class Colony(Document):
     id: str  # The colony ID should always be the same as the user ID
     name: str  # Name of the colony
     ants: List[Ant]  # Number of ants in the colony
+    mapEntities: List[MapEntity]
     eggs: int = 5  # Number of eggs in the colony, defaulted to 5
     food: float  # Amount of food available
     sand: float  # Amount of sand available
@@ -43,11 +45,14 @@ class Colony(Document):
                 destination="",
             ),
         ]     
+
+        
         
         return cls(
             id=userId,
             name="Antopia",
             ants=ants,
+            mapEntities=initialize_guest_map_entities(),
             eggs=50,
             food=600,
             sand=800,
