@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './dashboard.css';
 import { makeAnt } from './dashboard.services';
 import { useColonyStore } from '../../contexts/colonyStore';
-import { TaskEnum, TypeEnum } from '../../baseClasses/Ant';
+import { TaskEnum, AntTypeEnum } from '../../baseClasses/Ant';
 import SurfaceCanvas from '../surfaceCanvas/Surface';
 
 
@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
 
   
   const taskCounts = ants.reduce((acc: Record<string, number>, ant) => {
-    if (ant.type != TypeEnum.Queen) { // queen should not be counted as she technically doesn't have a task
+    if (ant.type != AntTypeEnum.Queen) { // queen should not be counted as she technically doesn't have a task
       acc[ant.task] = (acc[ant.task] || 0) + 1;
     }
     return acc;

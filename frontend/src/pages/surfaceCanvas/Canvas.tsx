@@ -3,6 +3,7 @@ import { useColonyStore } from '../../contexts/colonyStore';
 import { Ant } from '../../baseClasses/Ant';
 import antImgUrl from '../../assets/imgs/ant.png'
 import { usePreloadedImages } from '../../contexts/preloadImages';
+import { useSettingsStore } from '../../contexts/settingsStore';
 
 
 interface CanvasProps {
@@ -11,15 +12,20 @@ interface CanvasProps {
 }
 
 const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
+  
+
+
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const canvasWidth = 550;
-  const canvasHeight = 400;
+  const { canvasWidth, canvasHeight, syncInterval } = useSettingsStore();
+
+  const { putColonyInfo } = useColonyStore();
   
 
   const { isLoaded, images } = usePreloadedImages();
 
   const animationFrameId= React.useRef<number>(0);
   const lastFrameTime = React.useRef<number>(0);
+  const lastSyncedTime = React.useRef<number>(0);
 
 
   const animate = (timestamp: number) => {
@@ -28,11 +34,18 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
     lastFrameTime.current = timestamp;
     draw(delta);
 
+    if (timestamp - lastSyncedTime.current >= syncInterval) {
+      lastSyncedTime.current = timestamp;
+      // Sync logic here
+      putColonyInfo();
+    }
+
     animationFrameId.current = requestAnimationFrame(animate);
   }
 
   useEffect(()=> {
     lastFrameTime.current = performance.now();
+    lastSyncedTime.current = performance.now();
     animationFrameId.current = requestAnimationFrame(animate);
     return () => { cancelAnimationFrame(animationFrameId.current); }
   })
@@ -45,7 +58,7 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
     } else {
       console.error("Canvas context not available");
     }
-  },[ establishContext ]);
+  },[ canvasRef ]);
 
   useEffect(() => {
     console.log("preloading images");

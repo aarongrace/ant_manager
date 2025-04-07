@@ -3,6 +3,7 @@ import { Ant } from '../../baseClasses/Ant';
 import { default as CustomCanvas } from "./Canvas";
 import React, { useEffect } from 'react';
 import { MapEntity } from '../../baseClasses/MapEntity';
+import { updateGameState } from '../../gameLogic/updates';
 
 // Dynamically import all images from the imgs directory
 const importAllImages = (requireContext: __WebpackModuleApi.RequireContext) => {
@@ -17,7 +18,7 @@ const imgUrls = importAllImages(require.context('../../assets/imgs', false, /\.(
 
 export const SurfaceCanvas: React.FC = (props) => {
     const [ctx, setCtx] = React.useState<CanvasRenderingContext2D | null>(null);
-    const { ants, updateAnts, mapEntities, updateMapEntities } = useColonyStore();
+    const { ants, mapEntities, updateMapEntities } = useColonyStore();
     const [images, setImages] = React.useState<{ [key: string]: HTMLImageElement }>({});
 
     useEffect(() => {
@@ -39,22 +40,20 @@ export const SurfaceCanvas: React.FC = (props) => {
     };
 
     function draw(delta: number) {
-        console.log("Drawing frame:", delta);
-        console.log("context:", ctx);
+        // console.log("Drawing frame:", delta);
         if (ctx) {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             drawBackground(ctx, () => {
-                drawAnts(ctx, ants);
                 drawMapEntities(ctx);
+                drawAnts(ctx, ants);
             });
-            updateAnts(delta);
+            updateGameState(delta);
         } else {
             console.log("in drawing Context not established yet");
         }
     }
 
     function drawBackground(ctx: CanvasRenderingContext2D, callback: () => void) {
-        console.log("Drawing background");
         const bgImage = images["bg3"];
         if (!bgImage) {
             console.error("Background image not loaded");
@@ -66,7 +65,6 @@ export const SurfaceCanvas: React.FC = (props) => {
     }
 
     function drawMapEntities(ctx: CanvasRenderingContext2D) {
-        console.log("Drawing map entities:", mapEntities);
 
         mapEntities.forEach((entity) => {
             const img = images[entity.imgName];
@@ -86,7 +84,6 @@ export const SurfaceCanvas: React.FC = (props) => {
     };
 
     function drawAnts(ctx: CanvasRenderingContext2D, ants: Ant[]) {
-        console.log("Drawing ants:", ants);
         const sizeScaleFactor = { queen: 2, worker: 1, soldier: 1.5 };
         const antSize = { width: 40, height: 25 }; // Base size for ants
         const antImage = images["ant"];
@@ -106,8 +103,6 @@ export const SurfaceCanvas: React.FC = (props) => {
             const height = antSize.height * sizeScaleFactor[ant.type];
 
             ctx.drawImage(antImage, left, top, width, height);
-            console.log(pos_x, pos_y);
-            console.log("Drawing ant at:", left, top, width, height);
         });
     }
 

@@ -1,9 +1,12 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from typing import List
 from beanie import Document
 
 from game_logic.ant import Ant
 from game_logic.map_entity import MapEntity, EntityTypeEnum, initialize_guest_map_entities
+
+
+# todo implement batch logic. Right now the updates are not just too frequent, but handling actions in a different router means that if it coincides with the put request, the action gets overwritten
 
 class Colony(Document):
     id: str  # The colony ID should always be the same as the user ID
@@ -73,17 +76,22 @@ async def get_colony(id: str):
         raise HTTPException(status_code=404, detail="Colony not found")
     return colony
 
-# these endpoints are not necessary because gameplay logic should be handled in the backend
 
-# @colonyRouter.put("/{id}", response_model=Colony)
-# async def update_colony(id: str, updated_colony: Colony):
-#     existing_colony = await Colony.get(id)
-#     if not existing_colony:
-#         raise HTTPException(status_code=404, detail="Colony not found")
-#     updated_colony.id = id
-#     await updated_colony.save()
-#     return updated_colony
+@colonyRouter.put("/{id}", response_model=dict)
+async def update_colony(id: str, request: Request):
+    existing_colony = await Colony.get(id)
+    if not existing_colony:
+        raise HTTPException(status_code=404, detail="Colony not found")
+    
+    data = await request.json()
+    for field, value in data.items():
+        if hasattr(existing_colony, field):
+            setattr(existing_colony, field, value)
+    await existing_colony.save()
+    return {"message": f"Colony with ID '{id}' has been updated"}
+    
 
+# these endpoints are not necessary because such logic should be handled in the backend
 # @colonyRouter.post("/{id}", response_model=Colony)
 # async def create_colony(colony: Colony):
 #     existing_colony = await Colony.get(colony.id)

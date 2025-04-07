@@ -5,7 +5,7 @@ export enum TaskEnum {
   Attacking = "attacking",
 }
 
-export enum TypeEnum {
+export enum AntTypeEnum {
     Queen = "queen",
     Worker = "worker",
     Soldier = "soldier",
@@ -16,7 +16,7 @@ export type Ant = {
   id: string; // Unique identifier for the ant
   name: string; // Name of the ant
   age: number; // Age of the ant
-  type: TypeEnum; // Type of the ant (e.g., worker, soldier, queen)
+  type: AntTypeEnum; // Type of the ant (e.g., worker, soldier, queen)
   color: string; // Color of the ant
   task: TaskEnum; // Current task of the ant (enum type)
   position: { x: number; y: number }; // Current position of the ant

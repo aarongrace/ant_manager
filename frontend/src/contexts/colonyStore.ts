@@ -16,9 +16,10 @@ type ColonyStore = {
   age: number;
   map: string;
   perkPurchased: string[];
-  updateAnts: (deltaTime: number) => void;
   updateMapEntities: (updates: { [id: string]: Partial<MapEntity> }) => void; // Update updateMapEntities function
   fetchColonyInfo: () => Promise<void>;
+  putColonyInfo: () => Promise<void>;  
+  updateColony: (updates: Partial<ColonyStore>) => void;
 };
 
 export const useColonyStore = create<ColonyStore>((set, get) => ({
@@ -47,31 +48,11 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     const data = await response.json();
     console.log("Colony data:", data);
     set({
-      id: data.id,
-      name: data.name,
-      ants: data.ants,
-      mapEntities: data.mapEntities, // Set mapEntities from the backend response
-      eggs: data.eggs,
-      food: data.food,
-      sand: data.sand,
-      age: data.age,
-      map: data.map,
-      perkPurchased: data.perkPurchased,
+      ...data
     });
   },
 
-  updateAnts: (deltaTime: number) => {
-    console.log("Updating ants with deltaTime:", deltaTime);
-    const ants = get().ants.map((ant: Ant) => ({
-      ...ant,
-      position: {
-        ...ant.position,
-        x: (ant.position.x + 0.00008 * deltaTime) % 1,
-      },
-    }));
-    set({ ants: ants });
-  },
-
+  // not in use. There is no need for a set function for an array
   updateMapEntities: (updates: { [id: string]: Partial<MapEntity> }) => {
     console.log("Updating map entities with partial updates:", updates);
 
@@ -90,5 +71,52 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     });
 
     set({ mapEntities: updatedMapEntities });
+  },
+
+  putColonyInfo: async () => {
+    const colonyState = get();
+    console.log("Putting colony info...", colonyState);
+    const userID = useUserStore.getState().userID;
+    const colonyInfo = {
+      id: userID,
+      name: colonyState.name,
+      ants: colonyState.ants,
+      mapEntities: colonyState.mapEntities,
+      eggs: colonyState.eggs,
+      food: colonyState.food,
+      sand: colonyState.sand,
+      age: colonyState.age,
+      map: colonyState.map,
+      perkPurchased: colonyState.perkPurchased,
+    }
+
+
+    try {
+      const response = await fetch(`http://localhost:8000/colonies/${userID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(colonyInfo),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Colony updated successfully:", data);
+    } catch (error) {
+      console.error("Error updating colony:", error);
+    }
+
+  },
+
+  updateColony: (updates: Partial<ColonyStore>) => {
+    console.log("Updating colony with partial updates:", updates);
+    set((state) => ({
+      ...state,
+      ...updates,
+    }));
   },
 }));
