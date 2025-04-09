@@ -6,7 +6,6 @@ from database import initialize_database
 
 from routers.colony import colonyRouter
 from routers.profile import profileRouter
-from routers.actions import actionsRouter
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,7 +21,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Clash of Colonies", version="0.1.0", lifespan=lifespan)
 app.include_router(colonyRouter, prefix="/colonies")
-app.include_router(actionsRouter, prefix="/actions")
 app.include_router(profileRouter, prefix="/profiles")
 
 app.add_middleware(

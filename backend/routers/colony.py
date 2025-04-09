@@ -7,6 +7,7 @@ from game_logic.map_entity import MapEntity, EntityTypeEnum, initialize_guest_ma
 
 
 # todo implement batch logic. Right now the updates are not just too frequent, but handling actions in a different router means that if it coincides with the put request, the action gets overwritten
+# either we add a buffer in memory or we handle all the actions on the frontend and fetch less often
 
 class Colony(Document):
     id: str  # The colony ID should always be the same as the user ID
@@ -90,24 +91,6 @@ async def update_colony(id: str, request: Request):
     await existing_colony.save()
     return {"message": f"Colony with ID '{id}' has been updated"}
     
-
-# these endpoints are not necessary because such logic should be handled in the backend
-# @colonyRouter.post("/{id}", response_model=Colony)
-# async def create_colony(colony: Colony):
-#     existing_colony = await Colony.get(colony.id)
-#     if existing_colony:
-#         raise HTTPException(status_code=400, detail="Colony already exists")
-#     await colony.insert_one()
-#     return colony
-
-# @colonyRouter.delete("/{id}", response_model=dict)
-# async def delete_colony(id: str):
-#     colony = await Colony.get(id)
-#     if not colony:
-#         raise HTTPException(status_code=404, detail="Colony not found")
-#     await colony.delete()
-#     return {"message": f"Colony with ID '{id}' has been deleted"}
-
 
 async def ensure_guest_colony_exists():
     guest_colony = await Colony.get("guest")

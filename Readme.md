@@ -165,3 +165,6 @@ If you want to install a npm module for the frontend, you need to cd to the fron
 - Updated the backend to reflect the changes in the `Colony` model.
 - Improved consistency between frontend and backend models by enforcing camel case across all fields.
 - Added new features to the **Clan View**, **Admin View**, and **Store View**.
+
+#Known Bugs
+- Refreshing the page at an unlucky time might cause put requests to the colony router to malfunction and mess up the ant array. Only happened once so far

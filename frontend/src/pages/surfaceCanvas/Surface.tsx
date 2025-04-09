@@ -4,35 +4,14 @@ import { default as CustomCanvas } from "./Canvas";
 import React, { useEffect } from 'react';
 import { MapEntity } from '../../baseClasses/MapEntity';
 import { updateGameState } from '../../gameLogic/updates';
+import { usePreloadedImages } from '../../contexts/preloadImages';
 
-// Dynamically import all images from the imgs directory
-const importAllImages = (requireContext: __WebpackModuleApi.RequireContext) => {
-    const images: string[] = [];
-    requireContext.keys().forEach((key) => {
-        images.push(requireContext(key));
-    });
-    return images;
-};
-
-const imgUrls = importAllImages(require.context('../../assets/imgs', false, /\.(png|jpe?g|svg)$/));
 
 export const SurfaceCanvas: React.FC = (props) => {
     const [ctx, setCtx] = React.useState<CanvasRenderingContext2D | null>(null);
     const { ants, mapEntities, updateMapEntities } = useColonyStore();
-    const [images, setImages] = React.useState<{ [key: string]: HTMLImageElement }>({});
 
-    useEffect(() => {
-        const loadedImages: { [key: string]: HTMLImageElement } = {};
-        imgUrls.forEach((url) => {
-            // Extract the filename without the extension
-            const filenameWithExtension = url.split('/').pop() || url;
-            const filename = filenameWithExtension.split('.')[0]; // Remove the extension
-            const img = new Image();
-            img.src = url;
-            loadedImages[filename] = img;
-        });
-        setImages(loadedImages);
-    }, []);
+    const { images } = usePreloadedImages();
 
     const establishContext = (context: CanvasRenderingContext2D) => {
         console.log("Establishing context");

@@ -1,40 +1,29 @@
 import { useColonyStore } from "../../contexts/colonyStore";
-import { useUserStore } from "../../contexts/userStore";
+import { Ant, AntTypeEnum, makeNewAnt, TaskEnum } from "../../baseClasses/Ant";
+import { v4 } from "uuid";
+import { useSettingsStore } from "../../contexts/settingsStore";
 
 export const makeAnt = async () => {
     console.log("Making an ant...");
-    const userID = useUserStore.getState().userID; // Access userID dynamically
-    const { fetchColonyInfo } = useColonyStore.getState();
+    const { food, eggs, ants, updateColony, putColonyInfo} = useColonyStore.getState();
+    const { foodPerAnt } = useSettingsStore.getState();
 
-    if (!userID) {
-        throw new Error("User ID is not set");
+    if (food < foodPerAnt) {
+        console.log("Not enough food to make an ant");
+        return;
     }
-    console.log("User ID:", userID);
-
-    try {
-        const response = await fetch(`http://localhost:8000/actions/makeAnt?id=${userID}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || "Network response was not ok");
-        }
-
-        const data = await response.json();
-        console.log("Ant created successfully:", data);
-
-        // Fetch updated colony info after making an ant
-        await fetchColonyInfo();
-    } catch (error) {
-        if (error instanceof Error) {
-            console.error("Error creating ant:", error.message);
-        } else {
-            console.error("Error creating ant:", error);
-        }
+    if (eggs < 1) {
+        console.log("Not enough eggs to make an ant");
+        return;
     }
+
+    const newAnt = makeNewAnt();
+
+    updateColony({
+        ants: [...ants, newAnt],
+        food: food - foodPerAnt,
+        eggs: eggs - 1,
+    });
+    putColonyInfo();
 };
 
