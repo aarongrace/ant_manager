@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from typing import List
 from beanie import Document
 
-from game_logic.ant import Ant
+from game_logic.ant import Ant, make_new_ant, TypeEnum, TaskEnum
 from game_logic.map_entity import MapEntity, EntityTypeEnum, initialize_guest_map_entities
 
 
@@ -28,30 +28,26 @@ class Colony(Document):
     def initialize_default(cls, userId: str) -> "Colony":
 
         ants = [
-            Ant(
-                id="guest_ant_1",
-                name="Marge",
-                age=2,
-                type="queen",
-                color="#00008B",  # Hex color for dark blue
-                task="idle",
+            make_new_ant(
+                ant_name="Queenie",
+                type=TypeEnum.queen,
+                task=TaskEnum.idle,
                 position={"x": 0.2, "y": 0.5},
-                destination="",
-            ),
-            Ant(
-                id="guest_ant_2",
-                name="Bart",
                 age=2,
-                type="soldier",
-                color="#00008B",  # Hex color for dark blue
-                task="idle",
-                position={"x": 0.3, "y": 0.8},
                 destination="",
+                color="#FF0000",  # Hex color for red
+            ),
+            make_new_ant(
+                ant_name="Worker",
+                type=TypeEnum.worker,
+                task=TaskEnum.foraging,
+                position={"x": 0.2, "y": 0.8},
+                age=1,
+                destination="",
+                color="#008000",  # Hex color for green
             ),
         ]     
 
-        
-        
         return cls(
             id=userId,
             name="Antopia",
@@ -92,9 +88,16 @@ async def update_colony(id: str, request: Request):
     return {"message": f"Colony with ID '{id}' has been updated"}
     
 
-async def ensure_guest_colony_exists():
+async def ensure_guest_colony_exists(reinitialize: bool = False):
+
     guest_colony = await Colony.get("guest")
-    if not guest_colony:
+
+    if guest_colony and reinitialize:
+        print("Right now the guest colony is being reinitialized every time")
+        await guest_colony.delete()
+        print("Guest colony deleted.")
+    
+    if not guest_colony or reinitialize:
         guest_colony = Colony.initialize_default("guest")
         await guest_colony.insert()
         print("Guest colony created:", guest_colony)

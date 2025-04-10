@@ -76,9 +76,15 @@ async def delete_profile(id: str):
     return {"message": f"Profile with ID '{id}' has been deleted"}
 
 
-async def ensure_guest_profile_exists():
+async def ensure_guest_profile_exists(reinitialize: bool = False):
     guest_profile = await Profile.get("guest")
-    if not guest_profile:
+
+    if guest_profile and reinitialize:
+        await guest_profile.delete()
+        print("Reinitializing guest profile...")
+        print("Guest profile deleted.")
+    
+    if not guest_profile or reinitialize:
         guest_profile = Profile.initialize_default("guest")
         await guest_profile.insert()
         print("Guest profile created.")

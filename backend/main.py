@@ -7,6 +7,7 @@ from database import initialize_database
 from routers.colony import colonyRouter
 from routers.profile import profileRouter
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """

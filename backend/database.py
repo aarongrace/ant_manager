@@ -20,8 +20,9 @@ async def initialize_database():
     client = AsyncIOMotorClient(setting.connect_string)
     await init_beanie(database=client["clash_of_colonies"], document_models=[Profile, Colony])
 
+
     await ensure_guest_profile_exists()
-    await ensure_guest_colony_exists()
+    await ensure_guest_colony_exists(reinitialize=True)
 
 
 async def main():

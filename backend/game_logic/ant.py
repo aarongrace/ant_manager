@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from .ant_names import ant_names
 
+
 class TypeEnum(str, Enum):
     queen = "queen"
     worker = "worker"
@@ -24,6 +25,10 @@ class Ant(BaseModel):
     task: TaskEnum  # Current task of the ant
     position: dict  # Current position of the ant (e.g., {"x": 0, "y": 0})
     destination: str  # ID of the object the ant is heading to
+    
+    # carrying: str # ID of the map entity that it is carrying
+    # amountCarried: int
+    
 
 
 def random_dark_color():
@@ -35,14 +40,18 @@ def random_dark_color():
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
-def make_new_ant():
+def make_new_ant(ant_name = random.choice(ant_names),type=random.choice([TypeEnum.worker, TypeEnum.soldier]), 
+                 task=TaskEnum.idle, position={"x": random.uniform(0, 1), "y": random.uniform(0, 1)},
+                 age=0, destination="", color=random_dark_color()):
     return Ant(
         id=str(uuid4()),
-        name=random.choice(ant_names),
-        age=0,
-        type=random.choice([TypeEnum.worker, TypeEnum.soldier]),
-        color=random_dark_color(),
-        task=TaskEnum.idle,
-        position={"x": random.uniform(0, 1), "y": random.uniform(0, 1)},
-        destination="",
+        name=ant_name,
+        age=age,
+        type=type,
+        color=color,
+        task=task,
+        position=position,
+        destination=destination,
+        # amountCarried=0,
+        # carrying=""
     )
