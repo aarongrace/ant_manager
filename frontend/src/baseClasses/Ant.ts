@@ -19,7 +19,7 @@ export type Ant = {
   name: string; // Name of the ant
   age: number; // Age of the ant
   type: AntTypeEnum; // Type of the ant (e.g., worker, soldier, queen)
-  color: string; // Color of the ant
+  frame: number; // Current frame for animation
   task: TaskEnum; // Current task of the ant (enum type)
   position: { x: number; y: number }; // Current position of the ant
   destination: string; // id of the object the ant is heading to
@@ -30,14 +30,6 @@ const getRandomAntType = (): AntTypeEnum => {
   return antTypes[Math.floor(Math.random() * antTypes.length)];
 };
 
-const getRandomDarkColor = (): string => {
-  const getRandomDarkHex = () => {
-    const num = Math.floor(Math.random() * 50);
-    return num.toString(16).padStart(2, '0')
-  }
-  return `#${getRandomDarkHex()}${getRandomDarkHex()}${getRandomDarkHex()}`;
-}
-
 
 export const makeNewAnt = (): Ant => {
   return {
@@ -45,7 +37,7 @@ export const makeNewAnt = (): Ant => {
     name: ant_names[Math.floor(Math.random() * ant_names.length)],
     age: 0,
     type: getRandomAntType(),
-    color: getRandomDarkColor(),
+    frame: 0,
     task: TaskEnum.Idle,
     position: { x: Math.random(), y: Math.random() },
     destination: "",

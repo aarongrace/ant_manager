@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Request
 from typing import List
 from beanie import Document
+from pydantic import ValidationError
 
-from game_logic.ant import Ant, make_new_ant, TypeEnum, TaskEnum
+from game_logic.ant import Ant, initialize_guest_ants
 from game_logic.map_entity import MapEntity, EntityTypeEnum, initialize_guest_map_entities
 
 
@@ -26,32 +27,10 @@ class Colony(Document):
 
     @classmethod
     def initialize_default(cls, userId: str) -> "Colony":
-
-        ants = [
-            make_new_ant(
-                ant_name="Queenie",
-                type=TypeEnum.queen,
-                task=TaskEnum.idle,
-                position={"x": 0.2, "y": 0.5},
-                age=2,
-                destination="",
-                color="#FF0000",  # Hex color for red
-            ),
-            make_new_ant(
-                ant_name="Worker",
-                type=TypeEnum.worker,
-                task=TaskEnum.foraging,
-                position={"x": 0.2, "y": 0.8},
-                age=1,
-                destination="",
-                color="#008000",  # Hex color for green
-            ),
-        ]     
-
         return cls(
             id=userId,
             name="Antopia",
-            ants=ants,
+            ants=initialize_guest_ants(),
             mapEntities=initialize_guest_map_entities(),
             eggs=50,
             food=600,
@@ -89,17 +68,27 @@ async def update_colony(id: str, request: Request):
     
 
 async def ensure_guest_colony_exists(reinitialize: bool = False):
+    guest_colony = None
+    try:
+        guest_colony = await Colony.get("guest")
 
-    guest_colony = await Colony.get("guest")
-
-    if guest_colony and reinitialize:
-        print("Right now the guest colony is being reinitialized every time")
-        await guest_colony.delete()
-        print("Guest colony deleted.")
+    except ValidationError as e:
+        print("Guest colony validation failed:", e)
+        print("Deleting mismatched guest colony...")
+        await Colony.find(Colony.id == "guest").delete()
+        guest_colony = None
     
+    except Exception as e:
+        print("Error fetching guest colony:", e)
+        guest_colony = None
+
+    # Reinitialize the guest colony if it doesn't exist or reinitialize is True
     if not guest_colony or reinitialize:
+        if guest_colony and reinitialize:
+            print("Reinitializing guest colony...")
+            await guest_colony.delete()
         guest_colony = Colony.initialize_default("guest")
         await guest_colony.insert()
         print("Guest colony created:", guest_colony)
     else:
-        print("Guest colony already exists:", guest_colony)
+        print("Guest colony already exists and is valid:", guest_colony)

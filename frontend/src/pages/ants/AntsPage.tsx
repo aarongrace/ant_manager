@@ -47,7 +47,6 @@ const UnitBubble: React.FC<{ ant: Ant }> = ({ ant: ant }) => {
             <p>Task: {ant.task}</p>
             <p>Position: ({ant.position.x}, {ant.position.y})</p>
             <p>Destination: {ant.destination}</p>
-            <p>Color: {ant.color}</p>
         </div>
     );
 };
