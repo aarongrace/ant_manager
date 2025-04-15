@@ -36,6 +36,7 @@ export const discreteUpdateInterval = 500;
 export const workerSpeed = 0.0001;
 export const soldierSpeed = 0.00007;
 export const minDistanceBetweenEntities = 0.1;
+export const eggChance = 0.03;
 
 export const idleSpeedFactor = 0.5;
 

@@ -2,7 +2,7 @@ import { create } from "domain";
 import { Ant, AntTypeEnum } from "../baseClasses/Ant";
 import { createRandomMapEntity, EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import {  useSettingsStore } from "../contexts/settingsStore";
+import {  eggChance, useSettingsStore } from "../contexts/settingsStore";
 import { handleAntLogic } from "./antLogic"; // Import the new combined function
 
 export const updateDiscreteGameState = () => {
@@ -13,7 +13,15 @@ export const updateDiscreteGameState = () => {
     addRandomMapEntity();
     deleteEmptyMapEntities();
     consumeFood();
+    layEgg();
 };
+
+const layEgg = () => {
+    if (Math.random()  < eggChance){
+        const { eggs, updateColony } = useColonyStore.getState();
+        updateColony({ eggs: eggs + 1})
+    }
+}
 
 const consumeFood = () => {
     const { ants, food, updateColony } = useColonyStore.getState();
