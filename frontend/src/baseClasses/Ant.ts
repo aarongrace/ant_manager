@@ -15,7 +15,6 @@ export enum AntTypeEnum {
   Soldier = "soldier",
 }
 
-
 // Define the AntRef type for database communication
 export type AntRef = {
   id: string;
@@ -44,6 +43,7 @@ export class Ant {
   spriteFrameTimer: number; // Timer for sprite frame animation
   angle: number; // Direction the ant is facing (e.g., in degrees)
   targetOffsets: { x: number; y: number }; // New field: Offsets for targeting
+  isBusy: boolean; // New field: Indicates if the ant is currently busy
 
   constructor(antRef: AntRef) {
     this.id = antRef.id;
@@ -59,14 +59,30 @@ export class Ant {
     this.spriteFrameTimer = 0; // Default value for sprite frame timer
     this.angle = 0; // Default value for orientation
     this.targetOffsets = { x: 0.0, y: 0.0 }; // Default value for target offsets
+    this.isBusy = false; // Default value for isBusy
   }
 
   updateSpriteFrame(delta: number) {
     // Update the sprite frame based on the task and time elapsed
+    var updateInterval;
+    switch (this.type){
+      case AntTypeEnum.Soldier:
+        updateInterval = 150; // Soldier ants
+        break;
+      case AntTypeEnum.Worker:
+        updateInterval = 100; // Worker ants
+        break;
+      default:
+        updateInterval = 200; // Default for other types
+    }
+    if (this.isBusy) {
+      updateInterval *= 0.5;
+    }
+
     this.spriteFrameTimer += delta;
-    if (this.spriteFrameTimer >= 100) {
+    if (this.spriteFrameTimer >= updateInterval) {
       this.frame = (this.frame + 1) % 3; // Cycle through 3 frames
-      this.spriteFrameTimer -= 100;
+      this.spriteFrameTimer -= updateInterval;
     }
   }
 
@@ -120,8 +136,7 @@ const getRandomAntType = (): AntTypeEnum => {
   return antTypes[Math.floor(Math.random() * antTypes.length)];
 };
 
-
-export const getCarryingCapacity = (antType:AntTypeEnum): number => {
+export const getCarryingCapacity = (antType: AntTypeEnum): number => {
   switch (antType) {
     case AntTypeEnum.Soldier:
       return SoldierCarryingCapacity;
@@ -130,4 +145,4 @@ export const getCarryingCapacity = (antType:AntTypeEnum): number => {
     default:
       return 0; // Default carrying capacity for unknown types
   }
-}
+};

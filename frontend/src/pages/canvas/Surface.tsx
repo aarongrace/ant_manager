@@ -1,5 +1,5 @@
 import { useColonyStore } from '../../contexts/colonyStore';
-import { Ant, getCarryingCapacity } from '../../baseClasses/Ant';
+import { Ant, AntTypeEnum, getCarryingCapacity } from '../../baseClasses/Ant';
 import { default as CustomCanvas } from "./Canvas";
 import React, { useEffect } from 'react';
 import { usePreloadedImages } from '../../contexts/preloadImages';
@@ -111,7 +111,8 @@ export const SurfaceCanvas: React.FC = (props) => {
                     const carriedScale =  ant.amountCarried/getCarryingCapacity(ant.type);
                     const carriedWidth = carriedEntitySize.width * carriedScale;
                     const carriedHeight = carriedEntitySize.height * carriedScale;
-                    ctx.drawImage(carriedImg, -carriedWidth/2, -carriedHeight/2 -spriteHeight/3.2, carriedWidth, carriedHeight);
+                    const heightOffset = ant.type===AntTypeEnum.Soldier ? -spriteHeight/2.4 : -spriteHeight/3.2;
+                    ctx.drawImage(carriedImg, -carriedWidth/2, -carriedHeight/2 + heightOffset, carriedWidth, carriedHeight);
                 }
             }
             ctx.restore();

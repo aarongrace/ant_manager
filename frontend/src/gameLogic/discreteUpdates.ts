@@ -71,6 +71,7 @@ const handleAtGateway = (ant: Ant)=>{
 
 const handleAtFoodSource = (ant: Ant, targetEntity: MapEntity) => {
     console.log("Ant reached food source:", targetEntity);
+    ant.isBusy = true; // Set the ant to busy state
 
     if (ant.amountCarried < getCarryingCapacity(ant.type)) {
         ant.carrying = targetEntity.imgName;
@@ -78,6 +79,7 @@ const handleAtFoodSource = (ant: Ant, targetEntity: MapEntity) => {
        targetEntity.remainingAmount -= 1;
     } else {
         setAntDestination(ant, findGateway);
+        ant.isBusy = false; // Reset the busy state
     }
 };
 
