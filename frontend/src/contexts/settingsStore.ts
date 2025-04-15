@@ -26,10 +26,8 @@ export const useSettingsStore = create<SettingsStore> ((set) => ({
     workerFoodConsumption: 1, // per half second
     soldierFoodConsumption: 1.5,
     queenFoodConsumption: 6,
-    foodConsumptionScaleFactor: 0.15,
+    foodConsumptionScaleFactor: 0.13,
     foodWasteBaseline: 200,
-
-
 }));
 
 export const workerCarryingCapacity = 5;
@@ -38,6 +36,8 @@ export const discreteUpdateInterval = 500;
 export const workerSpeed = 0.0001;
 export const soldierSpeed = 0.00007;
 export const minDistanceBetweenEntities = 0.1;
+
+export const idleSpeedFactor = 0.5;
 
 export const carriedEntitySize = {
     width: 15,

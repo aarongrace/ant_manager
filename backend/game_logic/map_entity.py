@@ -46,7 +46,7 @@ def initialize_guest_map_entities():
             id="ham",
             type=EntityTypeEnum.foodResource,
             position={"x": 0.2, "y": 0.15},
-            size={"width": 50, "height": 50},  # Added size field
+            size={"width": 64, "height": 48},  # Added size field
             totalAmount=50,
             remainingAmount=50,
             imgName="ham"

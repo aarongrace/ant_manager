@@ -5,6 +5,9 @@ import React from 'react';
 import { usePreloadedImages } from '../../contexts/preloadImages';
 import { carriedEntitySize, workerCarryingCapacity } from '../../contexts/settingsStore';
 import { EntityTypeEnum, foodSources } from '../../baseClasses/MapEntity';
+import { handleMouseDown } from '../../gameLogic/handleMouseDown';
+import { get } from 'http';
+import { getEntityBounds } from '../../gameLogic/entityHelperFunctions';
 
 
 export const SurfaceCanvas: React.FC = (props) => {
@@ -52,20 +55,9 @@ export const SurfaceCanvas: React.FC = (props) => {
                 return;
             }
 
-            var size_factor = 1;
+            const bounds = getEntityBounds(entity, ctx.canvas);
 
-            if (entity.type === EntityTypeEnum.FoodResource) {
-                const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || 50;
-                size_factor = entity.remainingAmount / defaultAmount + 0.3;
-            }
-
-            const pos_x = entity.position.x * ctx.canvas.width;
-            const pos_y = entity.position.y * ctx.canvas.height;
-
-            const left = pos_x - entity.size.width / 2 * size_factor;
-            const top = pos_y - entity.size.height / 2 * size_factor;
-
-            ctx.drawImage(img, left, top, entity.size.width * size_factor, entity.size.height * size_factor);
+            ctx.drawImage(img, bounds.left, bounds.top, bounds.width, bounds.height);
         });
     };
 
@@ -109,12 +101,8 @@ export const SurfaceCanvas: React.FC = (props) => {
                 -width/2, -height/2, width, height);
 
             if(ant.carrying) {
-                console.log("Carrying", ant.carrying);
                 const carriedImg = images[ant.carrying];
-                console.log(images)
-                console.log("Carried image", carriedImg);
                 if (carriedImg) {
-                    console.log("Carried image found");
                     const carriedScale =  ant.amountCarried/workerCarryingCapacity; // using the worker carrying capacity as a ref
                     const carriedWidth = carriedEntitySize.width * carriedScale;
                     const carriedHeight = carriedEntitySize.height * carriedScale;
@@ -127,7 +115,7 @@ export const SurfaceCanvas: React.FC = (props) => {
         });
     }
 
-    return <CustomCanvas draw={draw} establishContext={establishContext} />;
+    return <CustomCanvas draw={draw} establishContext={establishContext}/>;
 };
 
 export default SurfaceCanvas;

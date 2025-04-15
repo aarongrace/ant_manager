@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './dashboard.css';
-import { makeAnt } from './dashboard.services';
+import { makeAnt, resetColony } from './dashboard.services';
 import { useColonyStore } from '../../contexts/colonyStore';
 import { TaskEnum, AntTypeEnum } from '../../baseClasses/Ant';
 import SurfaceCanvas from '../canvas/Surface';
@@ -28,13 +28,12 @@ const Dashboard: React.FC = () => {
         <main className="dashboard-content">
           {/* Colony Overview */}
           <section className="dashboard-section colony-overview">
-            <h3>Colony Overview</h3>
             <p><strong>Colony Name:</strong> {colonyName}</p>
             <p><strong>Colony Age:</strong> {age} days</p>
             <p><strong>Number of Ants:</strong> {ants.length}</p>
-            <p><strong>Perks Purchased:</strong> {perkPurchased.join(', ')}</p>
-            <p><strong>Food:</strong> {food}</p>
+            <p><strong>Food:</strong> {Math.floor(food)}</p>
             <p><strong>Sand:</strong> {sand}</p>
+            <button onClick={()=>resetColony()}>Reset Colony</button>
           </section>
 
           {/* Reproduction Panel */}
@@ -62,6 +61,7 @@ const Dashboard: React.FC = () => {
       </div>
       <div className="map-container">
         <SurfaceCanvas />
+        <p className="map-text">Left click on food source to assign a foraging ant. Right-click it to unassign.</p>
       </div>
     </div>
   );

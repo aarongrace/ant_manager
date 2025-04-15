@@ -23,8 +23,10 @@ export type AntRef = {
   type: AntTypeEnum;
   task: TaskEnum;
   position: { x: number; y: number };
-  target: string; // Added target field
+  objective: string; // Renamed from target to objective
   destination: string;
+  movingTo: { x: number; y: number }; // New field for frontend only
+  anchorPoint: { x: number; y: number }; // New field for frontend only
   carrying: string;
   amountCarried: number;
   speed: number; // Added speed field
@@ -39,16 +41,17 @@ export class Ant {
   type: AntTypeEnum;
   task: TaskEnum;
   position: { x: number; y: number };
-  target: string; // Added target field
+  objective: string; // Renamed from target to objective
   destination: string;
+  movingTo: { x: number; y: number }; // New field for frontend only
+  anchorPoint: { x: number; y: number }; // New field for frontend only
   carrying: string;
+  carryingCapacity: number; // Moved carryingCapacity above amountCarried
   amountCarried: number;
   speed: number; // Added speed field
-  carryingCapacity: number; // Added carryingCapacity field
   frame: number; // Moved above spriteFrameTimer
   spriteFrameTimer: number; // Timer for sprite frame animation
   angle: number; // Direction the ant is facing (e.g., in degrees)
-  destOffsets: { x: number; y: number }; // New field: Offsets for targeting
   isBusy: boolean; // New field: Indicates if the ant is currently busy
 
   constructor(antRef: AntRef) {
@@ -58,16 +61,17 @@ export class Ant {
     this.type = antRef.type;
     this.task = antRef.task;
     this.position = antRef.position;
-    this.target = antRef.target; // Initialize target field
+    this.objective = antRef.objective; // Initialize objective field
     this.destination = antRef.destination;
+    this.movingTo = { x: -1, y: -1 }; 
+    this.anchorPoint = { x: -1, y: -1 };
     this.carrying = antRef.carrying;
+    this.carryingCapacity = antRef.carryingCapacity; // Initialize carryingCapacity field
     this.amountCarried = antRef.amountCarried;
     this.speed = antRef.speed; // Initialize speed field
-    this.carryingCapacity = antRef.carryingCapacity; // Initialize carryingCapacity field
     this.frame = 0; // Default value for frame
     this.spriteFrameTimer = 0; // Default value for sprite frame timer
-    this.angle = 0; // Default value for orientation
-    this.destOffsets = { x: 0.0, y: 0.0 }; // Default value for target offsets
+    this.angle = Math.random() * Math.PI * 2; // Default value for orientation
     this.isBusy = false; // Default value for isBusy
   }
 
@@ -82,10 +86,14 @@ export class Ant {
         updateInterval = 100; // Worker ants
         break;
       default:
-        updateInterval = 200; // Default for other types
+        updateInterval = 150; // Default for other types
     }
     if (this.isBusy) {
       updateInterval *= 0.5;
+    }
+
+    if (this.task === TaskEnum.Idle) {
+      updateInterval *= 2; // Slow down the animation when idle
     }
 
     this.spriteFrameTimer += delta;
@@ -104,13 +112,19 @@ export class Ant {
       type: this.type,
       task: this.task,
       position: this.position,
-      target: this.target, // Include target field
+      objective: this.objective, // Include objective field
       destination: this.destination,
+      movingTo: this.movingTo, // Include movingTo field
+      anchorPoint: this.anchorPoint, // Include anchorPoint field
       carrying: this.carrying,
+      carryingCapacity: this.carryingCapacity, // Include carryingCapacity field
       amountCarried: this.amountCarried,
       speed: this.speed, // Include speed field
-      carryingCapacity: this.carryingCapacity, // Include carryingCapacity field
     };
+  }
+
+  randomlyRotate() {
+    this.angle = Math.random() * Math.PI * 2; // Random angle between 0 and 2π
   }
 }
 
@@ -128,13 +142,37 @@ export const makeNewAnt = (): Ant => {
     type: type,
     task: TaskEnum.Idle,
     position: { x: Math.random(), y: Math.random() },
-    target: "", // Default value for target
+    objective: "", // Default value for objective
     destination: "",
+    movingTo: { x: 0.5, y: 0.5 }, // Default value for movingTo
+    anchorPoint: { x: 0.5, y: 0.5 }, // Default value for anchorPoint
     carrying: "",
+    carryingCapacity: carryingCapacity, // Default value for carryingCapacity
     amountCarried: 0,
     speed: speed, // Default value for speed
-    carryingCapacity: carryingCapacity, // Default value for carryingCapacity
   };
+  return new Ant(antRef);
+};
+
+// Function to recreate a queen ant
+export const recreateQueen = (): Ant => {
+  const antRef: AntRef = {
+    id: v4(), // Generate a unique ID
+    name: "Queenie", // Name of the queen
+    age: 2, // Age of the queen
+    type: AntTypeEnum.Queen, // Type is queen
+    task: TaskEnum.Idle, // Default task is idle
+    position: { x: 0.82, y: 0.69 }, // Default position
+    objective: "", // No objective initially
+    destination: "", // No destination initially
+    movingTo: { x: 0.5, y: 0.5 }, // Default movingTo position
+    anchorPoint: { x: 0.5, y: 0.5 }, // Default anchorPoint position
+    carrying: "", // Not carrying anything initially
+    carryingCapacity: 0, // Queens do not carry resources
+    amountCarried: 0, // No resources carried
+    speed: 0.00005, // Very slow speed for the queen
+  };
+
   return new Ant(antRef);
 };
 
@@ -155,3 +193,4 @@ const getRandomAntType = (): AntTypeEnum => {
   ) as AntTypeEnum[];
   return antTypes[Math.floor(Math.random() * antTypes.length)];
 };
+

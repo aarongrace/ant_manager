@@ -1,6 +1,8 @@
-import { Ant, AntTypeEnum } from "../baseClasses/Ant";
+import { Ant, AntTypeEnum, TaskEnum } from "../baseClasses/Ant";
 import { MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
+import { idleSpeedFactor } from "../contexts/settingsStore";
+import { setAntToIdle } from "./antHelperFunctions";
 
 export const updateContinuousGameState = (delta: number) => {
     updateAntMovements(delta);
@@ -16,25 +18,30 @@ const updateAntMovements = (delta: number) => {
 };
 
 const moveAnt = (ant: Ant, delta: number) => {
-    const mapEntities = useColonyStore.getState().mapEntities;
-    const destinationEntity = findMapEntity(ant.destination);
+    if (ant.movingTo.x === -1){
+        setAntToIdle(ant);
+        return;
+    }
 
-    if (destinationEntity) {
-        const dx = destinationEntity.position.x + ant.destOffsets.x - ant.position.x;
-        const dy = destinationEntity.position.y + ant.destOffsets.y - ant.position.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+    const speedFactor = ant.task === TaskEnum.Idle ? idleSpeedFactor : 1;
 
-        if (!ant.isBusy) { // don't recalculate angle if the ant is busy
-            ant.angle = Math.atan2(dy, dx) + Math.PI / 2; // arc tangent to get the angle in radians
-        }
+    const dx = ant.movingTo.x - ant.position.x;
+    const dy = ant.movingTo.y - ant.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < 0.005){
+        return;
+    }
 
-        if (distance > 0) {
-            ant.position.x += (dx / distance) * ant.speed * delta;
-            ant.position.y += (dy / distance) * ant.speed * delta;
+    if (!ant.isBusy) { // don't recalculate angle if the ant is busy
+        ant.angle = Math.atan2(dy, dx) + Math.PI / 2; // arc tangent to get the angle in radians
+    }
 
-            ant.position.x = Math.max(0.02, Math.min(0.98, ant.position.x));
-            ant.position.y = Math.max(0.02, Math.min(0.98, ant.position.y));
-        }
+    if (distance > 0) {
+        ant.position.x += (dx / distance) * ant.speed * delta * speedFactor;
+        ant.position.y += (dy / distance) * ant.speed * delta * speedFactor;
+
+        ant.position.x = Math.max(0.02, Math.min(0.98, ant.position.x));
+        ant.position.y = Math.max(0.02, Math.min(0.98, ant.position.y));
     }
 };
 

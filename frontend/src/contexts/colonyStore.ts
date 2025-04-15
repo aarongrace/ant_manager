@@ -112,7 +112,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
   // Update colony state
   updateColony: (updates: Partial<ColonyStore>) => {
-    console.log("Updating colony with partial updates:", updates);
+    // console.log("Updating colony with partial updates:", updates);
     set((state) => ({
       ...state,
       ...updates,

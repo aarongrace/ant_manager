@@ -6,6 +6,7 @@ import { usePreloadedImages } from '../../contexts/preloadImages';
 import { discreteUpdateInterval, useSettingsStore } from '../../contexts/settingsStore';
 import { updateContinuousGameState } from '../../gameLogic/continuousUpdates';
 import { updateDiscreteGameState } from '../../gameLogic/discreteUpdates';
+import { handleMouseDown } from '../../gameLogic/handleMouseDown';
 
 
 
@@ -47,6 +48,7 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
     }
 
     if (timestamp - lastSyncedTime.current >= syncInterval) {
+      console.log("Syncing colony info at" + timestamp);
       lastSyncedTime.current = timestamp;
       // Sync logic here
       putColonyInfo();
@@ -78,9 +80,11 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
     console.log( images)
   }, [ isLoaded, images ]);
 
-  return <canvas ref={canvasRef} 
+  return <canvas ref={canvasRef} onMouseDown={handleMouseDown}
     width = {canvasWidth} height = {canvasHeight} 
     style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}
+    onContextMenu={(e) => e.preventDefault()}
+    className='map-canvas'
     />;
 };
 

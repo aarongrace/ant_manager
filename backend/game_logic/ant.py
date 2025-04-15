@@ -23,7 +23,7 @@ class Ant(BaseModel):
     type: str  # Type of the ant (e.g., worker, soldier, queen)
     task: TaskEnum  # Current task of the ant
     position: dict  # Current position of the ant (e.g., {"x": 0, "y": 0})
-    target: str  # ID of the target entity the ant is interacting with
+    objective: str  # ID of the objective entity the ant is interacting with
     destination: str  # ID of the object the ant is heading to
     carrying: str  # ID of the map entity that it is carrying
     amountCarried: int  # Amount of resource the ant is carrying
@@ -32,7 +32,7 @@ class Ant(BaseModel):
 
 def make_new_ant(ant_name=random.choice(ant_names), type=random.choice([TypeEnum.worker, TypeEnum.soldier]), 
                  task=TaskEnum.idle, position={"x": random.uniform(0, 1), "y": random.uniform(0, 1)},
-                 age=0, target="", destination="", speed=1.0):
+                 age=0, objective="", destination="", speed=1.0):
     carrying_capacity = 5 if type == TypeEnum.worker else 7  # Example logic for carrying capacity
     return Ant(
         id=str(uuid4()),
@@ -41,7 +41,7 @@ def make_new_ant(ant_name=random.choice(ant_names), type=random.choice([TypeEnum
         type=type,
         task=task,
         position=position,
-        target=target,
+        objective=objective,
         destination=destination,
         amountCarried=0,
         carryingCapacity=carrying_capacity,  # Initialize carrying capacity
@@ -57,7 +57,7 @@ def initialize_guest_ants():
             task=TaskEnum.idle,
             position={"x": 0.82, "y": 0.69},
             age=2,
-            target="",
+            objective="",
             destination="",
             speed=0.00005
         ),
@@ -67,7 +67,7 @@ def initialize_guest_ants():
             task=TaskEnum.foraging,
             position={"x": 0.2, "y": 0.8},
             age=1,
-            target="",
+            objective="",
             destination="",
             speed=0.0001
         ),
