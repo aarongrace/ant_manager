@@ -72,8 +72,7 @@
   flex-direction: column; /* Stack inputs vertically */
   gap: 1rem; /* Add spacing between inputs and button */
   width: 100%; /* Full width of the container */
-  max-width: 300px; /* Limit the form width */
-  }
+}
 
 /* Styling for the input fields */
 .log-in-input {
@@ -89,8 +88,8 @@
 .log-in-submit {
   padding: 0.75rem; /* Add padding inside the button */
   background-color: #4c81af; /* Blue background */
+  border: 3px solid #3f3f3f; /* Dark border */
   color: #fff; /* White text */
-  border: none; /* Remove border */
   border-radius: 0.5rem; /* Rounded corners */
   font-size: 1rem; /* Font size for button text */
   cursor: pointer; /* Pointer cursor on hover */
@@ -120,12 +119,31 @@
   pointer-events: none; /* Prevent dragging */
 }
 
+.disclaimer {
+  font-size: 0.8rem; 
+  color: #3f3f3f; 
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.disclaimer-link {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}
+
+.error-message {
+  color: red;
+  font-size: .8rem;
+  margin-top: 1rem;
+}
+
 /* Buttons container */
 .welcome-buttons {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  width: 100%;
   align-items: center;
-  gap: 2.5rem; /* Spacing between buttons */
   margin-top: 1rem; /* Add spacing above buttons */
 }
 
@@ -162,6 +180,7 @@
 .welcome-button.guest:hover {
   background-color: #b71c1c; /* Darker red on hover */
   border-color: #000; /* Black border on hover */
+  cursor: pointer;
 }
 
 .guest-text {
