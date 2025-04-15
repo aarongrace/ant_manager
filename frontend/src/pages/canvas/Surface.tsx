@@ -2,7 +2,6 @@ import { useColonyStore } from '../../contexts/colonyStore';
 import { Ant } from '../../baseClasses/Ant';
 import { default as CustomCanvas } from "./Canvas";
 import React, { useEffect } from 'react';
-import { MapEntity } from '../../baseClasses/MapEntity';
 import { updateGameState } from '../../gameLogic/updates';
 import { usePreloadedImages } from '../../contexts/preloadImages';
 
@@ -12,6 +11,7 @@ export const SurfaceCanvas: React.FC = (props) => {
     const { ants, mapEntities, updateMapEntities } = useColonyStore();
 
     const { images } = usePreloadedImages();
+
 
     const establishContext = (context: CanvasRenderingContext2D) => {
         console.log("Establishing context");
@@ -27,6 +27,8 @@ export const SurfaceCanvas: React.FC = (props) => {
                 drawAnts(ctx, ants);
             });
             updateGameState(delta);
+            
+
         } else {
             console.log("in drawing Context not established yet");
         }
@@ -63,12 +65,14 @@ export const SurfaceCanvas: React.FC = (props) => {
     };
 
     function drawAnts(ctx: CanvasRenderingContext2D, ants: Ant[]) {
-        const sizeScaleFactor = { queen: 2, worker: 1, soldier: 1.5 };
-        const antSize = { width: 40, height: 25 }; // Base size for ants
-        const antImage = images["ant"];
+        const sizeScaleFactor = { queen: 1, worker: 0.5, soldier: 0.7 };
+        const antSprites = images["ant_sprites"];
+        const spriteWidth = 39;
+        const spriteWidthIncludingPadding = 66;
+        const spriteHeight = 47;
 
-        if (!antImage) {
-            console.error("Ant image not loaded");
+        if (!antSprites) {
+            console.error("Ant sprites not loaded");
             return;
         }
 
@@ -76,12 +80,31 @@ export const SurfaceCanvas: React.FC = (props) => {
             const pos_x = ant.position.x * ctx.canvas.width;
             const pos_y = ant.position.y * ctx.canvas.height;
 
-            const left = pos_x - (antSize.width * sizeScaleFactor[ant.type]) / 2;
-            const top = pos_y - (antSize.height * sizeScaleFactor[ant.type]) / 2;
-            const width = antSize.width * sizeScaleFactor[ant.type];
-            const height = antSize.height * sizeScaleFactor[ant.type];
+            const spriteY = 0;
+            var spriteCol = 0;
+            switch (ant.type) {
+                case "queen":
+                    spriteCol = 2
+                    break;
+                case "worker":
+                    spriteCol = 0
+                    break;
+                case "soldier":
+                    spriteCol = 1
+            }
+            const spriteX = spriteWidthIncludingPadding * ( spriteCol * 3 + ant.frame);
+            console.log("spriteX", spriteX);
 
-            ctx.drawImage(antImage, left, top, width, height);
+            const width = spriteWidth * sizeScaleFactor[ant.type];
+            const height = spriteHeight * sizeScaleFactor[ant.type];
+
+            ctx.save();
+            ctx.translate(pos_x, pos_y);
+            ctx.rotate(ant.angle);
+            ctx.drawImage(antSprites, spriteX, spriteY, spriteWidth, spriteHeight, 
+                -width/2, -height/2, width, height);
+            ctx.restore();
+
         });
     }
 

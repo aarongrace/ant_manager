@@ -19,6 +19,7 @@ const updateAnts = (delta: number) => {
 
 
         moveAnt(ant, delta);
+        ant.updateSpriteFrame(delta);
     })
 
 }
@@ -31,6 +32,8 @@ const moveAnt = (ant: Ant, delta: number) => {
         const dx = targetEntity.position.x - ant.position.x;
         const dy = targetEntity.position.y - ant.position.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
+
+        ant.angle = Math.atan2(dy, dx) + Math.PI/2; // arc tangent to get the angle in radians
 
         if (distance > 0) {
             ant.position.x += (dx / distance) * speedFactor * delta;

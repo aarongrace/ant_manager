@@ -3,7 +3,7 @@ import './dashboard.css';
 import { makeAnt } from './dashboard.services';
 import { useColonyStore } from '../../contexts/colonyStore';
 import { TaskEnum, AntTypeEnum } from '../../baseClasses/Ant';
-import SurfaceCanvas from '../surfaceCanvas/Surface';
+import SurfaceCanvas from '../canvas/Surface';
 
 
 const Dashboard: React.FC = () => {
