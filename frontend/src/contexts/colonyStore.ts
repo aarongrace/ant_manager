@@ -16,7 +16,6 @@ type ColonyStore = {
   age: number;
   map: string;
   perkPurchased: string[];
-  updateMapEntities: (updates: { [id: string]: Partial<MapEntity> }) => void;
   fetchColonyInfo: () => Promise<void>;
   putColonyInfo: () => Promise<void>;
   updateColony: (updates: Partial<ColonyStore>) => void;
@@ -58,27 +57,6 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     });
   },
 
-  // Update map entities
-  updateMapEntities: (updates: { [id: string]: Partial<MapEntity> }) => {
-    console.log("Updating map entities with partial updates:", updates);
-
-    const currentMapEntities = get().mapEntities;
-
-    // Map updates to the current mapEntities
-    const updatedMapEntities = currentMapEntities.map((entity) => {
-      const update = updates[entity.id];
-      if (update) {
-        return {
-          ...entity,
-          ...update, // Merge the existing entity with the partial update
-        };
-      }
-      return entity; // Return the entity unchanged if no update exists
-    });
-
-    set({ mapEntities: updatedMapEntities });
-  },
-
   // Send colony info to the backend
   putColonyInfo: async () => {
     const colonyState = get();
@@ -86,7 +64,14 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
     const userID = useUserStore.getState().userID;
     if (!userID) {
-      throw new Error("User ID is not set");
+      console.error("User ID is not set");
+      return;
+    }
+
+    if (colonyState.name === ""){
+      console.error("Colony ID is not set");
+      await get().fetchColonyInfo();
+      return;
     }
 
     // Convert Ant objects to AntRef objects

@@ -1,15 +1,15 @@
 import { useColonyStore } from '../../contexts/colonyStore';
-import { Ant, AntTypeEnum, getCarryingCapacity } from '../../baseClasses/Ant';
+import { Ant, AntTypeEnum } from '../../baseClasses/Ant';
 import { default as CustomCanvas } from "./Canvas";
-import React, { useEffect } from 'react';
+import React from 'react';
 import { usePreloadedImages } from '../../contexts/preloadImages';
-import { findMapEntity } from '../../gameLogic/continuousUpdates';
-import { carriedEntitySize } from '../../contexts/settingsStore';
+import { carriedEntitySize, workerCarryingCapacity } from '../../contexts/settingsStore';
+import { EntityTypeEnum, foodSources } from '../../baseClasses/MapEntity';
 
 
 export const SurfaceCanvas: React.FC = (props) => {
     const [ctx, setCtx] = React.useState<CanvasRenderingContext2D | null>(null);
-    const { ants, mapEntities, updateMapEntities } = useColonyStore();
+    const { ants, mapEntities } = useColonyStore();
 
     const { images } = usePreloadedImages();
 
@@ -52,13 +52,20 @@ export const SurfaceCanvas: React.FC = (props) => {
                 return;
             }
 
+            var size_factor = 1;
+
+            if (entity.type === EntityTypeEnum.FoodResource) {
+                const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || 50;
+                size_factor = entity.remainingAmount / defaultAmount + 0.3;
+            }
+
             const pos_x = entity.position.x * ctx.canvas.width;
             const pos_y = entity.position.y * ctx.canvas.height;
 
-            const left = pos_x - entity.size.width / 2;
-            const top = pos_y - entity.size.height / 2;
+            const left = pos_x - entity.size.width / 2 * size_factor;
+            const top = pos_y - entity.size.height / 2 * size_factor;
 
-            ctx.drawImage(img, left, top, entity.size.width, entity.size.height);
+            ctx.drawImage(img, left, top, entity.size.width * size_factor, entity.size.height * size_factor);
         });
     };
 
@@ -108,7 +115,7 @@ export const SurfaceCanvas: React.FC = (props) => {
                 console.log("Carried image", carriedImg);
                 if (carriedImg) {
                     console.log("Carried image found");
-                    const carriedScale =  ant.amountCarried/getCarryingCapacity(ant.type);
+                    const carriedScale =  ant.amountCarried/workerCarryingCapacity; // using the worker carrying capacity as a ref
                     const carriedWidth = carriedEntitySize.width * carriedScale;
                     const carriedHeight = carriedEntitySize.height * carriedScale;
                     const heightOffset = ant.type===AntTypeEnum.Soldier ? -spriteHeight/2.4 : -spriteHeight/3.2;

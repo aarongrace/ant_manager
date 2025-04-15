@@ -46,7 +46,7 @@ const UnitBubble: React.FC<{ ant: Ant }> = ({ ant: ant }) => {
             <p>Age: {ant.age} {ant.age <= 1 ? 'day' : 'days'} </p>
             <p>Task: {ant.task}</p>
             <p>Position: ({ant.position.x}, {ant.position.y})</p>
-            <p>Destination: {ant.destination}</p>
+            <p>Destination: {ant.target}</p>
         </div>
     );
 };

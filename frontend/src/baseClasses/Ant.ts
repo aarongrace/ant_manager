@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { antNames } from "./antNames";
-import { SoldierCarryingCapacity, WorkerCarryingCapacity } from "../contexts/settingsStore";
+import { soldierCarryingCapacity, soldierSpeed, workerCarryingCapacity, workerSpeed } from "../contexts/settingsStore";
 
 // Define the TaskEnum type
 export enum TaskEnum {
@@ -23,9 +23,12 @@ export type AntRef = {
   type: AntTypeEnum;
   task: TaskEnum;
   position: { x: number; y: number };
+  target: string; // Added target field
   destination: string;
   carrying: string;
   amountCarried: number;
+  speed: number; // Added speed field
+  carryingCapacity: number; // Added carryingCapacity field
 };
 
 // Define the Ant class
@@ -36,13 +39,16 @@ export class Ant {
   type: AntTypeEnum;
   task: TaskEnum;
   position: { x: number; y: number };
+  target: string; // Added target field
   destination: string;
   carrying: string;
   amountCarried: number;
+  speed: number; // Added speed field
+  carryingCapacity: number; // Added carryingCapacity field
   frame: number; // Moved above spriteFrameTimer
   spriteFrameTimer: number; // Timer for sprite frame animation
   angle: number; // Direction the ant is facing (e.g., in degrees)
-  targetOffsets: { x: number; y: number }; // New field: Offsets for targeting
+  destOffsets: { x: number; y: number }; // New field: Offsets for targeting
   isBusy: boolean; // New field: Indicates if the ant is currently busy
 
   constructor(antRef: AntRef) {
@@ -52,20 +58,23 @@ export class Ant {
     this.type = antRef.type;
     this.task = antRef.task;
     this.position = antRef.position;
+    this.target = antRef.target; // Initialize target field
     this.destination = antRef.destination;
     this.carrying = antRef.carrying;
     this.amountCarried = antRef.amountCarried;
+    this.speed = antRef.speed; // Initialize speed field
+    this.carryingCapacity = antRef.carryingCapacity; // Initialize carryingCapacity field
     this.frame = 0; // Default value for frame
     this.spriteFrameTimer = 0; // Default value for sprite frame timer
     this.angle = 0; // Default value for orientation
-    this.targetOffsets = { x: 0.0, y: 0.0 }; // Default value for target offsets
+    this.destOffsets = { x: 0.0, y: 0.0 }; // Default value for target offsets
     this.isBusy = false; // Default value for isBusy
   }
 
   updateSpriteFrame(delta: number) {
     // Update the sprite frame based on the task and time elapsed
     var updateInterval;
-    switch (this.type){
+    switch (this.type) {
       case AntTypeEnum.Soldier:
         updateInterval = 150; // Soldier ants
         break;
@@ -95,25 +104,36 @@ export class Ant {
       type: this.type,
       task: this.task,
       position: this.position,
+      target: this.target, // Include target field
       destination: this.destination,
       carrying: this.carrying,
       amountCarried: this.amountCarried,
+      speed: this.speed, // Include speed field
+      carryingCapacity: this.carryingCapacity, // Include carryingCapacity field
     };
   }
 }
 
 // Method to create a new Ant object
 export const makeNewAnt = (): Ant => {
+  const type = getRandomAntType();
+  const speed = (type === AntTypeEnum.Soldier ? soldierSpeed : workerSpeed) * (Math.random() / 4 + 0.875);
+  const carryingCapacity = Math.floor((type === AntTypeEnum.Soldier ? soldierCarryingCapacity : workerCarryingCapacity)
+   * (Math.random() / 3 + 0.833));
+
   const antRef: AntRef = {
     id: v4(),
     name: antNames[Math.floor(Math.random() * antNames.length)],
     age: 0,
-    type: getRandomAntType(),
+    type: type,
     task: TaskEnum.Idle,
     position: { x: Math.random(), y: Math.random() },
+    target: "", // Default value for target
     destination: "",
     carrying: "",
     amountCarried: 0,
+    speed: speed, // Default value for speed
+    carryingCapacity: carryingCapacity, // Default value for carryingCapacity
   };
   return new Ant(antRef);
 };
@@ -134,15 +154,4 @@ const getRandomAntType = (): AntTypeEnum => {
     (antType) => antType !== AntTypeEnum.Queen
   ) as AntTypeEnum[];
   return antTypes[Math.floor(Math.random() * antTypes.length)];
-};
-
-export const getCarryingCapacity = (antType: AntTypeEnum): number => {
-  switch (antType) {
-    case AntTypeEnum.Soldier:
-      return SoldierCarryingCapacity;
-    case AntTypeEnum.Worker:
-      return WorkerCarryingCapacity;
-    default:
-      return 0; // Default carrying capacity for unknown types
-  }
 };

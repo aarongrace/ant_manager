@@ -47,7 +47,12 @@ colonyRouter = APIRouter()
 @colonyRouter.get("/{id}", response_model=Colony)
 async def get_colony(id: str):
     print("Fetching colony with ID:", id)
-    colony = await Colony.get(id)
+    try:
+        colony = await Colony.get(id)
+    except ValidationError as e:
+        print("Validation error");
+        raise HTTPException(status_code=400, detail="Invalid colony data")
+
     if not colony:
         raise HTTPException(status_code=404, detail="Colony not found")
     return colony

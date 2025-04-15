@@ -1,28 +1,78 @@
-import { Ant, AntTypeEnum, getCarryingCapacity } from "../baseClasses/Ant";
-import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
+import { create } from "domain";
+import { Ant, AntTypeEnum } from "../baseClasses/Ant";
+import { createRandomMapEntity, EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { SoldierCarryingCapacity, useSettingsStore, WorkerCarryingCapacity } from "../contexts/settingsStore";
+import { soldierCarryingCapacity, useSettingsStore, workerCarryingCapacity } from "../contexts/settingsStore";
 import { findMapEntity } from "./continuousUpdates"; // Import findTargetEntity
+
+
 
 export const updateDiscreteGameState = () => {
     console.log("Updating discrete game state");
     const { ants } = useColonyStore.getState();
     ants.forEach((ant) => {
         if (ant.type !== AntTypeEnum.Queen) {
-            if (checkIfTargetExists(ant)) {
-                checkIfAtTarget(ant);
-            } else {
-                updateAntDestination(ant);
-            }
+            checkAndSetAntTarget(ant);
+            checkIfAtDestination(ant);
         }
     });
+    addRandomMapEntity();
+    deleteEmptyMapEntities();
+    consumeFood();
 };
 
+const consumeFood = () => {
+    const { ants, food, updateColony } = useColonyStore.getState();
+    const {workerFoodConsumption, soldierFoodConsumption, queenFoodConsumption  } = useSettingsStore.getState();
+    const foodConsumed = Math.floor(ants.reduce((total, ant) => {
+        if (ant.type === AntTypeEnum.Worker) {
+            return total + workerFoodConsumption ;
+        } else if (ant.type === AntTypeEnum.Soldier) {
+            return total + soldierFoodConsumption;
+        }
+        return total;
+    }, 0) + queenFoodConsumption);
+    if (food > 0) {
+        updateColony({ food: food - foodConsumed });
+    } else {
+        console.warn("Not enough food to consume");
+    }
+}
+
+const deleteEmptyMapEntities = () => {
+    const { mapEntities, updateColony } = useColonyStore.getState();
+    const nonEmptyMapEntities = mapEntities.filter((entity) => entity.remainingAmount > 0);
+    if (nonEmptyMapEntities.length !== mapEntities.length) {
+        console.log("Deleting empty map entities");
+        updateColony({ mapEntities: nonEmptyMapEntities });
+    }
+}
+
+const addRandomMapEntity = () => {
+    const { entitySpawnFactor } = useSettingsStore.getState();
+    const { mapEntities, updateColony } = useColonyStore.getState();
+
+    const numberOfMapEntities = mapEntities.length;
+    const probability = 1/Math.pow(numberOfMapEntities + 1, entitySpawnFactor)
+    if (Math.random() > probability) { return }
+    console.log("Adding random map entity");
+
+
+    const randomEntity = createRandomMapEntity();
+
+    if (randomEntity) {
+        updateColony({
+            mapEntities: [...mapEntities, randomEntity],
+        })
+    }
+}
+
+
 const checkIfTargetExists = (ant: Ant) => {
-    if (ant.destination === "") {
+    if (ant.target === "") {
         return false;
     }
-    const targetEntity = findMapEntity(ant.destination);
+    const targetEntity = findMapEntity(ant.target);
     if (!targetEntity) {
         console.warn("Target entity not found for ant:", ant);
         return false;
@@ -30,15 +80,15 @@ const checkIfTargetExists = (ant: Ant) => {
     return true;
 }
 
-const checkIfAtTarget = (ant: Ant) => {
-    const targetEntity = findMapEntity(ant.destination); // Use findTargetEntity here
+const checkIfAtDestination = (ant: Ant) => {
+    const destinationEntity = findMapEntity(ant.destination); // Use findTargetEntity here
 
-    if (targetEntity && detectAntCollision(ant, targetEntity)) {
-        console.log("Ant collision detected with target entity:", targetEntity);
+    if (destinationEntity && detectAntCollision(ant, destinationEntity)) {
+        console.log("Ant collision detected with target entity:", destinationEntity);
 
-        switch (targetEntity.type) {
+        switch (destinationEntity.type) {
             case EntityTypeEnum.FoodResource:
-                handleAtFoodSource(ant, targetEntity);
+                handleAtFoodSource(ant, destinationEntity);
                 break;
             case EntityTypeEnum.Gateway:
                 handleAtGateway(ant);
@@ -50,13 +100,18 @@ const checkIfAtTarget = (ant: Ant) => {
 
 }
 
-const updateAntDestination = (ant: Ant) => {
-    console.log("Updating ant destination:", ant);
+const checkAndSetAntTarget = (ant: Ant) => {
+    if (ant.target === "" || ! checkIfTargetExists(ant)) {
+        console.log("Updating ant target:", ant);
+        console.log("Ant has no target, setting one.");
 
-    if (ant.destination === "") {
-        console.log("Ant has no destination, setting one.");
-        setAntDestination(ant, findFirstFoodSource);
-    }
+        setAntTarget(ant, findClosetFoodSource(ant));
+        
+        if (ant.amountCarried == ant.carryingCapacity) {
+            setDestToGateway(ant);
+        }
+        ant.isBusy = false; // Reset the busy state
+    } 
 };
 
 const handleAtGateway = (ant: Ant)=>{
@@ -66,27 +121,34 @@ const handleAtGateway = (ant: Ant)=>{
     ant.amountCarried = 0; // Reset the amount carried
     ant.carrying = ""; // Reset the carrying item
 
-    setAntDestination(ant, findFirstFoodSource);
+    checkAndSetAntTarget(ant); // Set a new target
+    ant.destination = ant.target; // Set the destination to the new target
 }
 
-const handleAtFoodSource = (ant: Ant, targetEntity: MapEntity) => {
-    console.log("Ant reached food source:", targetEntity);
-    ant.isBusy = true; // Set the ant to busy state
+const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
+    console.log("Ant reached food source:", foodSource);
+    const isAtCapacity = ant.amountCarried >= ant.carryingCapacity;
 
-    if (ant.amountCarried < getCarryingCapacity(ant.type)) {
-        ant.carrying = targetEntity.imgName;
-       ant.amountCarried += 1;
-       targetEntity.remainingAmount -= 1;
-    } else {
-        setAntDestination(ant, findGateway);
+    if (foodSource.remainingAmount <= 0 && !isAtCapacity) {
+        console.warn("Food source is empty, setting new target.");
         ant.isBusy = false; // Reset the busy state
+        setAntTarget(ant, findClosetFoodSource(ant));
+    }
+     else if (!isAtCapacity) {
+       ant.isBusy = true; // Set the ant to busy state
+       ant.carrying = foodSource.imgName;
+       ant.amountCarried += 1;
+       foodSource.remainingAmount -= 1;
+    } else {
+        ant.isBusy = false; // Reset the busy state
+        setDestToGateway(ant);
     }
 };
 
-const detectAntCollision = (ant: Ant, targetEntity: MapEntity) => {
+const detectAntCollision = (ant: Ant, collisionEntity: MapEntity) => {
     const antPositionAdjustedByOffsets = {
-        x: ant.position.x - ant.targetOffsets.x,
-        y: ant.position.y - ant.targetOffsets.y,}
+        x: ant.position.x - ant.destOffsets.x,
+        y: ant.position.y - ant.destOffsets.y,}
     const antCoords = convertPositionToCoords(antPositionAdjustedByOffsets);
     const antSize = { width: 40, height: 25 }; // Base size for ants
     const boundingBoxScalingFactor = 8; // the larger the more the ants have to travel towards the center
@@ -98,8 +160,8 @@ const detectAntCollision = (ant: Ant, targetEntity: MapEntity) => {
         bottom: antCoords.y + antSize.height / boundingBoxScalingFactor,
     };
 
-    const targetCoords = convertPositionToCoords(targetEntity.position);
-    const targetSize = targetEntity.size;
+    const targetCoords = convertPositionToCoords(collisionEntity.position);
+    const targetSize = collisionEntity.size;
     const targetBoundingBox = {
         left: targetCoords.x - targetSize.width / 2,
         top: targetCoords.y - targetSize.height / 2,
@@ -117,30 +179,58 @@ const detectAntCollision = (ant: Ant, targetEntity: MapEntity) => {
     return horizontalCollision && verticalCollision;
 };
 
-const setAntDestination = (
-    ant: Ant,
-    destinationGetter: (mapEntities: MapEntity[]) => MapEntity | undefined
-) => {
-    const { canvasHeight, canvasWidth } = useSettingsStore.getState();
-    const { mapEntities } = useColonyStore.getState();
-    const destination = destinationGetter(mapEntities);
-    if (destination) {
-        ant.destination = destination.id;
-        ant.targetOffsets =  {
-            x: (Math.random() - 0.5) * 0.5 * destination.size.width/canvasWidth,
-            y: (Math.random() - 0.5) * 0.5 * destination.size.height/canvasHeight,
-        }
-        console.log("Ant destination set to:", destination.id);
+
+const setAntTarget = ( ant: Ant, target: MapEntity | undefined) => {
+    if (!target) { return; }
+    if (target) {
+        ant.target = target.id;
+        ant.destination = target.id;
+        resetOffsets(ant);
+        console.log("Ant target set to:", target.id);
     } else {
-        console.warn("No destination found for the ant.");
+        console.warn("No target found for the ant.");
     }
 };
 
-const findFirstFoodSource = (mapEntities: MapEntity[]) => {
-    return mapEntities.find((entity) => entity.type === EntityTypeEnum.FoodResource);
+const resetOffsets = (ant: Ant) => {
+    ant.destOffsets = {
+        x: (Math.random() - 0.5) * 0.5 * ant.destOffsets.x,
+        y: (Math.random() - 0.5) * 0.5 * ant.destOffsets.y,
+    };
+}
+
+const setDestToGateway = (ant: Ant) => {
+    const gateway = findGateway();
+    if (gateway) {
+        ant.destination = gateway.id;
+        resetOffsets(ant);
+    } else {
+        console.warn("No gateway found for the ant to return to.");
+    }
+}
+
+
+const findClosetFoodSource = (ant:Ant) => {
+    const { mapEntities } = useColonyStore.getState();
+    if (mapEntities.length === 0) { return undefined; }
+    var closestFoodSource = mapEntities[0];
+    var closestDistance = Number.MAX_VALUE;
+    mapEntities.forEach((entity) => {
+        if (entity.type === EntityTypeEnum.FoodResource) {
+            const dx = entity.position.x - ant.position.x;
+            const dy = entity.position.y - ant.position.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if ( distance < closestDistance) {
+                closestDistance = distance;
+                closestFoodSource = entity;
+            }
+        }
+    });
+    return closestFoodSource;
 };
 
-const findGateway = (mapEntities: MapEntity[]) => {
+const findGateway = () => {
+    const mapEntities = useColonyStore.getState().mapEntities;
     return mapEntities.find((entity) => entity.type === EntityTypeEnum.Gateway);
 };
 

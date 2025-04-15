@@ -1,7 +1,6 @@
 import { Ant, AntTypeEnum } from "../baseClasses/Ant";
 import { MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { soldierSpeed, workerSpeed } from "../contexts/settingsStore";
 
 export const updateContinuousGameState = (delta: number) => {
     updateAntMovements(delta);
@@ -19,12 +18,11 @@ const updateAntMovements = (delta: number) => {
 const moveAnt = (ant: Ant, delta: number) => {
 
     const mapEntities = useColonyStore.getState().mapEntities;
-    const targetEntity = findMapEntity(ant.destination);
-    const speedFactor = ant.type === AntTypeEnum.Soldier? soldierSpeed : workerSpeed;
+    const destinationEntity = findMapEntity(ant.destination);
 
-    if (targetEntity) {
-        const dx = targetEntity.position.x + ant.targetOffsets.x - ant.position.x;
-        const dy = targetEntity.position.y + ant.targetOffsets.y - ant.position.y;
+    if (destinationEntity) {
+        const dx = destinationEntity.position.x + ant.destOffsets.x - ant.position.x;
+        const dy = destinationEntity.position.y + ant.destOffsets.y - ant.position.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (!ant.isBusy){ // don't recalculate angle if the ant is busy
@@ -32,8 +30,8 @@ const moveAnt = (ant: Ant, delta: number) => {
         }
 
         if (distance > 0) {
-            ant.position.x += (dx / distance) * speedFactor * delta;
-            ant.position.y += (dy / distance) * speedFactor * delta;
+            ant.position.x += (dx / distance) * ant.speed * delta;
+            ant.position.y += (dy / distance) * ant.speed * delta;
         }
     }
 };
