@@ -1,8 +1,7 @@
-import { useColonyStore } from "../../contexts/colonyStore";
+import { createFreshColony, useColonyStore } from "../../contexts/colonyStore";
 import { Ant, AntTypeEnum, makeNewAnt, recreateQueen, TaskEnum } from "../../baseClasses/Ant";
 import { v4 } from "uuid";
 import { useSettingsStore } from "../../contexts/settingsStore";
-import { EntityTypeEnum, recreateNest as recreateNestEntrance } from "../../baseClasses/MapEntity";
 
 export const makeAnt = async () => {
     console.log("Making an ant...");
@@ -31,14 +30,7 @@ export const makeAnt = async () => {
 export const resetColony =() => {
     const { updateColony } = useColonyStore.getState();
     updateColony({
-        ants: [recreateQueen(), makeNewAnt(), makeNewAnt(), makeNewAnt()],
-        map: "nest",
-        eggs: 5,
-        food: 200,
-        sand: 200,
-        age: 0,
-        mapEntities: [ recreateNestEntrance() ],
-        perkPurchased: [],
+        ...createFreshColony()
     });
 
 }

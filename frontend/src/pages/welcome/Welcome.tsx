@@ -1,8 +1,9 @@
-import {useState} from "react";
+import {use, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CircleHelp } from "lucide-react";
 import "./welcome.css"; // Updated CSS file name
 import { setUserID } from "../../contexts/userStore";
+import { createFreshColony, useColonyStore } from "../../contexts/colonyStore";
 
 const Welcome = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const Welcome = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { updateColony } = useColonyStore();
 
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -27,6 +29,9 @@ const Welcome = () => {
     const data = await res.json();
     if (res.ok) {
       console.log("User Registered", data);
+      console.log("User ID:", data.id);
+      setUserID(data.id);
+
       navigate('/dashboard');
     } else {
       console.error("Error registering user", data);

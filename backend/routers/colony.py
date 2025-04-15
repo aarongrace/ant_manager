@@ -50,7 +50,7 @@ async def get_colony(id: str):
     try:
         colony = await Colony.get(id)
     except ValidationError as e:
-        print("Validation error");
+        print("Validation error")
         raise HTTPException(status_code=400, detail="Invalid colony data")
 
     if not colony:
@@ -97,3 +97,7 @@ async def ensure_guest_colony_exists(reinitialize: bool = False):
         print("Guest colony created:", guest_colony)
     else:
         print("Guest colony already exists and is valid:", guest_colony)
+
+
+# def migrate_colony(old_verison, new_version):
+#     pass

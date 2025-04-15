@@ -59,7 +59,7 @@ export const createRandomMapEntity = (): MapEntity | null => {
   return null;
 };
 
-export const recreateNest = () => {
+export const recreateNestEntrance = () => {
   return {
     id: v4(),
     type: EntityTypeEnum.Gateway,

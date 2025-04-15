@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { useUserStore } from "./userStore";
+import { setUserID, useUserStore } from "./userStore";
 
-import { Ant, AntRef, makeNewAnt, convertAnts, convertAntRefs } from "../baseClasses/Ant";
-import { MapEntity } from "../baseClasses/MapEntity"; // Import MapEntity
+import { Ant, AntRef, makeNewAnt, convertAnts, convertAntRefs, recreateQueen} from "../baseClasses/Ant";
+import { createRandomMapEntity, MapEntity, recreateNestEntrance } from "../baseClasses/MapEntity"; // Import MapEntity
 
 // Define the ColonyStore type
 type ColonyStore = {
@@ -62,13 +62,15 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     const colonyState = get();
     console.log("Putting colony info...", colonyState);
 
-    const userID = useUserStore.getState().userID;
-    if (!userID) {
-      console.error("User ID is not set");
-      return;
-    }
+    // const userID = useUserStore.getState().userID;
+    // await setUserID("guest");
+    const userID= "guest";
+    // // if (!userID) {
+    // //   console.error("User ID is not set");
+    // //   return;
+    // }
 
-    if (colonyState.name === ""){
+    if (colonyState.id === ""){
       console.error("Colony ID is not set");
       await get().fetchColonyInfo();
       return;
@@ -119,3 +121,22 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     }));
   },
 }));
+
+
+
+export const createFreshColony = () => {
+  const randomMapEntity = createRandomMapEntity();
+  const nestEntrance = recreateNestEntrance();
+  const mapEntities = randomMapEntity? [nestEntrance, randomMapEntity] : [nestEntrance];
+
+  return {
+    ants: [recreateQueen(), makeNewAnt(), makeNewAnt(), makeNewAnt()],
+    map: "nest",
+    eggs: 5,
+    food: 200,
+    sand: 200,
+    age: 0,
+    mapEntities: mapEntities,
+    perkPurchased: [],
+  }
+};
