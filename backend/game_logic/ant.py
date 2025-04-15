@@ -55,7 +55,7 @@ def initialize_guest_ants():
             ant_name="Queenie",
             type=TypeEnum.queen,
             task=TaskEnum.idle,
-            position={"x": 0.9, "y": 0.7},
+            position={"x": 0.82, "y": 0.69},
             age=2,
             target="",
             destination="",

@@ -36,7 +36,7 @@ def initialize_guest_map_entities():
         MapEntity(
             id="nest_entrance",
             type=EntityTypeEnum.gateway,
-            position={"x": 0.75, "y": 0.5},
+            position={"x": 0.75, "y": 0.6},
             size={"width": 100, "height": 100},  # Added size field
             totalAmount=1,
             remainingAmount=1,

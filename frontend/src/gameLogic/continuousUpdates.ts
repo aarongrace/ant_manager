@@ -32,9 +32,8 @@ const moveAnt = (ant: Ant, delta: number) => {
             ant.position.x += (dx / distance) * ant.speed * delta;
             ant.position.y += (dy / distance) * ant.speed * delta;
 
-            // Clamp the position to ensure it stays within [0, 1]
-            ant.position.x = Math.max(0, Math.min(1, ant.position.x));
-            ant.position.y = Math.max(0, Math.min(1, ant.position.y));
+            ant.position.x = Math.max(0.02, Math.min(0.98, ant.position.x));
+            ant.position.y = Math.max(0.02, Math.min(0.98, ant.position.y));
         }
     }
 };
