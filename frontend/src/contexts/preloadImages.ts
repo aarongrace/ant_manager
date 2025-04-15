@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // Dynamically import all images from the imgs directory
 const importAllImages = (requireContext: __WebpackModuleApi.RequireContext) => {
@@ -31,15 +31,12 @@ export function usePreloadedImages() {
                 loadedImages[filename] = img;
                 loadedCount++;
 
-                console.log("Image loaded:", filename, img);
-                console.log("Current loadedImages object:", loadedImages);
 
                 if (loadedCount === imageUrls.length) {
                     setImages((prevImages) => {
                         return { ...prevImages, ...loadedImages };
                     });
                     setIsLoaded(true);
-                    console.log("All images preloaded:", loadedImages);
                 }
             };
 
@@ -49,13 +46,6 @@ export function usePreloadedImages() {
         });
     };
 
-    // Log the state of "images" and "isLoaded" whenever they change
-    useEffect(() => {
-        console.log("Updated images state:", images);
-        console.log("Updated isLoaded state:", isLoaded);
-    }, [images, isLoaded]);
-
-    // Automatically preload images when the hook is used
     useEffect(() => {
         preloadImages();
     }, []);

@@ -4,13 +4,18 @@ import { makeAnt, resetColony } from './dashboard.services';
 import { useColonyStore } from '../../contexts/colonyStore';
 import { TaskEnum, AntTypeEnum } from '../../baseClasses/Ant';
 import SurfaceCanvas from '../canvas/Surface';
+import { initializeAntLogic } from '../../gameLogic/antLogic';
 
 
 const Dashboard: React.FC = () => {
   const { name: colonyName, ants, eggs, food, sand, age, perkPurchased, fetchColonyInfo } = useColonyStore();
 
   useEffect(() => {
-    fetchColonyInfo();
+    const initialize = async () =>{
+      await fetchColonyInfo();
+      initializeAntLogic();
+    }
+    initialize();
   }, []);
 
   

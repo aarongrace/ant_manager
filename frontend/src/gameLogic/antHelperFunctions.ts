@@ -1,7 +1,6 @@
 import { Ant, AntTypeEnum, TaskEnum } from "../baseClasses/Ant";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { findGateway } from "./entityHelperFunctions";
 
 export const findFirstAntByTask = (task: TaskEnum): Ant | null => {
     const { ants } = useColonyStore.getState();
@@ -79,9 +78,6 @@ export const setAntToIdle = (ant: Ant) => {
     ant.destination = "";
     ant.isBusy = false;
 
-    console.log(`Setting ${ant.type} to idle`);
-
-    
     if (ant.type === AntTypeEnum.Queen) {
         ant.anchorPoint = {...ant.position};
         ant.movingTo = {...ant.anchorPoint};

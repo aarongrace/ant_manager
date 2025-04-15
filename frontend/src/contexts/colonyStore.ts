@@ -1,12 +1,11 @@
 import { create } from "zustand";
-import { setUserID, useUserStore } from "./userStore";
+import { getUserID } from "./userStore";
 
-import { Ant, AntRef, makeNewAnt, convertAnts, convertAntRefs, recreateQueen} from "../baseClasses/Ant";
+import { Ant, AntRef, convertAntRefs, convertAnts, makeNewAnt, recreateQueen } from "../baseClasses/Ant";
 import { createRandomMapEntity, MapEntity, recreateNestEntrance } from "../baseClasses/MapEntity"; // Import MapEntity
 
 // Define the ColonyStore type
 type ColonyStore = {
-  id: string;
   name: string;
   ants: Ant[];
   mapEntities: MapEntity[];
@@ -22,7 +21,6 @@ type ColonyStore = {
 };
 
 export const useColonyStore = create<ColonyStore>((set, get) => ({
-  id: "",
   name: "",
   ants: [],
   mapEntities: [],
@@ -35,9 +33,9 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
   // Fetch a colony from the backend
   fetchColonyInfo: async () => {
-    const userID = useUserStore.getState().userID;
+    const userID = getUserID();
     if (!userID) {
-      throw new Error("User ID is not set");
+      throw new Error("User ID is not set for fetchColonyInfo");
     }
 
     const response = await fetch(`http://localhost:8000/colonies/${userID}`);
@@ -62,16 +60,9 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     const colonyState = get();
     console.log("Putting colony info...", colonyState);
 
-    // const userID = useUserStore.getState().userID;
-    // await setUserID("guest");
-    const userID= "guest";
-    // // if (!userID) {
-    // //   console.error("User ID is not set");
-    // //   return;
-    // }
-
-    if (colonyState.id === ""){
-      console.error("Colony ID is not set");
+    const userID = getUserID();
+    if (!userID) {
+      console.error("User ID is not set for putColonyInfo");
       await get().fetchColonyInfo();
       return;
     }

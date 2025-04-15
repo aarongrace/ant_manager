@@ -1,8 +1,7 @@
-import { create } from "domain";
-import { Ant, AntTypeEnum } from "../baseClasses/Ant";
-import { createRandomMapEntity, EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
+import { AntTypeEnum } from "../baseClasses/Ant";
+import { createRandomMapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import {  eggChance, useSettingsStore } from "../contexts/settingsStore";
+import { eggChance, useSettingsStore } from "../contexts/settingsStore";
 import { handleAntLogic } from "./antLogic"; // Import the new combined function
 
 export const updateDiscreteGameState = () => {

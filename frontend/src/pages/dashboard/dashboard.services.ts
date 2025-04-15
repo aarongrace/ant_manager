@@ -1,6 +1,5 @@
+import { makeNewAnt } from "../../baseClasses/Ant";
 import { createFreshColony, useColonyStore } from "../../contexts/colonyStore";
-import { Ant, AntTypeEnum, makeNewAnt, recreateQueen, TaskEnum } from "../../baseClasses/Ant";
-import { v4 } from "uuid";
 import { useSettingsStore } from "../../contexts/settingsStore";
 
 export const makeAnt = async () => {

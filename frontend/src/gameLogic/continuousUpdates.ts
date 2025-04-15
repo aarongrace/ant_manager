@@ -1,8 +1,6 @@
-import { Ant, AntTypeEnum, TaskEnum } from "../baseClasses/Ant";
-import { MapEntity } from "../baseClasses/MapEntity";
+import { Ant, TaskEnum } from "../baseClasses/Ant";
 import { useColonyStore } from "../contexts/colonyStore";
 import { idleSpeedFactor } from "../contexts/settingsStore";
-import { setAntToIdle } from "./antHelperFunctions";
 
 export const updateContinuousGameState = (delta: number) => {
     updateAntMovements(delta);
@@ -19,7 +17,6 @@ const updateAntMovements = (delta: number) => {
 
 const moveAnt = (ant: Ant, delta: number) => {
     if (ant.movingTo.x === -1){
-        setAntToIdle(ant);
         return;
     }
 

@@ -1,19 +1,16 @@
-import {use, useState} from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { CircleHelp } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getUserID, setUserID } from "../../contexts/userStore";
 import "./welcome.css"; // Updated CSS file name
-import { setUserID } from "../../contexts/userStore";
-import { createFreshColony, useColonyStore } from "../../contexts/colonyStore";
 
 const Welcome = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   })
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { updateColony } = useColonyStore();
 
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -29,8 +26,8 @@ const Welcome = () => {
     const data = await res.json();
     if (res.ok) {
       console.log("User Registered", data);
-      console.log("User ID:", data.id);
-      setUserID(data.id);
+      console.log("User ID:", data.userId);
+      setUserID(data.userId);
 
       navigate('/dashboard');
     } else {
@@ -52,7 +49,10 @@ const Welcome = () => {
     const data = await res.json();
     if (res.ok) {
       console.log("User Logged In", data);
-      setUserID(data.userID);
+      setUserID(data.userId);
+      console.log("User ID:", data.userId);
+      console.log(getUserID());
+
       navigate('/dashboard');
     } else {
       console.error("Error logging in", data);

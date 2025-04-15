@@ -78,7 +78,7 @@ async def register(data: ProfileBase):
     newColony = Colony.initialize_default(user.id)
     await newColony.insert()
 
-    return {"status": "success", "message": "User registered successfully", "id": str(user.id)}
+    return {"status": "success", "message": "User registered successfully", "userId": str(user.id)}
 
 @profileRouter.post('/login')
 async def login(data: ProfileBase):
@@ -105,7 +105,8 @@ async def login(data: ProfileBase):
             "clan": user.clan,
             "email": user.email,
             "picture": user.picture
-        }
+        },
+        "userId": str(user.id),
     }
 
 

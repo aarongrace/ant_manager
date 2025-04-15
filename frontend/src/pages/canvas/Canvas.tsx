@@ -1,7 +1,5 @@
-import React, { use, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useColonyStore } from '../../contexts/colonyStore';
-import { Ant } from '../../baseClasses/Ant';
-import antImgUrl from '../../assets/imgs/ant.png'
 import { usePreloadedImages } from '../../contexts/preloadImages';
 import { discreteUpdateInterval, useSettingsStore } from '../../contexts/settingsStore';
 import { updateContinuousGameState } from '../../gameLogic/continuousUpdates';
@@ -35,7 +33,6 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
 
 
   const animate = (timestamp: number) => {
-    // console.log("Animation frame:", timestamp);
     const delta = timestamp - lastFrameTime.current;
     lastFrameTime.current = timestamp;
     draw(delta);
@@ -66,19 +63,12 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
   
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d');
-    console.log("Canvas context:", ctx);
     if (ctx) {
       establishContext(ctx);
     } else {
       console.error("Canvas context not available");
     }
   },[ canvasRef ]);
-
-  useEffect(() => {
-    console.log("preloading images");
-    console.log( isLoaded)
-    console.log( images)
-  }, [ isLoaded, images ]);
 
   return <canvas ref={canvasRef} onMouseDown={handleMouseDown}
     width = {canvasWidth} height = {canvasHeight} 

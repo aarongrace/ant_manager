@@ -1,13 +1,33 @@
-import { Ant, AntTypeEnum, TaskEnum } from "../baseClasses/Ant";
-import { MapEntity, EntityTypeEnum } from "../baseClasses/MapEntity";
-import { findMapEntity, detectAntCollision, findClosestFoodSource, findGateway, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
+import { Ant, TaskEnum } from "../baseClasses/Ant";
+import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { findIdlePosition, hasArrived, setAntObjective, setAntToIdle, setDestination } from "./antHelperFunctions";
+import { findClosestFoodSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
 
 export const handleAntLogic = (ant: Ant) => {
     updateObjective(ant);
     handleDestinationCheck(ant);
 };
+
+// this is crucial because movingTo, anchorPoints and etc. are not stored in the backend
+export const initializeAntLogic = () => {
+    const { ants } = useColonyStore.getState();
+    ants.forEach((ant) => {
+        switch (ant.task) {
+            case TaskEnum.Foraging:
+                if (!hasValidObjective(ant)) {
+                    setAntObjective(ant, findClosestFoodSource(ant));
+                } else {
+                    setDestination(ant, findMapEntity(ant.destination)); // this sets the movement too
+                }
+                break;
+            case TaskEnum.Idle:
+                setAntToIdle(ant);
+                break;
+            }
+    });
+
+}
 
 const updateObjective = (ant: Ant) => {
     if (ant.task === TaskEnum.Foraging){

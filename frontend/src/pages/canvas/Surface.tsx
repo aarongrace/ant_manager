@@ -1,13 +1,10 @@
-import { useColonyStore } from '../../contexts/colonyStore';
-import { Ant, AntTypeEnum } from '../../baseClasses/Ant';
-import { default as CustomCanvas } from "./Canvas";
 import React from 'react';
+import { Ant, AntTypeEnum } from '../../baseClasses/Ant';
+import { useColonyStore } from '../../contexts/colonyStore';
 import { usePreloadedImages } from '../../contexts/preloadImages';
 import { carriedEntitySize, workerCarryingCapacity } from '../../contexts/settingsStore';
-import { EntityTypeEnum, foodSources } from '../../baseClasses/MapEntity';
-import { handleMouseDown } from '../../gameLogic/handleMouseDown';
-import { get } from 'http';
 import { getEntityBounds } from '../../gameLogic/entityHelperFunctions';
+import { default as CustomCanvas } from "./Canvas";
 
 
 export const SurfaceCanvas: React.FC = (props) => {
