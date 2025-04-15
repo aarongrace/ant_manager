@@ -31,6 +31,7 @@ export type AntRef = {
   amountCarried: number;
   speed: number; // Added speed field
   carryingCapacity: number; // Added carryingCapacity field
+  sizeFactor: number; // Added sizeFactor field
 };
 
 // Define the Ant class
@@ -53,6 +54,7 @@ export class Ant {
   spriteFrameTimer: number; // Timer for sprite frame animation
   angle: number; // Direction the ant is facing (e.g., in degrees)
   isBusy: boolean; // New field: Indicates if the ant is currently busy
+  sizeFactor: number; // Added sizeFactor field
 
   constructor(antRef: AntRef) {
     this.id = antRef.id;
@@ -73,6 +75,7 @@ export class Ant {
     this.spriteFrameTimer = 0; // Default value for sprite frame timer
     this.angle = Math.random() * Math.PI * 2; // Default value for orientation
     this.isBusy = false; // Default value for isBusy
+    this.sizeFactor = antRef.sizeFactor; // Initialize sizeFactor field
   }
 
   updateSpriteFrame(delta: number) {
@@ -120,6 +123,7 @@ export class Ant {
       carryingCapacity: this.carryingCapacity, // Include carryingCapacity field
       amountCarried: this.amountCarried,
       speed: this.speed, // Include speed field
+      sizeFactor: this.sizeFactor, // Include sizeFactor field
     };
   }
 
@@ -131,7 +135,8 @@ export class Ant {
 // Method to create a new Ant object
 export const makeNewAnt = (): Ant => {
   const type = getRandomAntType();
-  const speed = (type === AntTypeEnum.Soldier ? soldierSpeed : workerSpeed) * (Math.random() / 4 + 0.875);
+  const sizeFactor = Math.random() * 0.15 + 0.925; // Random sizeFactor between 0.95 and 1.05
+  const speed = (type === AntTypeEnum.Soldier ? soldierSpeed : workerSpeed) * (sizeFactor* sizeFactor);
   const carryingCapacity = Math.floor((type === AntTypeEnum.Soldier ? soldierCarryingCapacity : workerCarryingCapacity)
    * (Math.random() / 3 + 0.833));
 
@@ -150,6 +155,7 @@ export const makeNewAnt = (): Ant => {
     carryingCapacity: carryingCapacity, // Default value for carryingCapacity
     amountCarried: 0,
     speed: speed, // Default value for speed
+    sizeFactor: sizeFactor, // Random sizeFactor between 0.95 and 1.05
   };
   return new Ant(antRef);
 };
@@ -171,6 +177,7 @@ export const recreateQueen = (): Ant => {
     carryingCapacity: 0, // Queens do not carry resources
     amountCarried: 0, // No resources carried
     speed: 0.00005, // Very slow speed for the queen
+    sizeFactor: 1.0, // Default sizeFactor for the queen
   };
 
   return new Ant(antRef);

@@ -29,6 +29,7 @@ class Ant(BaseModel):
     amountCarried: int  # Amount of resource the ant is carrying
     carryingCapacity: int  # Maximum carrying capacity of the ant
     speed: float  # Speed of the ant
+    sizeFactor: float = 1.0  # Size factor of the ant, default is 1
 
 def make_new_ant(ant_name=random.choice(ant_names), type=random.choice([TypeEnum.worker, TypeEnum.soldier]), 
                  task=TaskEnum.idle, position={"x": random.uniform(0, 1), "y": random.uniform(0, 1)},
@@ -46,7 +47,8 @@ def make_new_ant(ant_name=random.choice(ant_names), type=random.choice([TypeEnum
         amountCarried=0,
         carryingCapacity=carrying_capacity,  # Initialize carrying capacity
         carrying="",
-        speed=speed
+        speed=speed,
+        sizeFactor=1.0  # Initialize size factor to 1
     )
 
 def initialize_guest_ants():

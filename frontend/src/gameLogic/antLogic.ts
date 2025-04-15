@@ -31,6 +31,9 @@ const updateObjective = (ant: Ant) => {
 };
 
 const handleDestinationCheck = (ant: Ant) => {
+    if (ant.task === TaskEnum.Idle){
+        return;
+    }
     if (hasArrived(ant)){
         switch (ant.task) {
             case TaskEnum.Foraging:
@@ -51,6 +54,7 @@ const handleDestinationCheck = (ant: Ant) => {
                         console.log("Ant reached an unknown entity type");
                 }
                 break;
+
         }
     }
 };
@@ -63,10 +67,10 @@ const handleAtGateway = (ant: Ant) => {
     ant.carrying = ""; // Reset the carrying item
 
     if (hasValidObjective(ant)) {
-        console.log("Ant has a valid objective, setting new destination.");
+        // console.log("Ant has a valid objective, setting new destination.");
         setDestination(ant, findMapEntity(ant.objective));
     } else {
-        console.log("Ant has no valid objective, setting new one.");
+        // console.log("Ant has no valid objective, setting new one.");
         updateObjective(ant);
     }
 };

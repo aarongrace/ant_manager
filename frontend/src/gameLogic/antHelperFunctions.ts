@@ -32,7 +32,7 @@ export const setDestination = (ant: Ant, destination: MapEntity | undefined) => 
     if (!destination) {
         return;
     }
-    console.log(`Setting destination for ${ant.id} to ${destination.id}`);
+    // console.log(`Setting destination for ${ant.id} to ${destination.id}`);
     ant.destination = destination.id;
 
     const offsetFactor = destination.type === EntityTypeEnum.Gateway ? 0.08 : 0.04;
@@ -58,7 +58,7 @@ export const setDestination = (ant: Ant, destination: MapEntity | undefined) => 
     ant.movingTo.x = getBiasedRandomPosition(destination.position.x, true);
     ant.movingTo.y = getBiasedRandomPosition(destination.position.y, false);
 
-    console.log("ant.movingTo", ant.movingTo);
+    // console.log("ant.movingTo", ant.movingTo);
 };
 
 
@@ -79,10 +79,12 @@ export const setAntToIdle = (ant: Ant) => {
     ant.destination = "";
     ant.isBusy = false;
 
+    console.log(`Setting ${ant.type} to idle`);
+
+    
     if (ant.type === AntTypeEnum.Queen) {
-        ant.anchorPoint.x = ant.position.x;
-        ant.anchorPoint.y = ant.position.y;
-        ant.movingTo = ant.anchorPoint;
+        ant.anchorPoint = {...ant.position};
+        ant.movingTo = {...ant.anchorPoint};
     } else {
         ant.anchorPoint.x = (0.5 - ant.position.x) * 0.15 * Math.random() + ant.position.x;
         ant.anchorPoint.y = (0.5 - ant.position.y) * 0.1 * Math.random() + ant.position.y;
@@ -91,8 +93,8 @@ export const setAntToIdle = (ant: Ant) => {
 }
 
 export const findIdlePosition = (ant: Ant) => {
-    ant.movingTo.x = ant.anchorPoint.x + Math.random() * 0.1;
-    ant.movingTo.y = ant.anchorPoint.x + Math.random() * 0.1;
+    ant.movingTo.x = ant.anchorPoint.x + (Math.random()-1) * 0.1;
+    ant.movingTo.y = ant.anchorPoint.y + (Math.random()-1) * 0.1;
 }
 
 

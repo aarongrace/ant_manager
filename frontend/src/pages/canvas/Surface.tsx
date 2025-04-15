@@ -90,8 +90,8 @@ export const SurfaceCanvas: React.FC = (props) => {
                     spriteCol = 1
             }
             const spriteX = spriteWidthIncludingPadding * ( spriteCol * 3 + ant.frame);
-            const width = spriteWidth * sizeScaleFactor[ant.type];
-            const height = spriteHeight * sizeScaleFactor[ant.type];
+            const width = spriteWidth * sizeScaleFactor[ant.type] * ant.sizeFactor;
+            const height = spriteHeight * sizeScaleFactor[ant.type] * ant.sizeFactor;
 
 
             ctx.save();

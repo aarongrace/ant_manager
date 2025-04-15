@@ -5,7 +5,6 @@ import { findFirstAntByTargetEntity as findAntByTargetEntity, findFirstAntByTask
 import { getEntityBounds } from "./entityHelperFunctions";
 
 export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    console.log("Canvas clicked");
     const canvas = event.currentTarget;
     const rect = canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left) / canvas.width;
@@ -17,7 +16,6 @@ export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const worldX = x * canvas.width;
     const worldY = y * canvas.height;
 
-    console.log(`Clicked at world coordinates: (${worldX}, ${worldY})`);
 
     mapEntities.forEach((entity) => {
         const bounds = getEntityBounds(entity, canvas);
@@ -27,7 +25,6 @@ export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
             worldY >= bounds.top &&
             worldY <= bounds.top + bounds.height
         ) {
-            console.log(`Clicked on entity: ${entity.id}`);
             if (entity.type === EntityTypeEnum.FoodResource) {
                 handleFoodSourceClick(event, entity);
             }
