@@ -28,6 +28,7 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
   const lastSyncedTime = React.useRef<number>(0);
 
 
+
   const animate = (timestamp: number) => {
     console.log("Animation frame:", timestamp);
     const delta = timestamp - lastFrameTime.current;

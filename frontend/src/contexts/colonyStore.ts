@@ -1,24 +1,24 @@
 import { create } from "zustand";
 import { useUserStore } from "./userStore";
 
-import { Ant, TaskEnum } from "../baseClasses/Ant";
+import { Ant, AntRef, makeNewAnt, convertAnts, convertAntRefs } from "../baseClasses/Ant";
 import { MapEntity } from "../baseClasses/MapEntity"; // Import MapEntity
 
-// Can't destructure without this
+// Define the ColonyStore type
 type ColonyStore = {
   id: string;
   name: string;
   ants: Ant[];
-  mapEntities: MapEntity[]; // Add mapEntities field
+  mapEntities: MapEntity[];
   eggs: number;
   food: number;
   sand: number;
   age: number;
   map: string;
   perkPurchased: string[];
-  updateMapEntities: (updates: { [id: string]: Partial<MapEntity> }) => void; // Update updateMapEntities function
+  updateMapEntities: (updates: { [id: string]: Partial<MapEntity> }) => void;
   fetchColonyInfo: () => Promise<void>;
-  putColonyInfo: () => Promise<void>;  
+  putColonyInfo: () => Promise<void>;
   updateColony: (updates: Partial<ColonyStore>) => void;
 };
 
@@ -26,8 +26,8 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   id: "",
   name: "",
   ants: [],
-  mapEntities: [], // Initialize mapEntities as an empty array
-  eggs: 5, // Default eggs set to 5
+  mapEntities: [],
+  eggs: 5,
   food: 0,
   sand: 0,
   age: 0,
@@ -45,14 +45,20 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
+
     const data = await response.json();
     console.log("Colony data:", data);
+
+    // Convert AntRef objects to Ant objects
+    const ants = convertAntRefs(data.ants as AntRef[]);
+
     set({
-      ...data
+      ...data,
+      ants, // Replace ants with the converted Ant objects
     });
   },
 
-  // not in use. There is no need for a set function for an array
+  // Update map entities
   updateMapEntities: (updates: { [id: string]: Partial<MapEntity> }) => {
     console.log("Updating map entities with partial updates:", updates);
 
@@ -73,14 +79,23 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     set({ mapEntities: updatedMapEntities });
   },
 
+  // Send colony info to the backend
   putColonyInfo: async () => {
     const colonyState = get();
     console.log("Putting colony info...", colonyState);
+
     const userID = useUserStore.getState().userID;
+    if (!userID) {
+      throw new Error("User ID is not set");
+    }
+
+    // Convert Ant objects to AntRef objects
+    const ants = convertAnts(colonyState.ants);
+
     const colonyInfo = {
       id: userID,
       name: colonyState.name,
-      ants: colonyState.ants,
+      ants, // Use the converted AntRef objects
       mapEntities: colonyState.mapEntities,
       eggs: colonyState.eggs,
       food: colonyState.food,
@@ -88,8 +103,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       age: colonyState.age,
       map: colonyState.map,
       perkPurchased: colonyState.perkPurchased,
-    }
-
+    };
 
     try {
       const response = await fetch(`http://localhost:8000/colonies/${userID}`, {
@@ -109,9 +123,9 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     } catch (error) {
       console.error("Error updating colony:", error);
     }
-
   },
 
+  // Update colony state
   updateColony: (updates: Partial<ColonyStore>) => {
     console.log("Updating colony with partial updates:", updates);
     set((state) => ({
