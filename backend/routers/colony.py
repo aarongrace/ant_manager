@@ -33,7 +33,7 @@ class Colony(Document):
             ants=initialize_guest_ants(),
             mapEntities=initialize_guest_map_entities(),
             eggs=50,
-            food=600,
+            food=200,
             sand=800,
             age=0,
             map="uninitialized",

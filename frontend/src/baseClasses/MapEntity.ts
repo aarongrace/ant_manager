@@ -26,7 +26,7 @@ type foodSourceType ={
 }
 
 export const foodSources: foodSourceType[] = [
-  { name: "ham", default_amount:50, default_width: 50, default_height: 50 },]
+  { name: "ham", default_amount:50, default_width: 75, default_height: 75 },]
 
 export const createRandomMapEntity = (): MapEntity | null => {
   const { mapEntities } = useColonyStore.getState();

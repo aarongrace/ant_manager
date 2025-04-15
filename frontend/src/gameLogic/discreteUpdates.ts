@@ -23,18 +23,22 @@ export const updateDiscreteGameState = () => {
 
 const consumeFood = () => {
     const { ants, food, updateColony } = useColonyStore.getState();
-    const {workerFoodConsumption, soldierFoodConsumption, queenFoodConsumption  } = useSettingsStore.getState();
-    const foodConsumed = Math.floor(ants.reduce((total, ant) => {
+    const {workerFoodConsumption, soldierFoodConsumption, queenFoodConsumption, foodConsumptionScaleFactor, foodWasteBaseline} = useSettingsStore.getState();
+    const wasteFactor = Math.max(0.6, 1 + (food - foodWasteBaseline) / foodWasteBaseline);
+    const foodConsumed = Math.floor((ants.reduce((total, ant) => {
         if (ant.type === AntTypeEnum.Worker) {
             return total + workerFoodConsumption ;
         } else if (ant.type === AntTypeEnum.Soldier) {
             return total + soldierFoodConsumption;
+        } else if (ant.type === AntTypeEnum.Queen) {
+            return total + queenFoodConsumption;
         }
         return total;
-    }, 0) + queenFoodConsumption);
+    }, 0)) * foodConsumptionScaleFactor * wasteFactor);
     if (food > 0) {
         updateColony({ food: food - foodConsumed });
     } else {
+        updateColony({ food: food - foodConsumed });
         console.warn("Not enough food to consume");
     }
 }

@@ -11,6 +11,8 @@ type SettingsStore = {
     workerFoodConsumption: number; // per half second
     soldierFoodConsumption: number;
     queenFoodConsumption: number;
+    foodConsumptionScaleFactor: number;
+    foodWasteBaseline: number;
 };
 
 export const useSettingsStore = create<SettingsStore> ((set) => ({
@@ -21,9 +23,13 @@ export const useSettingsStore = create<SettingsStore> ((set) => ({
     foodPerAnt: 20,
     entitySpawnFactor: 1.5,
 
-    workerFoodConsumption: 0.5, // per half second
-    soldierFoodConsumption: 0.8,
-    queenFoodConsumption: 2
+    workerFoodConsumption: 1, // per half second
+    soldierFoodConsumption: 1.5,
+    queenFoodConsumption: 6,
+    foodConsumptionScaleFactor: 0.15,
+    foodWasteBaseline: 200,
+
+
 }));
 
 export const workerCarryingCapacity = 5;
