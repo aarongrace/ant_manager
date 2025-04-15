@@ -105,7 +105,7 @@ const checkIfAtDestination = (ant: Ant) => {
 }
 
 const checkAndSetAntTarget = (ant: Ant) => {
-    if (ant.target === "" || ! checkIfTargetExists(ant)) {
+    if (! checkIfTargetExists(ant)) {
         console.log("Updating ant target:", ant);
         console.log("Ant has no target, setting one.");
 
@@ -196,10 +196,10 @@ const setAntTarget = ( ant: Ant, target: MapEntity | undefined) => {
     }
 };
 
-const resetOffsets = (ant: Ant) => {
+const resetOffsets = (ant: Ant, resetFactor = 0.05) => {
     ant.destOffsets = {
-        x: (Math.random() - 0.5) * 0.5 * ant.destOffsets.x,
-        y: (Math.random() - 0.5) * 0.5 * ant.destOffsets.y,
+        x: (Math.random() - 0.5) * resetFactor,
+        y: (Math.random() - 0.5) * resetFactor,
     };
 }
 
@@ -207,7 +207,7 @@ const setDestToGateway = (ant: Ant) => {
     const gateway = findGateway();
     if (gateway) {
         ant.destination = gateway.id;
-        resetOffsets(ant);
+        resetOffsets(ant, 0.15);
     } else {
         console.warn("No gateway found for the ant to return to.");
     }
