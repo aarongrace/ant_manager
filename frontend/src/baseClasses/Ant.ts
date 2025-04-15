@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import { antNames } from "./antNames";
+import { SoldierCarryingCapacity, WorkerCarryingCapacity } from "../contexts/settingsStore";
 
 // Define the TaskEnum type
 export enum TaskEnum {
@@ -13,6 +14,7 @@ export enum AntTypeEnum {
   Worker = "worker",
   Soldier = "soldier",
 }
+
 
 // Define the AntRef type for database communication
 export type AntRef = {
@@ -41,6 +43,7 @@ export class Ant {
   frame: number; // Moved above spriteFrameTimer
   spriteFrameTimer: number; // Timer for sprite frame animation
   angle: number; // Direction the ant is facing (e.g., in degrees)
+  targetOffsets: { x: number; y: number }; // New field: Offsets for targeting
 
   constructor(antRef: AntRef) {
     this.id = antRef.id;
@@ -55,6 +58,7 @@ export class Ant {
     this.frame = 0; // Default value for frame
     this.spriteFrameTimer = 0; // Default value for sprite frame timer
     this.angle = 0; // Default value for orientation
+    this.targetOffsets = { x: 0.0, y: 0.0 }; // Default value for target offsets
   }
 
   updateSpriteFrame(delta: number) {
@@ -116,3 +120,14 @@ const getRandomAntType = (): AntTypeEnum => {
   return antTypes[Math.floor(Math.random() * antTypes.length)];
 };
 
+
+export const getCarryingCapacity = (antType:AntTypeEnum): number => {
+  switch (antType) {
+    case AntTypeEnum.Soldier:
+      return SoldierCarryingCapacity;
+    case AntTypeEnum.Worker:
+      return WorkerCarryingCapacity;
+    default:
+      return 0; // Default carrying capacity for unknown types
+  }
+}

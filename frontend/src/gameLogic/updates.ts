@@ -1,23 +1,27 @@
 import { Ant, AntTypeEnum } from "../baseClasses/Ant";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { useSettingsStore } from "../contexts/settingsStore";
+import { SoldierCarryingCapacity, useSettingsStore, WorkerCarryingCapacity } from "../contexts/settingsStore";
 
-export const updateGameState =  (delta: number) => {
-    updateAnts(delta);
+export const updateContinuousGameState =  (delta: number) => {
+    updateAntMovements(delta);
 }
 
-const updateAnts = (delta: number) => {
-    const { ants, mapEntities } = useColonyStore.getState();
-    console.log("Updating ants with delta:", delta);
-
-    ants.forEach((ant) =>{
-
+export const updateDiscreteGameState = () => {
+    console.log("Updating discrete game state");
+    const { ants } = useColonyStore.getState();
+    ants.forEach((ant) => {
         if (ant.type != AntTypeEnum.Queen) {
             updateAntDestination(ant);
         }
+    });
+}
 
 
+const updateAntMovements = (delta: number) => {
+    const { ants, mapEntities } = useColonyStore.getState();
+
+    ants.forEach((ant) =>{
         moveAnt(ant, delta);
         ant.updateSpriteFrame(delta);
     })
@@ -61,10 +65,10 @@ const updateAntDestination = (ant: Ant) => {
     if (targetEntity &&  detectAntCollision(ant, targetEntity)) {
         console.log("Ant collision detected with target entity:", targetEntity);
 
+
         switch (targetEntity.type) {
             case EntityTypeEnum.FoodResource:
-                console.log("Ant reached food resource");
-                setAntDestination(ant, findGateway);
+                handleAtFoodSource(ant, targetEntity);
                 break;
             case EntityTypeEnum.Gateway:
                 console.log("Ant reached gateway");
@@ -73,9 +77,18 @@ const updateAntDestination = (ant: Ant) => {
             default:
                 console.log("Ant reached an unknown entity type");
         }
+    }
+}
+
+const handleAtFoodSource = (ant: Ant, targetEntity: MapEntity) => {
+    console.log("Ant reached food source:", targetEntity);
+    const carryingCapacity = ant.type == AntTypeEnum.Soldier ? SoldierCarryingCapacity : WorkerCarryingCapacity;
+
+
+    if (ant.amountCarried){
 
     }
-
+    setAntDestination(ant, findGateway);
 }
 
 

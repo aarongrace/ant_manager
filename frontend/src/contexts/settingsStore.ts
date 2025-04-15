@@ -15,3 +15,14 @@ export const useSettingsStore = create<SettingsStore> ((set) => ({
     syncInterval: 3000,
     foodPerAnt: 20,
 }));
+
+export const WorkerCarryingCapacity = 5;
+export const SoldierCarryingCapacity = 7;
+export const discreteUpdateInterval = 500;
+export const workerSpeed = 0.0001;
+export const soldierSpeed = 0.00007;
+
+export const carriedEntitySize = {
+    width: 15,
+    height: 15,
+}

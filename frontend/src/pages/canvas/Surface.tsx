@@ -1,9 +1,10 @@
 import { useColonyStore } from '../../contexts/colonyStore';
-import { Ant } from '../../baseClasses/Ant';
+import { Ant, getCarryingCapacity } from '../../baseClasses/Ant';
 import { default as CustomCanvas } from "./Canvas";
 import React, { useEffect } from 'react';
-import { updateGameState } from '../../gameLogic/updates';
 import { usePreloadedImages } from '../../contexts/preloadImages';
+import { findMapEntity } from '../../gameLogic/continuousUpdates';
+import { carriedEntitySize } from '../../contexts/settingsStore';
 
 
 export const SurfaceCanvas: React.FC = (props) => {
@@ -26,9 +27,6 @@ export const SurfaceCanvas: React.FC = (props) => {
                 drawMapEntities(ctx);
                 drawAnts(ctx, ants);
             });
-            updateGameState(delta);
-            
-
         } else {
             console.log("in drawing Context not established yet");
         }
@@ -93,16 +91,29 @@ export const SurfaceCanvas: React.FC = (props) => {
                     spriteCol = 1
             }
             const spriteX = spriteWidthIncludingPadding * ( spriteCol * 3 + ant.frame);
-            console.log("spriteX", spriteX);
-
             const width = spriteWidth * sizeScaleFactor[ant.type];
             const height = spriteHeight * sizeScaleFactor[ant.type];
+
 
             ctx.save();
             ctx.translate(pos_x, pos_y);
             ctx.rotate(ant.angle);
             ctx.drawImage(antSprites, spriteX, spriteY, spriteWidth, spriteHeight, 
                 -width/2, -height/2, width, height);
+
+            if(ant.carrying) {
+                console.log("Carrying", ant.carrying);
+                const carriedImg = images[ant.carrying];
+                console.log(images)
+                console.log("Carried image", carriedImg);
+                if (carriedImg) {
+                    console.log("Carried image found");
+                    const carriedScale =  ant.amountCarried/getCarryingCapacity(ant.type);
+                    const carriedWidth = carriedEntitySize.width * carriedScale;
+                    const carriedHeight = carriedEntitySize.height * carriedScale;
+                    ctx.drawImage(carriedImg, -carriedWidth/2, -carriedHeight/2 -spriteHeight/3.2, carriedWidth, carriedHeight);
+                }
+            }
             ctx.restore();
 
         });
