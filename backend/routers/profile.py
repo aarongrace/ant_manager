@@ -2,12 +2,18 @@ from fastapi import APIRouter, HTTPException, Request
 from beanie import Document
 from datetime import datetime
 from enum import Enum
+import uuid
+from passlib.context import CryptContext
+from pydantic import BaseModel
 
 
 class RoleEnum(str, Enum):
     admin = "admin"
     user = "user"
 
+class ProfileBase(BaseModel):
+    username: str  
+    password: str
 
 class Profile(Document):
     id: str  # Unique identifier for the profile
@@ -38,6 +44,69 @@ class Profile(Document):
         )
 
 profileRouter = APIRouter()
+
+'''
+handle's user login
+'''
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+@profileRouter.post('/register')
+async def register(data: ProfileBase):
+    print("Registering:", data.username)
+    existing = await Profile.find_one(Profile.name == data.username)
+    if existing:
+        raise HTTPException(status_code=400, detail="User already exists")
+
+    user = Profile(
+        id=str(uuid.uuid4()),
+        name=data.username,
+        role=RoleEnum.user,
+        createdDate=datetime.now(),
+        password=hash_password(data.password),
+        clan="",
+        email="",
+        picture="",
+        lastLoggedIn=datetime.now()
+    )
+
+    await user.insert()
+    return {"status": "success", "message": "User registered successfully"}
+
+@profileRouter.post('/login')
+async def login(data: ProfileBase):
+    print("Logging in:", data.username)
+    user = await Profile.find_one(Profile.name == data.username)
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+    print("User found:", user)
+
+    if not pwd_context.verify(data.password, user.password):
+        raise HTTPException(status_code=400, detail="Incorrect password")
+
+    # Update last login time
+    user.lastLoggedIn = datetime.now()
+    user.save()
+
+    return {
+        "status": "success",
+        "message": "Login successful",
+        "user": {
+            "id": str(user.id),
+            "name": user.name,
+            "role": user.role,
+            "clan": user.clan,
+            "email": user.email,
+            "picture": user.picture
+        }
+    }
+
+
+'''
+end of user login
+'''
 
 @profileRouter.get("/{id}", response_model=Profile)
 async def get_profile(id: str):
