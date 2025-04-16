@@ -14,7 +14,6 @@ import Store from './pages/store/Store';
 import Welcome from './pages/welcome/Welcome';
 
 function App() {
-  const { preloadImages } = usePreloadedImages();
   const { preloadImages } = usePreloadedImagesStore.getState();
   useEffect(() => {
     preloadImages();
