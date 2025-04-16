@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import deleteIcon from './delete_icon.png'; // Import the delete icon
-import { useColonyStore } from '../../contexts/colonyStore';
+import React from 'react';
 import { Ant } from '../../baseClasses/Ant';
-import './antsPage.css'
+import { useColonyStore } from '../../contexts/colonyStore';
+import './antsPage.css';
+import deleteIcon from './delete_icon.png'; // Import the delete icon
 
 const AntsPage: React.FC = () => {
 
@@ -45,7 +45,6 @@ const UnitBubble: React.FC<{ ant: Ant }> = ({ ant: ant }) => {
             <h4>{ant.type} {ant.name}</h4>
             <p>Age: {ant.age} {ant.age <= 1 ? 'day' : 'days'} </p>
             <p>Task: {ant.task}</p>
-            <p>Position: ({ant.position.x}, {ant.position.y})</p>
         </div>
     );
 };

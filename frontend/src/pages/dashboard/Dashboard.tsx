@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
+import { AntTypeEnum } from '../../baseClasses/Ant';
+import { useColonyStore } from '../../contexts/colonyStore';
+import { canvasProportions, useSettingsStore } from '../../contexts/settingsStore';
+import { initializeAntLogic } from '../../gameLogic/antLogic';
+import SurfaceCanvas from '../canvas/Surface';
 import './dashboard.css';
 import { makeAnt, resetColony } from './dashboard.services';
-import { useColonyStore } from '../../contexts/colonyStore';
-import { TaskEnum, AntTypeEnum } from '../../baseClasses/Ant';
-import SurfaceCanvas from '../canvas/Surface';
-import { initializeAntLogic } from '../../gameLogic/antLogic';
 
 
 const Dashboard: React.FC = () => {
@@ -16,7 +17,14 @@ const Dashboard: React.FC = () => {
       initializeAntLogic();
     }
     initialize();
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
   }, []);
+
+  const resizeCanvas = () => {
+    const { setCanvasDimensions } = useSettingsStore.getState();
+    setCanvasDimensions(window.innerWidth * canvasProportions.width, window.innerHeight * canvasProportions.height);
+  }
 
   
   const taskCounts = ants.reduce((acc: Record<string, number>, ant) => {

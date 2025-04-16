@@ -3,12 +3,14 @@ from typing import List
 from beanie import Document
 from pydantic import ValidationError
 
-from game_logic.ant import Ant, initialize_guest_ants
-from game_logic.map_entity import MapEntity, EntityTypeEnum, initialize_guest_map_entities
+from game_logic.ant import Ant
+from game_logic.map_entity import MapEntity
 
 
 # todo implement batch logic. Right now the updates are not just too frequent, but handling actions in a different router means that if it coincides with the put request, the action gets overwritten
 # either we add a buffer in memory or we handle all the actions on the frontend and fetch less often
+
+
 
 class Colony(Document):
     id: str  # The colony ID should always be the same as the user ID
@@ -21,6 +23,7 @@ class Colony(Document):
     age: int  # Age of the colony
     map: str  # Map associated with the colony
     perkPurchased: List[str]  # List of perks purchased by the colony
+    initialized: bool  # Indicates if the colony has been initialized
 
     class Settings:
         name = "colonies"  # MongoDB collection name
@@ -29,15 +32,16 @@ class Colony(Document):
     def initialize_default(cls, userId: str) -> "Colony":
         return cls(
             id=userId,
-            name="Antopia",
-            ants=initialize_guest_ants(),
-            mapEntities=initialize_guest_map_entities(),
-            eggs=50,
-            food=200,
-            sand=800,
+            name="",
+            ants=[],
+            mapEntities=[],
+            eggs=0,
+            food=0,
+            sand=0,
             age=0,
-            map="uninitialized",
-            perkPurchased=[]
+            map="",
+            perkPurchased=[],
+            initialized = False,
         )
     
 

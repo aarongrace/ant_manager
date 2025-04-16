@@ -1,7 +1,7 @@
 import { Ant, TaskEnum } from "../baseClasses/Ant";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { findIdlePosition, hasArrived, setAntObjective, setAntToIdle, setDestination } from "./antHelperFunctions";
+import { findIdleCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination } from "./antHelperFunctions";
 import { findClosestFoodSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
 
 export const handleAntLogic = (ant: Ant) => {
@@ -13,6 +13,7 @@ export const handleAntLogic = (ant: Ant) => {
 export const initializeAntLogic = () => {
     const { ants } = useColonyStore.getState();
     ants.forEach((ant) => {
+
         switch (ant.task) {
             case TaskEnum.Foraging:
                 if (!hasValidObjective(ant)) {
@@ -24,13 +25,13 @@ export const initializeAntLogic = () => {
             case TaskEnum.Idle:
                 setAntToIdle(ant);
                 break;
-            }
+        }
+        ant.movementInitialized = true;
     });
-
-}
+};
 
 const updateObjective = (ant: Ant) => {
-    if (ant.task === TaskEnum.Foraging){
+    if (ant.task === TaskEnum.Foraging) {
         if (!hasValidObjective(ant)) {
             console.log("Ant has no objective, setting one.");
             setAntObjective(ant, findClosestFoodSource(ant));
@@ -42,19 +43,19 @@ const updateObjective = (ant: Ant) => {
         if (hasArrived(ant)) {
             if (Math.random() < 0.2) {
                 ant.randomlyRotate();
-            } 
-            if (Math.random() < 0.1) {
-               findIdlePosition(ant);
             }
-        } 
+            if (Math.random() < 0.1) {
+                findIdleCoords(ant);
+            }
+        }
     }
 };
 
 const handleDestinationCheck = (ant: Ant) => {
-    if (ant.task === TaskEnum.Idle){
+    if (ant.task === TaskEnum.Idle) {
         return;
     }
-    if (hasArrived(ant)){
+    if (hasArrived(ant)) {
         switch (ant.task) {
             case TaskEnum.Foraging:
                 const destinationEntity = findMapEntity(ant.destination);
@@ -74,11 +75,9 @@ const handleDestinationCheck = (ant: Ant) => {
                         console.log("Ant reached an unknown entity type");
                 }
                 break;
-
         }
     }
 };
-
 
 const handleAtGateway = (ant: Ant) => {
     const { food, updateColony } = useColonyStore.getState();
@@ -87,10 +86,8 @@ const handleAtGateway = (ant: Ant) => {
     ant.carrying = ""; // Reset the carrying item
 
     if (hasValidObjective(ant)) {
-        // console.log("Ant has a valid objective, setting new destination.");
         setDestination(ant, findMapEntity(ant.objective));
     } else {
-        // console.log("Ant has no valid objective, setting new one.");
         updateObjective(ant);
     }
 };
@@ -107,6 +104,7 @@ const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
         ant.carrying = foodSource.imgName;
         ant.amountCarried += 1;
         foodSource.remainingAmount -= 1;
+        moveWhileBusy(ant);
     } else {
         ant.isBusy = false; // Reset the busy state
         setDestination(ant, findGateway());

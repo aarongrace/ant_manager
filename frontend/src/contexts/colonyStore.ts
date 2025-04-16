@@ -46,13 +46,22 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     const data = await response.json();
     console.log("Colony data:", data);
 
-    // Convert AntRef objects to Ant objects
-    const ants = convertAntRefs(data.ants as AntRef[]);
+    if (data.initialized === false) {
+      console.warn("Colony not initialized, creating a new one...");
+      const newColony = createFreshColony();
+      set({
+        ...newColony,
+      });
+      await get().putColonyInfo();
+    } else {
+      // Convert AntRef objects to Ant objects
+      const ants = convertAntRefs(data.ants as AntRef[]);
 
-    set({
-      ...data,
-      ants, // Replace ants with the converted Ant objects
-    });
+      set({
+        ...data,
+        ants, // Replace ants with the converted Ant objects
+      });
+    }
   },
 
   // Send colony info to the backend
@@ -71,7 +80,6 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     const ants = convertAnts(colonyState.ants);
 
     const colonyInfo = {
-      id: userID,
       name: colonyState.name,
       ants, // Use the converted AntRef objects
       mapEntities: colonyState.mapEntities,
@@ -81,6 +89,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       age: colonyState.age,
       map: colonyState.map,
       perkPurchased: colonyState.perkPurchased,
+      initialized: true,
     };
 
     try {
@@ -119,9 +128,17 @@ export const createFreshColony = () => {
   const randomMapEntity = createRandomMapEntity();
   const nestEntrance = recreateNestEntrance();
   const mapEntities = randomMapEntity? [nestEntrance, randomMapEntity] : [nestEntrance];
+  const queen = recreateQueen();
+  queen.coords = {
+    x: nestEntrance.coords.x + nestEntrance.size.width / 2.5,
+    y: nestEntrance.coords.y + nestEntrance.size.height / 3,
+  };
+
+  const ants = [queen, makeNewAnt(), makeNewAnt(), makeNewAnt()];
 
   return {
-    ants: [recreateQueen(), makeNewAnt(), makeNewAnt(), makeNewAnt()],
+    ants: ants,
+    name: "New Colony",
     map: "nest",
     eggs: 5,
     food: 200,
@@ -129,5 +146,6 @@ export const createFreshColony = () => {
     age: 0,
     mapEntities: mapEntities,
     perkPurchased: [],
+    initialized: true,
   }
 };

@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
+import { queenSpeed, soldierCarryingCapacity, soldierSpeed, useSettingsStore, workerCarryingCapacity, workerSpeed } from "../contexts/settingsStore";
 import { antNames } from "./antNames";
-import { soldierCarryingCapacity, soldierSpeed, workerCarryingCapacity, workerSpeed } from "../contexts/settingsStore";
 
 // Define the TaskEnum type
 export enum TaskEnum {
@@ -22,7 +22,7 @@ export type AntRef = {
   age: number;
   type: AntTypeEnum;
   task: TaskEnum;
-  position: { x: number; y: number };
+  coords: { x: number; y: number }; // Renamed from position to coords
   objective: string; // Renamed from target to objective
   destination: string;
   movingTo: { x: number; y: number }; // New field for frontend only
@@ -41,7 +41,7 @@ export class Ant {
   age: number;
   type: AntTypeEnum;
   task: TaskEnum;
-  position: { x: number; y: number };
+  coords: { x: number; y: number }; // Renamed from position to coords
   objective: string; // Renamed from target to objective
   destination: string;
   movingTo: { x: number; y: number }; // New field for frontend only
@@ -55,6 +55,7 @@ export class Ant {
   angle: number; // Direction the ant is facing (e.g., in degrees)
   isBusy: boolean; // New field: Indicates if the ant is currently busy
   sizeFactor: number; // Added sizeFactor field
+  movementInitialized: boolean; // New field: Indicates if movement has been initialized (frontend only)
 
   constructor(antRef: AntRef) {
     this.id = antRef.id;
@@ -62,11 +63,11 @@ export class Ant {
     this.age = antRef.age;
     this.type = antRef.type;
     this.task = antRef.task;
-    this.position = antRef.position;
+    this.coords = antRef.coords; // Initialize coords field
     this.objective = antRef.objective; // Initialize objective field
     this.destination = antRef.destination;
-    this.movingTo = { x: -1, y: -1 }; 
-    this.anchorPoint = { x: -1, y: -1 };
+    this.movingTo = { x: 0, y: 0 }; 
+    this.anchorPoint = { x: 0, y: 0 };
     this.carrying = antRef.carrying;
     this.carryingCapacity = antRef.carryingCapacity; // Initialize carryingCapacity field
     this.amountCarried = antRef.amountCarried;
@@ -76,6 +77,7 @@ export class Ant {
     this.angle = Math.random() * Math.PI * 2; // Default value for orientation
     this.isBusy = false; // Default value for isBusy
     this.sizeFactor = antRef.sizeFactor; // Initialize sizeFactor field
+    this.movementInitialized = false; // Default value for movementInitialized
   }
 
   updateSpriteFrame(delta: number) {
@@ -114,7 +116,7 @@ export class Ant {
       age: this.age,
       type: this.type,
       task: this.task,
-      position: this.position,
+      coords: this.coords, // Include coords field
       objective: this.objective, // Include objective field
       destination: this.destination,
       movingTo: this.movingTo, // Include movingTo field
@@ -130,13 +132,20 @@ export class Ant {
   randomlyRotate() {
     this.angle = Math.random() * Math.PI * 2; // Random angle between 0 and 2π
   }
+
+  setAngle(){
+    const dx = this.movingTo.x - this.coords.x;
+    const dy = this.movingTo.y - this.coords.y;
+    this.angle = Math.atan2(dy, dx) + Math.PI / 2; // Arc tangent to get the angle in radians
+  }
 }
 
 // Method to create a new Ant object
 export const makeNewAnt = (): Ant => {
+  const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
   const type = getRandomAntType();
   const sizeFactor = Math.random() * 0.15 + 0.925; // Random sizeFactor between 0.95 and 1.05
-  const speed = (type === AntTypeEnum.Soldier ? soldierSpeed : workerSpeed) * (sizeFactor* sizeFactor);
+  const speed = (type === AntTypeEnum.Soldier ? soldierSpeed : workerSpeed) * (sizeFactor * sizeFactor);
   const carryingCapacity = Math.floor((type === AntTypeEnum.Soldier ? soldierCarryingCapacity : workerCarryingCapacity)
    * (Math.random() / 3 + 0.833));
 
@@ -146,7 +155,10 @@ export const makeNewAnt = (): Ant => {
     age: 0,
     type: type,
     task: TaskEnum.Idle,
-    position: { x: Math.random(), y: Math.random() },
+    coords: { 
+      x: Math.random() * canvasWidth - canvasWidth / 2, 
+      y: Math.random() * canvasHeight - canvasHeight / 2 
+    }, // Absolute coordinates
     objective: "", // Default value for objective
     destination: "",
     movingTo: { x: 0.5, y: 0.5 }, // Default value for movingTo
@@ -162,13 +174,17 @@ export const makeNewAnt = (): Ant => {
 
 // Function to recreate a queen ant
 export const recreateQueen = (): Ant => {
+  const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
   const antRef: AntRef = {
     id: v4(), // Generate a unique ID
     name: "Queenie", // Name of the queen
     age: 2, // Age of the queen
     type: AntTypeEnum.Queen, // Type is queen
     task: TaskEnum.Idle, // Default task is idle
-    position: { x: 0.82, y: 0.69 }, // Default position
+    coords: { 
+      x: 0.75 * canvasWidth - canvasWidth / 2, 
+      y: 0.6 * canvasHeight - canvasHeight / 2 
+    }, // Absolute coordinates
     objective: "", // No objective initially
     destination: "", // No destination initially
     movingTo: { x: 0.5, y: 0.5 }, // Default movingTo position
@@ -176,7 +192,7 @@ export const recreateQueen = (): Ant => {
     carrying: "", // Not carrying anything initially
     carryingCapacity: 0, // Queens do not carry resources
     amountCarried: 0, // No resources carried
-    speed: 0.00005, // Very slow speed for the queen
+    speed: queenSpeed, // Very slow speed for the queen
     sizeFactor: 1.0, // Default sizeFactor for the queen
   };
 

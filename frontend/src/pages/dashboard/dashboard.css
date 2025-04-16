@@ -35,7 +35,7 @@
 
 
 .map-container {
-  padding: 30px;
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -44,10 +44,13 @@
   border: 2px solid #d4a373; /* Soft brown border */
   border-radius: 1rem; /* Rounded corners for bubble effect */
   background-color: #fff; /* White background for sections */
+
+  width: fit-content;
+  height: fit-content;
 }
 
 .map-canvas{
-  padding-top: 20px;
+  padding: 2px;
 }
 
 .map-text{
