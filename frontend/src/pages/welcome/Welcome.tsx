@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useProfileStore } from "../../contexts/profileStore";
 import { getUserID, setUserID } from "../../contexts/userStore";
 import "./welcome.css"; // Updated CSS file name
 
@@ -10,6 +11,7 @@ const Welcome = () => {
   })
   const [isLoggingIn, setIsLoggingIn] = useState(true);
   const [error, setError] = useState("");
+  const { fetchProfileInfo } = useProfileStore();
   const navigate = useNavigate();
 
 
@@ -28,7 +30,7 @@ const Welcome = () => {
       console.log("User Registered", data);
       console.log("User ID:", data.userId);
       setUserID(data.userId);
-
+      fetchProfileInfo();
       navigate('/dashboard');
     } else {
       console.error("Error registering user", data);
@@ -52,7 +54,7 @@ const Welcome = () => {
       setUserID(data.userId);
       console.log("User ID:", data.userId);
       console.log(getUserID());
-
+      fetchProfileInfo();
       navigate('/dashboard');
     } else {
       console.error("Error logging in", data);

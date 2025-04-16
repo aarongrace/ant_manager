@@ -165,3 +165,4 @@ async def ensure_guest_profile_exists(reinitialize: bool = False):
         print("Guest profile created.")
     else:
         print("Guest profile already exists.")
+    

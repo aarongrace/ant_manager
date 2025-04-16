@@ -131,4 +131,4 @@ if __name__ == "__main__":
     # Darkness factor (0-1), lower = darker
     darkness_factor = 0.2
     
-    add_outlines_with_padding(input_path, output_path, padding=1, darkness_factor=0.5)
+    add_outlines_with_padding(input_path, output_path, padding=1, darkness_factor=0.) 
