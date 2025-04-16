@@ -1,9 +1,11 @@
 import React from "react";
 import { CircleHelp, CogIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import "./navbar.css"; 
+import "./navbar.css";
+import { useProfileStore } from '../contexts/profileStore';
 
 const Navbar = () => {
+  const {role} = useProfileStore();
   const location = useLocation();
   // Hide navbar on the root path
   if (location.pathname === "/") {
@@ -18,7 +20,7 @@ const Navbar = () => {
         <Link to="/ants" className="nav-link">Ants</Link>
         <Link to="/clan" className="nav-link">Clan</Link>
         <Link to="/store" className="nav-link">Store</Link>
-        <Link to="/admin" className="nav-link">Admin</Link>
+        {role == "Admin" && (<Link to="/admin" className="nav-link">Admin</Link>)}
         <Link to="/guide" className="nav-link">
           <CircleHelp size={20} />
         </Link>
