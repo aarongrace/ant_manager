@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import { usePreloadedImagesStore } from './contexts/preloadImages';
 import './globals.css';
 import Admin from './pages/admin/Admin';
+import AdminCheck from './pages/admin/AdminCheck';
 import AntsPage from './pages/ants/AntsPage';
 import Clan from './pages/clan/Clan';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -13,6 +14,7 @@ import Store from './pages/store/Store';
 import Welcome from './pages/welcome/Welcome';
 
 function App() {
+  const { preloadImages } = usePreloadedImages();
   const { preloadImages } = usePreloadedImagesStore.getState();
   useEffect(() => {
     preloadImages();
@@ -29,7 +31,7 @@ function App() {
           <Route path="/ants" element={<AntsPage />} />
           <Route path="/clan" element={<Clan />} />
           <Route path="/store" element={<Store />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={<AdminCheck><Admin/></AdminCheck>}/>
         </Routes>
       </main>
     </div>
