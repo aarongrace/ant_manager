@@ -3,6 +3,7 @@ from typing import List
 from beanie import Document
 from pydantic import ValidationError
 
+from game_logic.fruit import Fruit
 from game_logic.ant import Ant
 from game_logic.map_entity import MapEntity
 
@@ -17,6 +18,7 @@ class Colony(Document):
     name: str  # Name of the colony
     ants: List[Ant]  # Number of ants in the colony
     mapEntities: List[MapEntity]
+    fruits: List[Fruit]
     eggs: int = 5  # Number of eggs in the colony, defaulted to 5
     food: float  # Amount of food available
     sand: float  # Amount of sand available
@@ -35,6 +37,7 @@ class Colony(Document):
             name="",
             ants=[],
             mapEntities=[],
+            fruits=[],
             eggs=0,
             food=0,
             sand=0,
@@ -54,8 +57,9 @@ async def get_colony(id: str):
     try:
         colony = await Colony.get(id)
     except ValidationError as e:
-        print("Validation error")
-        raise HTTPException(status_code=400, detail="Invalid colony data")
+        print("Validation error, resetting colony:", e)
+        colony = await Colony.initialize_default(id)
+        return colony
 
     if not colony:
         raise HTTPException(status_code=404, detail="Colony not found")

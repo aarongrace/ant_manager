@@ -54,7 +54,7 @@ export const setDestination = (ant: Ant, destination: MapEntity | undefined) => 
     ant.movingTo.y = getBiasedRandomCoords(destination.coords.y, false);
 };
 
-export const findFirstAntByTargetEntity = (entity: MapEntity): Ant | null => {
+export const findAntByTargetEntity = (entity: MapEntity): Ant | null => {
     const { ants } = useColonyStore.getState();
     for (let ant of ants) {
         if (ant.objective === entity.id) {
@@ -82,11 +82,9 @@ export const setAntToIdle = (ant: Ant) => {
 };
 
 export const findIdleCoords = (ant: Ant) => {
-    console.log("Finding idle coordinates for ant:", ant);
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
     ant.movingTo.x = ant.anchorPoint.x + (Math.random() - 1) * 0.1 * canvasWidth;
     ant.movingTo.y = ant.anchorPoint.y + (Math.random() - 1) * 0.1 * canvasHeight;
-    console.log("New idle coordinates:", ant.movingTo);
 };
 
 export const hasArrived = (ant: Ant) => {
@@ -113,4 +111,11 @@ export const moveWhileBusy = (ant: Ant) => {
         }
     }
     ant.setAngle();
+}
+
+
+export const reignInCoords = (coords: { x: number, y: number }) => {
+    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
+    coords.x = Math.max(-canvasWidth / 2 + edgeMargin, Math.min(canvasWidth / 2 - edgeMargin, coords.x));
+    coords.y = Math.max(-canvasHeight / 2 + edgeMargin, Math.min(canvasHeight / 2 - edgeMargin, coords.y));
 }

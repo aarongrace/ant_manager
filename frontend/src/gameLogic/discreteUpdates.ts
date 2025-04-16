@@ -1,8 +1,10 @@
 import { AntTypeEnum } from "../baseClasses/Ant";
-import { createRandomMapEntity } from "../baseClasses/MapEntity";
+import { Fruit } from "../baseClasses/Fruit";
+import { MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { eggChance, useSettingsStore } from "../contexts/settingsStore";
 import { handleAntLogic } from "./antLogic"; // Import the new combined function
+import { decayFoodSource } from "./entityHelperFunctions";
 
 export const updateDiscreteGameState = () => {
     const { ants } = useColonyStore.getState();
@@ -12,6 +14,7 @@ export const updateDiscreteGameState = () => {
     addRandomMapEntity();
     deleteEmptyMapEntities();
     consumeFood();
+    decayFoodSource();
     layEgg();
 };
 
@@ -67,7 +70,7 @@ const handleNoFood = (negativeFoodLeft: number) => {
 
 const deleteEmptyMapEntities = () => {
     const { mapEntities, updateColony } = useColonyStore.getState();
-    const nonEmptyMapEntities = mapEntities.filter((entity) => entity.remainingAmount > 0);
+    const nonEmptyMapEntities = mapEntities.filter((entity) => entity.amount > 0);
     if (nonEmptyMapEntities.length !== mapEntities.length) {
         console.log("Deleting empty map entities");
         updateColony({ mapEntities: nonEmptyMapEntities });
@@ -85,7 +88,7 @@ const addRandomMapEntity = () => {
     }
     console.log("Adding random map entity");
 
-    const randomEntity = createRandomMapEntity();
+    const randomEntity = Math.random()>0.95 ? MapEntity.createRandomMapEntity() : Fruit.createRandomFruit();
 
     if (randomEntity) {
         updateColony({

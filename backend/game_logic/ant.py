@@ -20,8 +20,7 @@ class Ant(BaseModel):
     coords: dict  # Absolute coordinates of the ant (e.g., {"x": -100, "y": 50})
     objective: str  # ID of the objective entity the ant is interacting with
     destination: str  # ID of the object the ant is heading to
-    carrying: str  # ID of the map entity that it is carrying
-    amountCarried: int  # Amount of resource the ant is carrying
+    carrying: dict | None  # Resource the ant is carrying 
     carryingCapacity: int  # Maximum carrying capacity of the ant
     speed: float  # Speed of the ant
     sizeFactor: float = 1.0  # Size factor of the ant, default is 1

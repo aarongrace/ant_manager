@@ -1,6 +1,7 @@
 import { Ant, TaskEnum } from "../baseClasses/Ant";
 import { useColonyStore } from "../contexts/colonyStore";
 import { edgeMargin, idleSpeedFactor, useSettingsStore } from "../contexts/settingsStore";
+import { reignInCoords } from "./antHelperFunctions";
 import { initializeAntLogic } from "./antLogic";
 
 export const updateContinuousGameState = (delta: number) => {
@@ -21,6 +22,7 @@ const moveAnt = (ant: Ant, delta: number) => {
         initializeAntLogic();
         return;
     }
+    reignInCoords(ant.movingTo);
 
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
     const speedFactor = ant.task === TaskEnum.Idle ? idleSpeedFactor : 1;

@@ -1,19 +1,19 @@
-import React, { use, useEffect } from 'react';
-import AntsPage from './pages/ants/AntsPage';
-import Dashboard from './pages/dashboard/Dashboard';
-import Profile from './pages/profile/Profile';
-import './globals.css';
-import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Welcome from './pages/welcome/Welcome';
-import Guide from './pages/guide/guide';
-import Clan from './pages/clan/Clan';
-import Store from './pages/store/Store';
+import { usePreloadedImagesStore } from './contexts/preloadImages';
+import './globals.css';
 import Admin from './pages/admin/Admin';
-import { usePreloadedImages } from './contexts/preloadImages';
+import AntsPage from './pages/ants/AntsPage';
+import Clan from './pages/clan/Clan';
+import Dashboard from './pages/dashboard/Dashboard';
+import Guide from './pages/guide/guide';
+import Profile from './pages/profile/Profile';
+import Store from './pages/store/Store';
+import Welcome from './pages/welcome/Welcome';
 
 function App() {
-  const { preloadImages } = usePreloadedImages();
+  const { preloadImages } = usePreloadedImagesStore.getState();
   useEffect(() => {
     preloadImages();
   } , []);

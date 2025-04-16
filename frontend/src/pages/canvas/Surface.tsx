@@ -1,15 +1,15 @@
 import React from 'react';
 import { Ant, AntTypeEnum } from '../../baseClasses/Ant';
 import { useColonyStore } from '../../contexts/colonyStore';
-import { usePreloadedImages } from '../../contexts/preloadImages';
-import { carriedEntitySize, useSettingsStore, workerCarryingCapacity } from '../../contexts/settingsStore';
-import { getEntityBounds } from '../../gameLogic/entityHelperFunctions';
+import { usePreloadedImagesStore } from '../../contexts/preloadImages';
+import { useSettingsStore, workerCarryingCapacity } from '../../contexts/settingsStore';
+import { Bounds } from '../../gameLogic/entityHelperFunctions';
 import { default as CustomCanvas } from "./Canvas";
 
 export const SurfaceCanvas: React.FC = (props) => {
     const [ctx, setCtx] = React.useState<CanvasRenderingContext2D | null>(null);
     const { ants, mapEntities } = useColonyStore();
-    const { images } = usePreloadedImages();
+    const { images } = usePreloadedImagesStore.getState()
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
 
     const establishContext = (context: CanvasRenderingContext2D) => {
@@ -42,15 +42,7 @@ export const SurfaceCanvas: React.FC = (props) => {
 
     function drawMapEntities(ctx: CanvasRenderingContext2D) {
         mapEntities.forEach((entity) => {
-            const img = images[entity.imgName];
-            if (!img) {
-                console.error(`Image for entity ${entity.id} not loaded`);
-                return;
-            }
-
-            const bounds = getEntityBounds(entity);
-
-            ctx.drawImage(img, bounds.left, bounds.top, bounds.width, bounds.height);
+            entity.draw(ctx);
         });
     }
 
@@ -102,20 +94,12 @@ export const SurfaceCanvas: React.FC = (props) => {
             );
 
             if (ant.carrying) {
-                const carriedImg = images[ant.carrying];
-                if (carriedImg) {
-                    const carriedScale = ant.amountCarried / workerCarryingCapacity; // using the worker carrying capacity as a ref
-                    const carriedWidth = carriedEntitySize.width * carriedScale;
-                    const carriedHeight = carriedEntitySize.height * carriedScale;
-                    const heightOffset = ant.type === AntTypeEnum.Soldier ? -spriteHeight / 2.4 : -spriteHeight / 3.2;
-                    ctx.drawImage(
-                        carriedImg,
-                        -carriedWidth / 2,
-                        -carriedHeight / 2 + heightOffset,
-                        carriedWidth,
-                        carriedHeight
-                    );
-                }
+                const carriedObject = ant.carrying;
+                const carriedScale = carriedObject.amount / workerCarryingCapacity; // using the worker carrying capacity as a ref
+                const heightOffset = ant.type === AntTypeEnum.Soldier ? -spriteHeight / 2.2 : -spriteHeight / 2.8;
+                ctx.translate(0, heightOffset);
+                const carriedBounds : Bounds = { left: -carriedObject.size.width / 2 * carriedScale, top: -carriedObject.size.height / 2 * carriedScale, width: carriedObject.size.width * carriedScale, height: carriedObject.size.height * carriedScale };
+                carriedObject.draw(ctx, carriedBounds);
             }
             ctx.restore();
         });
@@ -123,6 +107,7 @@ export const SurfaceCanvas: React.FC = (props) => {
 
     return <CustomCanvas draw={draw} establishContext={establishContext} />;
 };
+
 
 export default SurfaceCanvas;
 

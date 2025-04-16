@@ -1,8 +1,7 @@
 import { AntTypeEnum, TaskEnum } from "../baseClasses/Ant";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { findFirstAntByTargetEntity as findAntByTargetEntity, findAntByTaskAndOrObjective as findAntByTask, setAntObjective, setAntToIdle } from "./antHelperFunctions";
-import { getEntityBounds } from "./entityHelperFunctions";
+import { findAntByTargetEntity, findAntByTaskAndOrObjective, setAntObjective, setAntToIdle } from "./antHelperFunctions";
 
 export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = event.currentTarget;
@@ -15,7 +14,7 @@ export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
 
 
     mapEntities.forEach((entity) => {
-        const bounds = getEntityBounds(entity);
+        const bounds = entity.getBounds();
         if (
             worldX >= bounds.left &&
             worldX <= bounds.left + bounds.width &&
@@ -33,9 +32,9 @@ const handleFoodSourceClick = (event: React.MouseEvent<HTMLCanvasElement>, entit
     const {ants} = useColonyStore.getState();
     if (event.button === 0){
         // send ant to food source if left click
-        var ant = findAntByTask(TaskEnum.Idle);
+        var ant = findAntByTaskAndOrObjective(TaskEnum.Idle, entity.id);
         if (!ant) {
-            ant = findAntByTask(TaskEnum.Foraging, entity.id);
+            ant = findAntByTaskAndOrObjective(TaskEnum.Foraging, entity.id);
         }
         if (!ant) { // find any available ant
             ant = ants.filter(ant => ant.objective !== entity.id && ant.type !== AntTypeEnum.Queen)[0];

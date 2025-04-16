@@ -47,6 +47,10 @@ export const minDistanceBetweenEntities = 50;
 export const eggChance = 0.03;
 export const edgeMargin = 12;
 
+export const foodDecayFactor = 0.3;
+export const fruitSize = 40;
+export const defaultFruitAmount = 50;
+
 export const canvasProportions = {
     width: 0.6,
     height: 0.6,

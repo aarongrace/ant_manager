@@ -1,6 +1,8 @@
 import { v4 } from "uuid";
-import { queenSpeed, soldierCarryingCapacity, soldierSpeed, useSettingsStore, workerCarryingCapacity, workerSpeed } from "../contexts/settingsStore";
+import { carriedEntitySize, queenSpeed, soldierCarryingCapacity, soldierSpeed, useSettingsStore, workerCarryingCapacity, workerSpeed } from "../contexts/settingsStore";
 import { antNames } from "./antNames";
+import { Fruit } from "./Fruit";
+import { EntityTypeEnum, MapEntity } from "./MapEntity";
 
 // Define the TaskEnum type
 export enum TaskEnum {
@@ -15,7 +17,15 @@ export enum AntTypeEnum {
   Soldier = "soldier",
 }
 
-// Define the AntRef type for database communication
+// Define the CarryingRef type for backend communication
+export type CarryingRef = {
+  imgName: string; // Name of the image associated with the carried item
+  amount: number; // Amount of the resource being carried
+  col?: number; // Column of the grid (optional)
+  row?: number; // Row of the grid (optional)
+};
+
+// Define the AntRef type for backend communication
 export type AntRef = {
   id: string;
   name: string;
@@ -27,10 +37,9 @@ export type AntRef = {
   destination: string;
   movingTo: { x: number; y: number }; // New field for frontend only
   anchorPoint: { x: number; y: number }; // New field for frontend only
-  carrying: string;
-  amountCarried: number;
-  speed: number; // Added speed field
+  carrying: CarryingRef | null; // Updated to use CarryingRef for backend
   carryingCapacity: number; // Added carryingCapacity field
+  speed: number; // Added speed field
   sizeFactor: number; // Added sizeFactor field
 };
 
@@ -46,9 +55,8 @@ export class Ant {
   destination: string;
   movingTo: { x: number; y: number }; // New field for frontend only
   anchorPoint: { x: number; y: number }; // New field for frontend only
-  carrying: string;
+  carrying: MapEntity | null; // Updated to use MapEntity for frontend
   carryingCapacity: number; // Moved carryingCapacity above amountCarried
-  amountCarried: number;
   speed: number; // Added speed field
   frame: number; // Moved above spriteFrameTimer
   spriteFrameTimer: number; // Timer for sprite frame animation
@@ -66,11 +74,10 @@ export class Ant {
     this.coords = antRef.coords; // Initialize coords field
     this.objective = antRef.objective; // Initialize objective field
     this.destination = antRef.destination;
-    this.movingTo = { x: 0, y: 0 }; 
+    this.movingTo = { x: 0, y: 0 };
     this.anchorPoint = { x: 0, y: 0 };
-    this.carrying = antRef.carrying;
+    this.carrying = this.convertCarryingToRef(antRef.carrying); // Initialize carrying field
     this.carryingCapacity = antRef.carryingCapacity; // Initialize carryingCapacity field
-    this.amountCarried = antRef.amountCarried;
     this.speed = antRef.speed; // Initialize speed field
     this.frame = 0; // Default value for frame
     this.spriteFrameTimer = 0; // Default value for sprite frame timer
@@ -78,6 +85,33 @@ export class Ant {
     this.isBusy = false; // Default value for isBusy
     this.sizeFactor = antRef.sizeFactor; // Initialize sizeFactor field
     this.movementInitialized = false; // Default value for movementInitialized
+  }
+
+  convertCarryingToRef(carryingRef:CarryingRef | null): MapEntity | null {
+    if (carryingRef) {
+      if (carryingRef.col !== undefined && carryingRef.row !== undefined) {
+        const fruit = new Fruit(
+          { x: 0, y: 0 },
+          carryingRef.amount,
+          carryingRef.col,
+          carryingRef.row,
+          1
+        );
+        fruit.size = carriedEntitySize;
+        return fruit;
+      } else {
+        return new MapEntity(
+          v4(),
+          EntityTypeEnum.FoodResource,
+          { x: 0, y: 0 },
+          carriedEntitySize,
+          carryingRef.amount,
+          carryingRef.imgName
+        );
+      }
+    } else {
+      return null; // Default value for carrying
+    }
   }
 
   updateSpriteFrame(delta: number) {
@@ -110,7 +144,23 @@ export class Ant {
 
   // Convert the Ant instance to an AntRef object
   toAntRef(): AntRef {
-    return {
+    var carryingRef: CarryingRef | null = null;
+    if (this.carrying instanceof Fruit){
+      carryingRef = {
+        imgName: this.carrying.imgName,
+        amount: this.carrying.amount,
+        col: this.carrying.col,
+        row: this.carrying.row,
+      };
+    } else if (this.carrying instanceof MapEntity) {
+      carryingRef = {
+        imgName: this.carrying.imgName,
+        amount: this.carrying.amount,
+      };
+    } else {
+      carryingRef = null; // Default value for carrying
+    }
+      return {
       id: this.id,
       name: this.name,
       age: this.age,
@@ -121,9 +171,8 @@ export class Ant {
       destination: this.destination,
       movingTo: this.movingTo, // Include movingTo field
       anchorPoint: this.anchorPoint, // Include anchorPoint field
-      carrying: this.carrying,
+      carrying: carryingRef, // Include carrying field
       carryingCapacity: this.carryingCapacity, // Include carryingCapacity field
-      amountCarried: this.amountCarried,
       speed: this.speed, // Include speed field
       sizeFactor: this.sizeFactor, // Include sizeFactor field
     };
@@ -133,7 +182,7 @@ export class Ant {
     this.angle = Math.random() * Math.PI * 2; // Random angle between 0 and 2π
   }
 
-  setAngle(){
+  setAngle() {
     const dx = this.movingTo.x - this.coords.x;
     const dy = this.movingTo.y - this.coords.y;
     this.angle = Math.atan2(dy, dx) + Math.PI / 2; // Arc tangent to get the angle in radians
@@ -163,9 +212,8 @@ export const makeNewAnt = (): Ant => {
     destination: "",
     movingTo: { x: 0.5, y: 0.5 }, // Default value for movingTo
     anchorPoint: { x: 0.5, y: 0.5 }, // Default value for anchorPoint
-    carrying: "",
+    carrying: null, // Default value for carrying
     carryingCapacity: carryingCapacity, // Default value for carryingCapacity
-    amountCarried: 0,
     speed: speed, // Default value for speed
     sizeFactor: sizeFactor, // Random sizeFactor between 0.95 and 1.05
   };
@@ -189,9 +237,8 @@ export const recreateQueen = (): Ant => {
     destination: "", // No destination initially
     movingTo: { x: 0.5, y: 0.5 }, // Default movingTo position
     anchorPoint: { x: 0.5, y: 0.5 }, // Default anchorPoint position
-    carrying: "", // Not carrying anything initially
+    carrying: null, // Default value for carrying
     carryingCapacity: 0, // Queens do not carry resources
-    amountCarried: 0, // No resources carried
     speed: queenSpeed, // Very slow speed for the queen
     sizeFactor: 1.0, // Default sizeFactor for the queen
   };

@@ -11,6 +11,5 @@ class MapEntity(BaseModel):
     type: EntityTypeEnum  # Type of the entity (e.g., gateway, foodResource)
     coords: dict  # Absolute coordinates of the entity (e.g., {"x": -100, "y": 50})
     size: dict  # Size of the entity (e.g., {"width": 10, "height": 20})
-    totalAmount: int  # Total amount of the resource (if applicable)
-    remainingAmount: int  # Remaining amount of the resource (if applicable)
+    amount: float  # Amount of the resource (if applicable)
     imgName: str  # Name of the image associated with the entity

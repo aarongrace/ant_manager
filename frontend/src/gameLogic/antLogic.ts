@@ -1,6 +1,9 @@
+import { v4 } from "uuid";
 import { Ant, TaskEnum } from "../baseClasses/Ant";
+import { Fruit } from "../baseClasses/Fruit";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
+import { carriedEntitySize } from "../contexts/settingsStore";
 import { findIdleCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination } from "./antHelperFunctions";
 import { findClosestFoodSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
 
@@ -35,7 +38,7 @@ const updateObjective = (ant: Ant) => {
         if (!hasValidObjective(ant)) {
             console.log("Ant has no objective, setting one.");
             setAntObjective(ant, findClosestFoodSource(ant));
-            if (ant.amountCarried === ant.carryingCapacity) {
+            if (ant.carrying && ant.carrying.amount === ant.carryingCapacity) {
                 setDestination(ant, findGateway());
             }
         }
@@ -81,9 +84,10 @@ const handleDestinationCheck = (ant: Ant) => {
 
 const handleAtGateway = (ant: Ant) => {
     const { food, updateColony } = useColonyStore.getState();
-    updateColony({ food: food + ant.amountCarried });
-    ant.amountCarried = 0; // Reset the amount carried
-    ant.carrying = ""; // Reset the carrying item
+    if (ant.carrying){
+        updateColony({ food: food + ant.carrying.amount});
+        ant.carrying = null;
+    }
 
     if (hasValidObjective(ant)) {
         setDestination(ant, findMapEntity(ant.objective));
@@ -93,20 +97,38 @@ const handleAtGateway = (ant: Ant) => {
 };
 
 const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
-    const isAtCapacity = ant.amountCarried >= ant.carryingCapacity;
+    // const isAtCapacity = ant.carrying ?  ant.carrying.amount >= ant.carryingCapacity : false;
 
-    if (foodSource.remainingAmount <= 0 && !isAtCapacity) {
-        console.warn("Food source is empty, setting new objective.");
-        ant.isBusy = false; // Reset the busy state
-        setAntObjective(ant, findClosestFoodSource(ant));
-    } else if (!isAtCapacity) {
-        ant.isBusy = true; // Set the ant to busy state
-        ant.carrying = foodSource.imgName;
-        ant.amountCarried += 1;
-        foodSource.remainingAmount -= 1;
-        moveWhileBusy(ant);
+    if (ant.carrying) {
+        console.log("Ant is carrying something", ant.carrying);
+        if (ant.carrying.amount >= ant.carryingCapacity) {
+            ant.isBusy = false; // Reset the busy state
+            setDestination(ant, findGateway());
+            return;
+        } else if (foodSource.amount <= 0) { // if the food source is empty
+            ant.isBusy = false; // Reset the busy state
+            setAntObjective(ant, findClosestFoodSource(ant));
+        } else {
+            ant.isBusy = true; // Set the ant to busy state
+            ant.carrying.amount += 1;
+            foodSource.decreaseAmount(1)
+            moveWhileBusy(ant);
+        }
     } else {
-        ant.isBusy = false; // Reset the busy state
-        setDestination(ant, findGateway());
+        if (foodSource instanceof Fruit) {    
+            ant.carrying = new Fruit(undefined, 1, foodSource.col, foodSource.row, 0,carriedEntitySize);
+        } else {
+            ant.carrying = new MapEntity(
+                v4(),
+                EntityTypeEnum.FoodResource,
+                undefined,
+                carriedEntitySize,
+                1,
+                foodSource.imgName
+            );
+        }
+        ant.isBusy = true; // Set the ant to busy state
+        foodSource.amount -= 1;
+
     }
 };

@@ -2,7 +2,8 @@ import { create } from "zustand";
 import { getUserID } from "./userStore";
 
 import { Ant, AntRef, convertAntRefs, convertAnts, makeNewAnt, recreateQueen } from "../baseClasses/Ant";
-import { createRandomMapEntity, MapEntity, recreateNestEntrance } from "../baseClasses/MapEntity"; // Import MapEntity
+import { Fruit, FruitRef } from "../baseClasses/Fruit";
+import { MapEntity, MapEntityRef } from "../baseClasses/MapEntity"; // Import MapEntity
 
 // Define the ColonyStore type
 type ColonyStore = {
@@ -56,10 +57,19 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     } else {
       // Convert AntRef objects to Ant objects
       const ants = convertAntRefs(data.ants as AntRef[]);
+      const mapEntities = data.mapEntities.map((entity: any) => {
+        return MapEntity.fromMapEntityRef(entity);
+      });
+      console.log("mapEntities", mapEntities);
+      const fruits = data.fruits.map((fruit: any) => {
+        return Fruit.fromFruitRef(fruit);
+      });
+      mapEntities.push(...fruits);
 
       set({
         ...data,
         ants, // Replace ants with the converted Ant objects
+        mapEntities, // Replace mapEntities with the converted MapEntity objects
       });
     }
   },
@@ -78,11 +88,13 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
     // Convert Ant objects to AntRef objects
     const ants = convertAnts(colonyState.ants);
+    const refs = convertEntityObjectsToRefs(colonyState.mapEntities);
 
     const colonyInfo = {
       name: colonyState.name,
       ants, // Use the converted AntRef objects
-      mapEntities: colonyState.mapEntities,
+      mapEntities: refs.mapEntityRefs,
+      fruits: refs.fruitRefs,
       eggs: colonyState.eggs,
       food: colonyState.food,
       sand: colonyState.sand,
@@ -125,9 +137,9 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
 
 export const createFreshColony = () => {
-  const randomMapEntity = createRandomMapEntity();
-  const nestEntrance = recreateNestEntrance();
-  const mapEntities = randomMapEntity? [nestEntrance, randomMapEntity] : [nestEntrance];
+  const nestEntrance = MapEntity.recreateNestEntrance();
+  console.log("Nest entrance:", nestEntrance);
+  const mapEntities = [nestEntrance, MapEntity.createRandomMapEntity(),Fruit.createRandomFruit()];
   const queen = recreateQueen();
   queen.coords = {
     x: nestEntrance.coords.x + nestEntrance.size.width / 2.5,
@@ -148,4 +160,21 @@ export const createFreshColony = () => {
     perkPurchased: [],
     initialized: true,
   }
+};
+
+const convertEntityObjectsToRefs = (mapEntities: MapEntity[]): { mapEntityRefs: MapEntityRef[]; fruitRefs: FruitRef[] } => {
+  var mapEntityRefs: MapEntityRef[] = [];
+  var fruitRefs: FruitRef[] = [];
+
+  mapEntities.forEach((entity) => {
+    if (entity instanceof Fruit) {
+      fruitRefs.push(entity.toFruitRef());
+    } else {
+      mapEntityRefs.push(entity.toMapEntityRef());
+    }
+  });
+  return {
+    mapEntityRefs: mapEntityRefs,
+    fruitRefs: fruitRefs,
+  };
 };

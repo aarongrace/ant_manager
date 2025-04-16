@@ -1,7 +1,9 @@
 import { Ant } from "../baseClasses/Ant";
+import { Fruit } from "../baseClasses/Fruit";
 import { EntityTypeEnum, foodSources, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { edgeMargin, minDistanceBetweenEntities, useSettingsStore } from "../contexts/settingsStore";
+import { usePreloadedImagesStore } from "../contexts/preloadImages";
+import { edgeMargin, foodDecayFactor, minDistanceBetweenEntities, useSettingsStore } from "../contexts/settingsStore";
 
 export const findMapEntity = (id: string) => {
     const mapEntities = useColonyStore.getState().mapEntities;
@@ -52,36 +54,15 @@ export const checkIfObjectiveExists = (ant: Ant) => {
     return true;
 };
 
-type Bounds = {
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-};
-
-
-export const getEntityBounds = (entity: MapEntity): Bounds => {
-    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    let sizeFactor = 1;
-
-    if (entity.type === EntityTypeEnum.FoodResource) {
-        const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || 50;
-        sizeFactor = entity.remainingAmount / defaultAmount + 0.3;
-    }
-
-    const posX = entity.coords.x + canvasWidth / 2;
-    const posY = entity.coords.y + canvasHeight / 2;
-
-    const left = posX - (entity.size.width / 2) * sizeFactor;
-    const top = posY - (entity.size.height / 2) * sizeFactor;
-
-    return {
-        left: left,
-        top: top,
-        width: entity.size.width * sizeFactor,
-        height: entity.size.height * sizeFactor,
-    };
-};
+export const decayFoodSource = () => {
+    const { mapEntities } = useColonyStore.getState();
+    const foodSources = mapEntities.filter((entity) => entity.type === EntityTypeEnum.FoodResource);
+    foodSources.forEach((foodSource) => {
+        if (foodSource.amount > 0) {
+            foodSource.amount -= foodDecayFactor;
+        }
+    });
+}
 
 // Helper function to find a random valid position on the map
 export const findRandomCoords = (
@@ -90,8 +71,8 @@ export const findRandomCoords = (
 ): { x: number; y: number } | null => {
     const { mapEntities } = useColonyStore.getState();
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    const validWidth = canvasWidth - edgeMargin * 2; // Adjusted for absolute coordinates
-    const validHeight = canvasHeight - edgeMargin * 2; // Adjusted for absolute coordinates
+    const validWidth = canvasWidth - edgeMargin * 3; // Adjusted for absolute coordinates
+    const validHeight = canvasHeight - edgeMargin * 3; // Adjusted for absolute coordinates
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         const coords = {
@@ -115,3 +96,53 @@ export const findRandomCoords = (
     console.warn("No valid position found after maximum attempts.");
     return null; // Return null if no valid position is found
 };
+
+export type Bounds = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
+  // Method to calculate the bounds of the entity
+export const getEntityBounds = (entity: MapEntity): Bounds => {
+    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
+    let sizeFactor = 1;
+
+    if (entity.type === EntityTypeEnum.FoodResource) {
+      const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || 50;
+      sizeFactor = entity.amount / defaultAmount + 0.3;
+    }
+
+    const posX = entity.coords.x + canvasWidth / 2;
+    const posY = entity.coords.y + canvasHeight / 2;
+
+    const left = posX - (entity.size.width / 2) * sizeFactor;
+    const top = posY - (entity.size.height / 2) * sizeFactor;
+
+    return {
+      left: left,
+      top: top,
+      width: entity.size.width * sizeFactor,
+      height: entity.size.height * sizeFactor,
+    };
+  }
+
+  export const drawEntity = (ctx: CanvasRenderingContext2D, imgName: string, bounds:Bounds) => {
+    const { images } = usePreloadedImagesStore.getState();
+    const img = images[imgName];
+    if (!img) {
+      console.error(`Image for entity ${imgName} not loaded`);
+      return;
+    }
+    ctx.drawImage(img, bounds.left, bounds.top, bounds.width, bounds.height);
+  }
+
+  export const drawFruit = (ctx: CanvasRenderingContext2D, row:number, col:number, bounds:Bounds) => {
+    const { images } = usePreloadedImagesStore.getState();
+    const img = images["fruits"];
+    if (!img) {
+      console.error(`Image for entity ${"fruits"} not loaded`);
+      return;
+    }
+    ctx.drawImage(img,  col*Fruit.spriteDim, row*Fruit.spriteDim,  Fruit.spriteDim, Fruit.spriteDim, bounds.left, bounds.top, bounds.width, bounds.height);
+  }

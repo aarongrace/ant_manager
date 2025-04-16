@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { create } from 'zustand';
 
 // Dynamically import all images from the imgs directory
 const importAllImages = (requireContext: __WebpackModuleApi.RequireContext) => {
@@ -11,11 +11,17 @@ const importAllImages = (requireContext: __WebpackModuleApi.RequireContext) => {
 
 const imageUrls = importAllImages(require.context('../assets/imgs', false, /\.(png|jpe?g|svg)$/));
 
-export function usePreloadedImages() {
-    const [images, setImages] = useState<{ [key: string]: HTMLImageElement }>({});
-    const [isLoaded, setIsLoaded] = useState(false); // New state to track if all images are loaded
+interface PreloadImagesStore {
+    images: { [key: string]: HTMLImageElement };
+    isLoaded: boolean;
+    preloadImages: () => void;
+}
 
-    const preloadImages = () => {
+export const usePreloadedImagesStore = create<PreloadImagesStore>((set) => ({
+    images: {},
+    isLoaded: false,
+
+    preloadImages:  () => {
         const loadedImages: { [key: string]: HTMLImageElement } = {};
         let loadedCount = 0;
 
@@ -33,10 +39,10 @@ export function usePreloadedImages() {
 
 
                 if (loadedCount === imageUrls.length) {
-                    setImages((prevImages) => {
-                        return { ...prevImages, ...loadedImages };
-                    });
-                    setIsLoaded(true);
+                    set((state) => ({
+                        images: { ...state.images, ...loadedImages },
+                        isLoaded: true,
+                    }));
                 }
             };
 
@@ -44,11 +50,5 @@ export function usePreloadedImages() {
                 console.error(`Failed to load image: ${url}`);
             };
         });
-    };
-
-    useEffect(() => {
-        preloadImages();
-    }, []);
-
-    return { images, isLoaded, preloadImages };
-}
+    },
+}));

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useColonyStore } from '../../contexts/colonyStore';
-import { usePreloadedImages } from '../../contexts/preloadImages';
+import { usePreloadedImagesStore } from '../../contexts/preloadImages';
 import { discreteUpdateInterval, useSettingsStore } from '../../contexts/settingsStore';
 import { updateContinuousGameState } from '../../gameLogic/continuousUpdates';
 import { updateDiscreteGameState } from '../../gameLogic/discreteUpdates';
@@ -23,7 +23,7 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
   const { putColonyInfo } = useColonyStore();
   
 
-  const { isLoaded, images } = usePreloadedImages();
+  const { isLoaded, images } = usePreloadedImagesStore.getState();
 
   const animationFrameId= React.useRef<number>(0);
   const lastFrameTime = React.useRef<number>(0);
