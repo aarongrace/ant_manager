@@ -144,6 +144,10 @@ A series of manual tests and unit tests will be implemented for operations such 
 
 The conversion between camel case and snake case is NOT automatic when sending data between frontend and backend. Please only use camel case for all class fields relating to backend data such as tasks or units!!! Mismatches in field names will result in **422 Unprocessable Entity** when sending objects.
 
+### Coordinate System
+
+The coordinates are set up so that (1,1) is in the lower right quadrant, and (-1,-1) is in the top left quadrant, and (0,0) is in the center. It is conceived this way so to allow expansion on all sides and to accommodate for the fact that y coordinates for display and for handling inputs start from the top. 
+
 ### npm Modules
 
 If you want to install a npm module for the frontend, you need to cd to the frontend folder and install it there with npm install .... The npm package.json and node modules in the root folder are only used for concurrently and installing packages there might confuse VSCode into thinking that certain modules are enabled for the frontend when they are not.

@@ -4,7 +4,7 @@ import { usePreloadedImagesStore } from '../../contexts/preloadImages';
 import { discreteUpdateInterval, useSettingsStore } from '../../contexts/settingsStore';
 import { updateContinuousGameState } from '../../gameLogic/continuousUpdates';
 import { updateDiscreteGameState } from '../../gameLogic/discreteUpdates';
-import { handleMouseDown } from '../../gameLogic/handleMouseDown';
+import { handleMouseDown, handleMouseMove } from '../../gameLogic/handleMouse';
 
 
 
@@ -14,8 +14,6 @@ interface CanvasProps {
 }
 
 const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
-  
-
 
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const { canvasWidth, canvasHeight, syncInterval } = useSettingsStore();
@@ -70,7 +68,7 @@ const Canvas: React.FC <CanvasProps> = ({draw, establishContext}) => {
     }
   },[ canvasRef ]);
 
-  return <canvas ref={canvasRef} onMouseDown={handleMouseDown}
+  return <canvas ref={canvasRef} onMouseDown={handleMouseDown} onMouseMove={(e) => handleMouseMove(e, canvasRef.current!)}
     width = {canvasWidth} height = {canvasHeight} 
     style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}
     onContextMenu={(e) => e.preventDefault()}

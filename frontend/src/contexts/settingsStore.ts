@@ -14,6 +14,9 @@ type SettingsStore = {
     foodConsumptionScaleFactor: number;
     foodWasteBaseline: number;
 
+    hoveredEntityId: string | null; // doesn't really belong here, but for now it's ok
+    setHoveredEntityId: (id: string | null) => void;
+
     setCanvasDimensions: (width: number, height: number) => void;
 };
 
@@ -30,6 +33,9 @@ export const useSettingsStore = create<SettingsStore> ((set) => ({
     queenFoodConsumption: 6,
     foodConsumptionScaleFactor: 0.13,
     foodWasteBaseline: 200,
+
+    hoveredEntityId: null,
+    setHoveredEntityId: (id: string | null) => set({ hoveredEntityId: id }),
 
     setCanvasDimensions : (width: number, height: number) => set(() => ({
         canvasWidth: width,

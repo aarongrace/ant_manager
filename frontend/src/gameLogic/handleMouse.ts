@@ -1,7 +1,10 @@
 import { AntTypeEnum, TaskEnum } from "../baseClasses/Ant";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
+import { useSettingsStore } from "../contexts/settingsStore";
 import { findAntByTargetEntity, findAntByTaskAndOrObjective, setAntObjective, setAntToIdle } from "./antHelperFunctions";
+
+import { debounce } from 'lodash';
 
 export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = event.currentTarget;
@@ -55,3 +58,28 @@ const handleFoodSourceClick = (event: React.MouseEvent<HTMLCanvasElement>, entit
     }
 
 }
+
+export const handleMouseMove = debounce((e: React.MouseEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement) => {
+    console.log("Mouse move event", e);
+    const rect = canvas.getBoundingClientRect();
+    const worldX = e.clientX - rect.left;
+    const worldY = e.clientY - rect.top;
+    const { mapEntities } = useColonyStore.getState();
+    const { setHoveredEntityId } = useSettingsStore.getState();
+    let hoveredId: string | null = null;
+
+
+    mapEntities.forEach((entity) => {
+        const bounds = entity.getBounds();
+        if (
+            worldX >= bounds.left &&
+            worldX <= bounds.left + bounds.width &&
+            worldY >= bounds.top &&
+            worldY <= bounds.top + bounds.height
+        ) {
+            hoveredId = entity.id;
+        }
+    });
+    setHoveredEntityId(hoveredId);
+    
+}, 25);

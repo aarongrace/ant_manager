@@ -7,6 +7,8 @@ import { carriedEntitySize } from "../contexts/settingsStore";
 import { findIdleCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination } from "./antHelperFunctions";
 import { findClosestFoodSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
 
+//todo add capability to draw multiple carried entities
+
 export const handleAntLogic = (ant: Ant) => {
     updateObjective(ant);
     handleDestinationCheck(ant);
@@ -100,7 +102,6 @@ const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
     // const isAtCapacity = ant.carrying ?  ant.carrying.amount >= ant.carryingCapacity : false;
 
     if (ant.carrying) {
-        console.log("Ant is carrying something", ant.carrying);
         if (ant.carrying.amount >= ant.carryingCapacity) {
             ant.isBusy = false; // Reset the busy state
             setDestination(ant, findGateway());
@@ -111,6 +112,13 @@ const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
         } else {
             ant.isBusy = true; // Set the ant to busy state
             ant.carrying.amount += 1;
+            // handle the case where ant is eating from another source
+            if (ant.carrying instanceof Fruit && foodSource instanceof Fruit) {
+                if (foodSource.col !== ant.carrying.col || foodSource.row !== ant.carrying.row) {
+                    ant.carrying.col = foodSource.col;
+                    ant.carrying.row = foodSource.row;
+                }
+            }
             foodSource.decreaseAmount(1)
             moveWhileBusy(ant);
         }

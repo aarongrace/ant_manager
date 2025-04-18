@@ -1,8 +1,6 @@
 import { Ant } from "../baseClasses/Ant";
-import { Fruit } from "../baseClasses/Fruit";
 import { EntityTypeEnum, foodSources, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { edgeMargin, foodDecayFactor, minDistanceBetweenEntities, useSettingsStore } from "../contexts/settingsStore";
 
 export const findMapEntity = (id: string) => {
@@ -110,7 +108,7 @@ export const getEntityBounds = (entity: MapEntity): Bounds => {
 
     if (entity.type === EntityTypeEnum.FoodResource) {
       const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || 50;
-      sizeFactor = entity.amount / defaultAmount + 0.3;
+      sizeFactor = entity.amount / defaultAmount + 0.5;
     }
 
     const posX = entity.coords.x + canvasWidth / 2;
@@ -127,22 +125,7 @@ export const getEntityBounds = (entity: MapEntity): Bounds => {
     };
   }
 
-  export const drawEntity = (ctx: CanvasRenderingContext2D, imgName: string, bounds:Bounds) => {
-    const { images } = usePreloadedImagesStore.getState();
-    const img = images[imgName];
-    if (!img) {
-      console.error(`Image for entity ${imgName} not loaded`);
-      return;
-    }
-    ctx.drawImage(img, bounds.left, bounds.top, bounds.width, bounds.height);
-  }
 
   export const drawFruit = (ctx: CanvasRenderingContext2D, row:number, col:number, bounds:Bounds) => {
-    const { images } = usePreloadedImagesStore.getState();
-    const img = images["fruits"];
-    if (!img) {
-      console.error(`Image for entity ${"fruits"} not loaded`);
-      return;
-    }
-    ctx.drawImage(img,  col*Fruit.spriteDim, row*Fruit.spriteDim,  Fruit.spriteDim, Fruit.spriteDim, bounds.left, bounds.top, bounds.width, bounds.height);
+
   }

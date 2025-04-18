@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
+import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { defaultFruitAmount, fruitSize } from "../contexts/settingsStore";
-import { Bounds, drawFruit, findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { Bounds, findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
 import { EntityTypeEnum, MapEntity } from "./MapEntity";
 
 // Define the FruitRef type for backend communication
@@ -48,8 +49,14 @@ export class Fruit extends MapEntity {
     };
   }
 
-  draw(ctx: CanvasRenderingContext2D, bounds: Bounds = getEntityBounds(this)) {
-    drawFruit(ctx, this.row, this.col, bounds);
+  draw(ctx: CanvasRenderingContext2D, bounds: Bounds = getEntityBounds(this), isHovered: boolean = false): void {
+    const { images } = usePreloadedImagesStore.getState();
+    const img = isHovered ?  images["fruits_hovered"]: images["fruits"];
+    if (!img) {
+      console.error(`Image for entity ${"fruits"} not loaded`);
+      return;
+    }
+    ctx.drawImage(img,  this.col*Fruit.spriteDim, this.row*Fruit.spriteDim,  Fruit.spriteDim, Fruit.spriteDim, bounds.left, bounds.top, bounds.width, bounds.height);
   }
 
   // Static method to create a Fruit instance from a FruitRef

@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
+import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { defaultFruitAmount, fruitSize as fruitLength, useSettingsStore } from "../contexts/settingsStore";
-import { Bounds, drawEntity, findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { Bounds, findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
 
 export enum EntityTypeEnum {
   Gateway = "gateway",
@@ -75,8 +76,15 @@ export class MapEntity {
 
   getBounds = ()=> getEntityBounds(this);
 
-  draw(ctx: CanvasRenderingContext2D, bounds:Bounds = this.getBounds()) {
-    drawEntity(ctx, this.imgName, bounds);
+  draw(ctx: CanvasRenderingContext2D, bounds:Bounds = this.getBounds(), isHovered: boolean = false): void {
+    const { images } = usePreloadedImagesStore.getState();
+    const hoveredImgName = `${this.imgName}_hovered`;
+    const img = isHovered && hoveredImgName in images ? images[hoveredImgName]: images[this.imgName] ;
+    if (!img) {
+      console.error(`Image for entity ${this.imgName} not loaded`);
+      return;
+    }
+    ctx.drawImage(img, bounds.left, bounds.top, bounds.width, bounds.height);
   }
 
   // Static method to create a random map entity
@@ -130,6 +138,7 @@ type foodSourceType = {
 };
 
 export const foodSources: foodSourceType[] = [
-  { name: "ham", default_amount: 50, default_width: 64, default_height: 48 },
+  { name: "ham", default_amount: 50, default_width: 48, default_height: 36},
+
   { name: "fruits", default_amount: defaultFruitAmount, default_width: fruitLength, default_height: fruitLength },
 ];

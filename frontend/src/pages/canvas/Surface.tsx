@@ -41,8 +41,9 @@ export const SurfaceCanvas: React.FC = (props) => {
     }
 
     function drawMapEntities(ctx: CanvasRenderingContext2D) {
+        const { hoveredEntityId } = useSettingsStore.getState();
         mapEntities.forEach((entity) => {
-            entity.draw(ctx);
+            entity.draw(ctx, entity.getBounds(), entity.id === hoveredEntityId);
         });
     }
 
@@ -104,6 +105,7 @@ export const SurfaceCanvas: React.FC = (props) => {
             ctx.restore();
         });
     }
+
 
     return <CustomCanvas draw={draw} establishContext={establishContext} />;
 };

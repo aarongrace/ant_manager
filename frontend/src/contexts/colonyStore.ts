@@ -139,7 +139,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 export const createFreshColony = () => {
   const nestEntrance = MapEntity.recreateNestEntrance();
   console.log("Nest entrance:", nestEntrance);
-  const mapEntities = [nestEntrance, MapEntity.createRandomMapEntity(),Fruit.createRandomFruit()];
+  const mapEntities = [nestEntrance, Fruit.createRandomFruit()];
   const queen = recreateQueen();
   queen.coords = {
     x: nestEntrance.coords.x + nestEntrance.size.width / 2.5,
