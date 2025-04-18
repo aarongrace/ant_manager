@@ -1,11 +1,29 @@
-import random
 import numpy as np
 from PIL import Image
-import os
-from collections import deque
 
 rows = 6
 cols = 38
+
+def stretch_objects(obj_array: np.ndarray, scale_factor: float) -> np.ndarray:
+    """
+    Stretch the objects in the array by a given scale factor.
+    """
+    stretched_array = np.empty((rows, cols, int(obj_array.shape[2] * scale_factor), int(obj_array.shape[3] * scale_factor), 4), dtype=np.uint8)
+    for r in range(rows):
+        for c in range(cols):
+            obj = obj_array[r][c]
+            # Resize each object
+            img = Image.fromarray(obj)
+            new_size = (int(obj.shape[1] * scale_factor), int(obj.shape[0] * scale_factor))
+            # img = img.resize(new_size, Image.LANCZOS)
+            r_img, g_img, b_img, a_img = img.split()
+            r_resized = r_img.resize(new_size, Image.LANCZOS)
+            g_resized = g_img.resize(new_size, Image.LANCZOS)
+            b_resized = b_img.resize(new_size, Image.LANCZOS)
+            a_resized = a_img.resize(new_size, Image.NEAREST)
+            img = Image.merge("RGBA", (r_resized, g_resized, b_resized, a_resized))
+            stretched_array[r][c] = np.array(img)
+    return stretched_array
 
 def get_darker_color(color, factor=0.7):
     """Create a darker version of the given color."""
@@ -38,7 +56,7 @@ def create_image_with_boundaries(obj_ndarray:np.ndarray, name="f.png"):
             combined_image.paste(temp_obj, (x_offset, y_offset))
 
     # Show the combined image
-    # combined_image.save(name)
+    combined_image.save(name)
     return combined_image
 
 def find_objects(image):
@@ -71,14 +89,25 @@ def add_outlines_with_padding(image_path, output_path, padding=1, darkness_facto
     obj_width = width // cols
     obj_height = height // rows
 
+    obj_array = find_objects(img)
+    print("Object array shape:", obj_array.shape)
+    combined_obj_image = create_image_with_boundaries(obj_array, "init_test.png")
+
+    scale_factor = 2
+    obj_array = stretch_objects(obj_array, scale_factor)
+    width, height = (width * scale_factor, height * scale_factor)
+    obj_width = int(obj_width * scale_factor)
+    obj_height = int(obj_height * scale_factor)
+    combined_stretched_image = create_image_with_boundaries(obj_array, "stretched_test.png")
+
+
     new_obj_width = obj_width + 2 * padding
     new_obj_height = obj_height + 2 * padding
     new_width = cols * new_obj_width
     new_height = rows * new_obj_height
     
     # Find all objects
-    obj_array = find_objects(img)
-    print("Object array shape:", obj_array.shape)
+
 
     changed_array = np.empty((rows, cols, obj_width+padding*2, obj_height+padding*2,4), dtype=np.uint8)
    
