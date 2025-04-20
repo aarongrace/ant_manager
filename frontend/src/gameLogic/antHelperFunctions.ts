@@ -1,13 +1,61 @@
-import { Ant, AntTypeEnum, TaskEnum } from "../baseClasses/Ant";
+import { Ant, AntTypes, TaskTypes } from "../baseClasses/Ant";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { edgeMargin, useSettingsStore } from "../contexts/settingsStore";
 import { findMapEntity } from "./entityHelperFunctions";
 
-export const findAntByTaskAndOrObjective = (task: TaskEnum, objectiveId: string = ""): Ant | null => {
+
+export const findClosestAnt = (coords: { x: number, y: number }): Ant | null => {
+    const { ants } = useColonyStore.getState();
+    let closestAnt: Ant | null = null;
+    let minDistance = Infinity;
+
+    for (let ant of ants) {
+        const dx = ant.coords.x - coords.x;
+        const dy = ant.coords.y - coords.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestAnt = ant;
+        }
+    }
+    return closestAnt;
+}
+
+
+export const setOneAntToTask = (task: TaskTypes):void => {
+    const { ants } = useColonyStore.getState();
+    const suitableType = task === TaskTypes.Forage ? AntTypes.Worker : AntTypes.Soldier;
+    for (let ant of ants) {
+        if (ant.task != task && ant.type === suitableType) {
+            ant.task = task;
+            return;
+        }
+    }
+    for (let ant of ants) {
+        if (ant.task != task && ant.type !== suitableType) {
+            ant.task = task;
+            return;
+        }
+    }
+}
+
+
+export const findAntByCondition = (condition: (ant: Ant) => boolean): Ant | null => {
     const { ants } = useColonyStore.getState();
     for (let ant of ants) {
-        if (ant.task === task && ant.type !== AntTypeEnum.Queen && ant.objective !== objectiveId) {
+        if (condition(ant)) {
+            return ant;
+        }
+    }
+    return null;
+};
+
+export const findAntByTaskAndOrObjective = (task: TaskTypes, objectiveId: string = ""): Ant | null => {
+    const { ants } = useColonyStore.getState();
+    for (let ant of ants) {
+        if (ant.task === task && ant.type !== AntTypes.Queen && ant.objective !== objectiveId) {
             console.log("Found ant with task:", task);
             return ant;
         }
@@ -23,7 +71,7 @@ export const setAntObjective = (ant: Ant, objective: MapEntity | undefined) => {
     setDestination(ant, objective);
     switch (objective.type) {
         case EntityTypeEnum.FoodResource:
-            ant.task = TaskEnum.Foraging;
+            ant.task = TaskTypes.Forage;
             break;
     }
     ant.isBusy = false;
@@ -66,12 +114,12 @@ export const findAntByTargetEntity = (entity: MapEntity): Ant | null => {
 
 export const setAntToIdle = (ant: Ant) => {
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    ant.task = TaskEnum.Idle;
+    ant.task = TaskTypes.Idle;
     ant.objective = "";
     ant.destination = "";
     ant.isBusy = false;
 
-    if (ant.type === AntTypeEnum.Queen) {
+    if (ant.type === AntTypes.Queen) {
         ant.anchorPoint = { ...ant.coords };
         ant.movingTo = { ...ant.anchorPoint };
     } else {
@@ -119,3 +167,39 @@ export const reignInCoords = (coords: { x: number, y: number }) => {
     coords.x = Math.max(-canvasWidth / 2 + edgeMargin, Math.min(canvasWidth / 2 - edgeMargin, coords.x));
     coords.y = Math.max(-canvasHeight / 2 + edgeMargin, Math.min(canvasHeight / 2 - edgeMargin, coords.y));
 }
+
+// Helper method to get a random AntType
+export const getRandomAntType = (): AntTypes => {
+  const antTypes = Object.values(AntTypes).filter(
+    (antType) => antType !== AntTypes.Queen
+  ) as AntTypes[];
+  return antTypes[Math.floor(Math.random() * antTypes.length)];
+};
+
+
+export const findOrRemoveAntForFoodSource = (entity: MapEntity, shouldRemove: boolean) => {
+    const { ants } = useColonyStore.getState();
+    if (!shouldRemove) {
+        // send ant to food source if left click
+        var ant = findAntByTaskAndOrObjective(TaskTypes.Idle, entity.id);
+        if (!ant) {
+            ant = findAntByTaskAndOrObjective(TaskTypes.Forage, entity.id);
+        }
+        if (!ant) { // find any available ant
+            ant = ants.filter(ant => ant.objective !== entity.id && ant.type !== AntTypes.Queen)[0];
+        }
+        if (ant) {
+            setAntObjective(ant, entity);
+            console.log(`Assigned ${ant.id} to food source ${entity.id}`);
+        } else {
+            console.log("No available ants to assign to food source");
+        }
+    } else {
+        // remove food source if right click
+        const ant = findAntByTargetEntity(entity);
+        if (ant) {
+            setAntToIdle(ant);
+        }
+    }
+}
+

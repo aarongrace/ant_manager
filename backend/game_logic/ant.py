@@ -8,8 +8,9 @@ class TypeEnum(str, Enum):
 
 class TaskEnum(str, Enum):
     idle = "idle"
-    foraging = "foraging"
-    attacking = "attacking"
+    forage = "forage"
+    attack= "attack"
+    patrol = "patrol"
 
 class Ant(BaseModel):
     id: str  # Unique identifier for the ant
@@ -17,6 +18,7 @@ class Ant(BaseModel):
     age: int  # Age of the ant
     type: str  # Type of the ant (e.g., worker, soldier, queen)
     task: TaskEnum  # Current task of the ant
+    hp: int
     coords: dict  # Absolute coordinates of the ant (e.g., {"x": -100, "y": 50})
     objective: str  # ID of the objective entity the ant is interacting with
     destination: str  # ID of the object the ant is heading to

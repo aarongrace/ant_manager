@@ -1,16 +1,22 @@
 import React from 'react';
-import { Ant, AntTypeEnum } from '../../baseClasses/Ant';
+import { Ant, AntTypeInfo, AntTypes } from '../../baseClasses/Ant';
+import { TaskIcon, useIconsStore } from '../../baseClasses/Icon';
+import { Bounds } from '../../baseClasses/Models';
 import { useColonyStore } from '../../contexts/colonyStore';
 import { usePreloadedImagesStore } from '../../contexts/preloadImages';
 import { useSettingsStore, workerCarryingCapacity } from '../../contexts/settingsStore';
-import { Bounds } from '../../gameLogic/entityHelperFunctions';
 import { default as CustomCanvas } from "./Canvas";
 
 export const SurfaceCanvas: React.FC = (props) => {
     const [ctx, setCtx] = React.useState<CanvasRenderingContext2D | null>(null);
-    const { ants, mapEntities } = useColonyStore();
-    const { images } = usePreloadedImagesStore.getState()
-    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
+    const { ants, mapEntities, enemies } = useColonyStore();
+    const { images, isLoaded } = usePreloadedImagesStore();
+    const { taskIcons: icons } = useIconsStore();
+
+
+
+
+    const { canvasWidth, canvasHeight } = useSettingsStore();
 
     const establishContext = (context: CanvasRenderingContext2D) => {
         console.log("Establishing context");
@@ -18,15 +24,31 @@ export const SurfaceCanvas: React.FC = (props) => {
     };
 
     function draw(delta: number) {
+        if (!isLoaded) {
+            console.error("Images not loaded");
+            return;
+        }
+
         if (ctx) {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             drawBackground(ctx, () => {
                 drawMapEntities(ctx);
                 drawAnts(ctx, ants);
+                drawEnemies(ctx);
+                drawIcons(ctx);
             });
         } else {
             console.log("in drawing Context not established yet");
         }
+    }
+
+    function drawIcons(ctx: CanvasRenderingContext2D) {
+        ctx.save();
+        ctx.fillStyle = "rgba(30, 33, 39, 0.3)";
+        const bounds = TaskIcon.getTaskIconAreaBounds();
+        ctx.fillRect(bounds.left, bounds.top, bounds.width, bounds.height);
+        ctx.restore();
+        icons.forEach((icon) => { icon.draw(ctx); });
     }
 
     function drawBackground(ctx: CanvasRenderingContext2D, callback: () => void) {
@@ -35,7 +57,6 @@ export const SurfaceCanvas: React.FC = (props) => {
             console.error("Background image not loaded");
             return;
         }
-
         ctx.drawImage(bgImage, 0, 0, ctx.canvas.width, ctx.canvas.height);
         callback();
     }
@@ -44,6 +65,12 @@ export const SurfaceCanvas: React.FC = (props) => {
         const { hoveredEntityId } = useSettingsStore.getState();
         mapEntities.forEach((entity) => {
             entity.draw(ctx, entity.getBounds(), entity.id === hoveredEntityId);
+        });
+    }
+
+    function drawEnemies(ctx: CanvasRenderingContext2D) {
+        enemies.forEach((enemy) => {
+            enemy.draw(ctx);
         });
     }
 
@@ -81,6 +108,9 @@ export const SurfaceCanvas: React.FC = (props) => {
 
             ctx.save();
             ctx.translate(pos_x, pos_y);
+            if (ant.hp < AntTypeInfo[ant.type].defaultHp) { // has to be done before rotation
+                ant.drawHpBar(ctx);
+            };
             ctx.rotate(ant.angle);
             ctx.drawImage(
                 antSprites,
@@ -97,11 +127,12 @@ export const SurfaceCanvas: React.FC = (props) => {
             if (ant.carrying) {
                 const carriedObject = ant.carrying;
                 const carriedScale = carriedObject.amount / workerCarryingCapacity; // using the worker carrying capacity as a ref
-                const heightOffset = ant.type === AntTypeEnum.Soldier ? -spriteHeight / 2.2 : -spriteHeight / 2.8;
+                const heightOffset = ant.type === AntTypes.Soldier ? -spriteHeight / 2.2 : -spriteHeight / 2.8;
                 ctx.translate(0, heightOffset);
                 const carriedBounds : Bounds = { left: -carriedObject.size.width / 2 * carriedScale, top: -carriedObject.size.height / 2 * carriedScale, width: carriedObject.size.width * carriedScale, height: carriedObject.size.height * carriedScale };
                 carriedObject.draw(ctx, carriedBounds);
             }
+
             ctx.restore();
         });
     }

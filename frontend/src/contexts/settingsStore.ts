@@ -59,7 +59,7 @@ export const defaultFruitAmount = 50;
 
 export const canvasProportions = {
     width: 0.6,
-    height: 0.6,
+    height: 0.77,
 };
 export const idleSpeedFactor = 0.5;
 

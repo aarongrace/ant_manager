@@ -1,4 +1,4 @@
-import { Ant, TaskEnum } from "../baseClasses/Ant";
+import { Ant, TaskTypes } from "../baseClasses/Ant";
 import { useColonyStore } from "../contexts/colonyStore";
 import { edgeMargin, idleSpeedFactor, useSettingsStore } from "../contexts/settingsStore";
 import { reignInCoords } from "./antHelperFunctions";
@@ -9,11 +9,14 @@ export const updateContinuousGameState = (delta: number) => {
 };
 
 const updateAntMovements = (delta: number) => {
-    const { ants } = useColonyStore.getState();
+    const { ants, enemies } = useColonyStore.getState();
 
     ants.forEach((ant) => {
         moveAnt(ant, delta);
         ant.updateSpriteFrame(delta);
+    });
+    enemies.forEach((enemy) => {
+        enemy.continuousUpdate(delta);
     });
 };
 
@@ -25,7 +28,7 @@ const moveAnt = (ant: Ant, delta: number) => {
     reignInCoords(ant.movingTo);
 
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    const speedFactor = ant.task === TaskEnum.Idle ? idleSpeedFactor : 1;
+    const speedFactor = ant.task === TaskTypes.Idle ? idleSpeedFactor : 1;
 
     const dx = ant.movingTo.x - ant.coords.x;
     const dy = ant.movingTo.y - ant.coords.y;

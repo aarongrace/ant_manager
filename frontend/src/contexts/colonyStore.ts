@@ -1,14 +1,16 @@
 import { create } from "zustand";
 import { getUserID } from "./userStore";
 
-import { Ant, AntRef, convertAntRefs, convertAnts, makeNewAnt, recreateQueen } from "../baseClasses/Ant";
-import { Fruit, FruitRef } from "../baseClasses/Fruit";
-import { MapEntity, MapEntityRef } from "../baseClasses/MapEntity"; // Import MapEntity
+import { Ant, AntData, convertAntData, convertAnts, makeNewAnt, recreateQueen } from "../baseClasses/Ant";
+import { createEnemy, Enemy, EnemyData } from "../baseClasses/Enemy";
+import { Fruit, FruitData } from "../baseClasses/Fruit";
+import { MapEntity, MapEntityData } from "../baseClasses/MapEntity"; // Import MapEntity
 
 // Define the ColonyStore type
 type ColonyStore = {
   name: string;
   ants: Ant[];
+  enemies: Enemy[]; // Add enemies field
   mapEntities: MapEntity[];
   eggs: number;
   food: number;
@@ -24,6 +26,7 @@ type ColonyStore = {
 export const useColonyStore = create<ColonyStore>((set, get) => ({
   name: "",
   ants: [],
+  enemies: [], // Initialize enemies
   mapEntities: [],
   eggs: 5,
   food: 0,
@@ -55,20 +58,21 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       });
       await get().putColonyInfo();
     } else {
-      // Convert AntRef objects to Ant objects
-      const ants = convertAntRefs(data.ants as AntRef[]);
+      const ants = convertAntData(data.ants as AntData[]);
+      const enemies = data.enemies.map((enemy: EnemyData) => Enemy.fromData(enemy)); // Convert enemies
       const mapEntities = data.mapEntities.map((entity: any) => {
-        return MapEntity.fromMapEntityRef(entity);
+        return MapEntity.fromMapEntityData(entity);
       });
       console.log("mapEntities", mapEntities);
       const fruits = data.fruits.map((fruit: any) => {
-        return Fruit.fromFruitRef(fruit);
+        return Fruit.fromFruitData(fruit);
       });
       mapEntities.push(...fruits);
 
       set({
         ...data,
         ants, // Replace ants with the converted Ant objects
+        enemies, // Replace enemies with the converted Enemy objects
         mapEntities, // Replace mapEntities with the converted MapEntity objects
       });
     }
@@ -86,15 +90,16 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       return;
     }
 
-    // Convert Ant objects to AntRef objects
     const ants = convertAnts(colonyState.ants);
-    const refs = convertEntityObjectsToRefs(colonyState.mapEntities);
+    const enemies = colonyState.enemies.map((enemy) => Enemy.toData(enemy)); // Convert enemies to EnemyData
+    const entityData = convertEntityObjectsToData(colonyState.mapEntities);
 
     const colonyInfo = {
       name: colonyState.name,
-      ants, // Use the converted AntRef objects
-      mapEntities: refs.mapEntityRefs,
-      fruits: refs.fruitRefs,
+      ants:ants,
+      enemies: enemies, // Include enemies in the payload
+      mapEntities: entityData.mapEntityData,
+      fruits: entityData.fruitData,
       eggs: colonyState.eggs,
       food: colonyState.food,
       sand: colonyState.sand,
@@ -126,15 +131,12 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
   // Update colony state
   updateColony: (updates: Partial<ColonyStore>) => {
-    // console.log("Updating colony with partial updates:", updates);
     set((state) => ({
       ...state,
       ...updates,
     }));
   },
 }));
-
-
 
 export const createFreshColony = () => {
   const nestEntrance = MapEntity.recreateNestEntrance();
@@ -145,11 +147,13 @@ export const createFreshColony = () => {
     x: nestEntrance.coords.x + nestEntrance.size.width / 2.5,
     y: nestEntrance.coords.y + nestEntrance.size.height / 3,
   };
+  const enemy = createEnemy(); // Create an enemy
 
   const ants = [queen, makeNewAnt(), makeNewAnt(), makeNewAnt()];
 
   return {
     ants: ants,
+    enemies: [enemy], // Initialize enemies
     name: "New Colony",
     map: "nest",
     eggs: 5,
@@ -159,22 +163,22 @@ export const createFreshColony = () => {
     mapEntities: mapEntities,
     perkPurchased: [],
     initialized: true,
-  }
+  };
 };
 
-const convertEntityObjectsToRefs = (mapEntities: MapEntity[]): { mapEntityRefs: MapEntityRef[]; fruitRefs: FruitRef[] } => {
-  var mapEntityRefs: MapEntityRef[] = [];
-  var fruitRefs: FruitRef[] = [];
+const convertEntityObjectsToData = (mapEntities: MapEntity[]): { mapEntityData: MapEntityData[]; fruitData: FruitData[] } => {
+  var mapEntityData: MapEntityData[] = [];
+  var fruitData: FruitData[] = [];
 
   mapEntities.forEach((entity) => {
     if (entity instanceof Fruit) {
-      fruitRefs.push(entity.toFruitRef());
+      fruitData.push(entity.toFruitData());
     } else {
-      mapEntityRefs.push(entity.toMapEntityRef());
+      mapEntityData.push(entity.toMapEntityData());
     }
   });
   return {
-    mapEntityRefs: mapEntityRefs,
-    fruitRefs: fruitRefs,
+    mapEntityData: mapEntityData,
+    fruitData: fruitData,
   };
 };

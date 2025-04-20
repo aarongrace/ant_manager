@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { Ant, TaskEnum } from "../baseClasses/Ant";
+import { Ant, TaskTypes } from "../baseClasses/Ant";
 import { Fruit } from "../baseClasses/Fruit";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
@@ -20,14 +20,14 @@ export const initializeAntLogic = () => {
     ants.forEach((ant) => {
 
         switch (ant.task) {
-            case TaskEnum.Foraging:
+            case TaskTypes.Forage:
                 if (!hasValidObjective(ant)) {
                     setAntObjective(ant, findClosestFoodSource(ant));
                 } else {
                     setDestination(ant, findMapEntity(ant.destination)); // this sets the movement too
                 }
                 break;
-            case TaskEnum.Idle:
+            case TaskTypes.Idle:
                 setAntToIdle(ant);
                 break;
         }
@@ -36,7 +36,7 @@ export const initializeAntLogic = () => {
 };
 
 const updateObjective = (ant: Ant) => {
-    if (ant.task === TaskEnum.Foraging) {
+    if (ant.task === TaskTypes.Forage) {
         if (!hasValidObjective(ant)) {
             console.log("Ant has no objective, setting one.");
             setAntObjective(ant, findClosestFoodSource(ant));
@@ -44,7 +44,7 @@ const updateObjective = (ant: Ant) => {
                 setDestination(ant, findGateway());
             }
         }
-    } else if (ant.task === TaskEnum.Idle) {
+    } else if (ant.task === TaskTypes.Idle) {
         if (hasArrived(ant)) {
             if (Math.random() < 0.2) {
                 ant.randomlyRotate();
@@ -57,12 +57,12 @@ const updateObjective = (ant: Ant) => {
 };
 
 const handleDestinationCheck = (ant: Ant) => {
-    if (ant.task === TaskEnum.Idle) {
+    if (ant.task === TaskTypes.Idle) {
         return;
     }
     if (hasArrived(ant)) {
         switch (ant.task) {
-            case TaskEnum.Foraging:
+            case TaskTypes.Forage:
                 const destinationEntity = findMapEntity(ant.destination);
                 if (!destinationEntity) {
                     console.warn("Destination entity not found");

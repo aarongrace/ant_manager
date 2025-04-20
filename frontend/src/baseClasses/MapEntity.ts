@@ -1,15 +1,16 @@
 import { v4 } from "uuid";
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { defaultFruitAmount, fruitSize as fruitLength, useSettingsStore } from "../contexts/settingsStore";
-import { Bounds, findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { findOrRemoveAntForFoodSource } from "../gameLogic/antHelperFunctions";
+import { findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { Bounds, InteractiveElement } from "./Models";
 
 export enum EntityTypeEnum {
   Gateway = "gateway",
   FoodResource = "foodResource",
 }
 
-// Define the MapEntityRef type for backend communication
-export type MapEntityRef = {
+export type MapEntityData = {
   id: string; // Unique identifier for the map entity
   type: EntityTypeEnum; // Type of the entity (e.g., gateway, foodResource)
   coords: { x: number; y: number }; // Absolute coordinates of the entity
@@ -18,13 +19,14 @@ export type MapEntityRef = {
   imgName: string; // Name of the image associated with the entity
 };
 
-export class MapEntity {
+export class MapEntity implements InteractiveElement{
   id: string; // Unique identifier for the map entity
   type: EntityTypeEnum; // Type of the entity (e.g., gateway, foodResource)
   coords: { x: number; y: number }; // Absolute coordinates of the entity (e.g., { x: -100, y: 50 })
   size: { width: number; height: number }; // Size of the entity (e.g., { width: 10, height: 20 })
   amount: number; // Amount of the resource (if applicable)
   imgName: string; // Name of the image associated with the entity
+  clickable: boolean = true; // Whether the entity is clickable or not
 
   constructor(
     id: string = v4(),
@@ -40,10 +42,10 @@ export class MapEntity {
     this.size = size;
     this.amount = amount;
     this.imgName = imgName;
+    this.clickable = this.type !== EntityTypeEnum.Gateway;
   }
 
-  // Convert the MapEntity instance to a MapEntityRef object
-  toMapEntityRef(): MapEntityRef {
+  toMapEntityData(): MapEntityData {
     return {
       id: this.id,
       type: this.type,
@@ -61,15 +63,14 @@ export class MapEntity {
     }
   }
 
-  // Static method to create a MapEntity from a MapEntityRef
-  static fromMapEntityRef(ref: MapEntityRef): MapEntity {
+  static fromMapEntityData(data: MapEntityData): MapEntity {
     return new MapEntity(
-      ref.id,
-      ref.type,
-      ref.coords,
-      ref.size,
-      ref.amount,
-      ref.imgName
+      data.id,
+      data.type,
+      data.coords,
+      data.size,
+      data.amount,
+      data.imgName
     );
   }
 
@@ -77,14 +78,21 @@ export class MapEntity {
   getBounds = ()=> getEntityBounds(this);
 
   draw(ctx: CanvasRenderingContext2D, bounds:Bounds = this.getBounds(), isHovered: boolean = false): void {
-    const { images } = usePreloadedImagesStore.getState();
+    const { getImage } = usePreloadedImagesStore.getState();
     const hoveredImgName = `${this.imgName}_hovered`;
-    const img = isHovered && hoveredImgName in images ? images[hoveredImgName]: images[this.imgName] ;
+    var img = isHovered ? getImage(hoveredImgName) : getImage(this.imgName);
+    if (isHovered && !img) {
+      img = getImage(this.imgName);
+    }
     if (!img) {
       console.error(`Image for entity ${this.imgName} not loaded`);
       return;
     }
     ctx.drawImage(img, bounds.left, bounds.top, bounds.width, bounds.height);
+  }
+
+  onClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    findOrRemoveAntForFoodSource(this, event.button === 2);
   }
 
   // Static method to create a random map entity

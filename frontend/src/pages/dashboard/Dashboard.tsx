@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
-import { AntTypeEnum } from '../../baseClasses/Ant';
+import { AntTypeInfo, AntTypes } from '../../baseClasses/Ant';
+import { useIconsStore } from '../../baseClasses/Icon';
 import { useColonyStore } from '../../contexts/colonyStore';
+import { usePreloadedImagesStore } from '../../contexts/preloadImages';
 import { canvasProportions, useSettingsStore } from '../../contexts/settingsStore';
 import { initializeAntLogic } from '../../gameLogic/antLogic';
 import SurfaceCanvas from '../canvas/Surface';
@@ -10,25 +12,32 @@ import { makeAnt, resetColony } from './dashboard.services';
 
 const Dashboard: React.FC = () => {
   const { name: colonyName, ants, eggs, food, sand, age, perkPurchased, fetchColonyInfo } = useColonyStore();
+  const { isLoaded, preloadImages } = usePreloadedImagesStore();
+  const { initializeIcons } = useIconsStore();
 
   useEffect(() => {
     const initialize = async () =>{
+      if (!isLoaded) {
+        await preloadImages();
+      }
+
       await fetchColonyInfo();
       initializeAntLogic();
+      resizeCanvas();
     }
     initialize();
-    resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
   }, []);
 
   const resizeCanvas = () => {
     const { setCanvasDimensions } = useSettingsStore.getState();
     setCanvasDimensions(window.innerWidth * canvasProportions.width, window.innerHeight * canvasProportions.height);
+    initializeIcons();
   }
 
   
   const taskCounts = ants.reduce((acc: Record<string, number>, ant) => {
-    if (ant.type != AntTypeEnum.Queen) { // queen should not be counted as she technically doesn't have a task
+    if (ant.type != AntTypes.Queen) { // queen should not be counted as she technically doesn't have a task
       acc[ant.task] = (acc[ant.task] || 0) + 1;
     }
     return acc;
@@ -51,30 +60,21 @@ const Dashboard: React.FC = () => {
 
           {/* Reproduction Panel */}
           <section className="dashboard-section reproduction-panel">
-            <h3>Reproduction</h3>
-            <p>Eggs: {eggs}</p>
-            <button onClick={() => makeAnt()}>Make Ant</button>
+            <div className="reproduction-left">
+              <h3>Make Ant</h3>
+              <p>Eggs: {eggs}</p>
+            </div>
+            <div className="reproduction-buttons">
+              <button onClick={() => makeAnt(AntTypes.Worker)}>+ Worker (-{AntTypeInfo[AntTypes.Worker].cost} food)</button>
+              <button onClick={() => makeAnt(AntTypes.Soldier)}>+ Soldier (-{AntTypeInfo[AntTypes.Soldier].cost} food)</button>
+            </div>
           </section>
 
-          {/* Resource Panel */}
-          <section className="dashboard-section resource-panel">
-            <h3>Tasks</h3>
-            <ul>
-              {Object.entries(taskCounts).map(([task, count]) =>(
-                <li key={task}>
-                  {task.charAt(0).toUpperCase() + task.slice(1)}: {count}
-                </li>
-              ))
-
-              }
-            </ul>
-          </section>
 
         </main>
       </div>
       <div className="map-container">
         <SurfaceCanvas />
-        <p className="map-text">Left click on food source to assign a foraging ant. Right-click it to unassign.</p>
       </div>
     </div>
   );

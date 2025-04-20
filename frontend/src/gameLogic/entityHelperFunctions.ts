@@ -1,5 +1,6 @@
 import { Ant } from "../baseClasses/Ant";
 import { EntityTypeEnum, foodSources, MapEntity } from "../baseClasses/MapEntity";
+import { Bounds } from "../baseClasses/Models";
 import { useColonyStore } from "../contexts/colonyStore";
 import { edgeMargin, foodDecayFactor, minDistanceBetweenEntities, useSettingsStore } from "../contexts/settingsStore";
 
@@ -95,12 +96,7 @@ export const findRandomCoords = (
     return null; // Return null if no valid position is found
 };
 
-export type Bounds = {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-};
+
   // Method to calculate the bounds of the entity
 export const getEntityBounds = (entity: MapEntity): Bounds => {
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions

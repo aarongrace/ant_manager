@@ -1,14 +1,14 @@
 import numpy as np
 from PIL import Image
 
-rows = 6
-cols = 38
+rows = 4
+cols = 11
 
 def stretch_objects(obj_array: np.ndarray, scale_factor: float) -> np.ndarray:
     """
     Stretch the objects in the array by a given scale factor.
     """
-    stretched_array = np.empty((rows, cols, int(obj_array.shape[2] * scale_factor), int(obj_array.shape[3] * scale_factor), 4), dtype=np.uint8)
+    stretched_array = np.empty((rows, cols, int(int(obj_array.shape[2]) * scale_factor), int(int(obj_array.shape[3]) * scale_factor), 4), dtype=np.uint8)
     for r in range(rows):
         for c in range(cols):
             obj = obj_array[r][c]
@@ -80,14 +80,15 @@ def find_objects(image):
     create_image_with_boundaries(obj_array, "init_test.png")
     return obj_array
 
-def add_outlines_with_padding(image_path, output_path, padding=1, darkness_factor=0.7):
+def add_outlines_with_padding(img, output_path, padding=1, darkness_factor=0.7, outline_color= None):
     """Add 1px outlines to all objects in the sprite sheet with padding."""
     # Load the image
-    img = Image.open(image_path)
     img = img.convert("RGBA")
     width, height = img.size
+    print("Image size:", img.size)
     obj_width = width // cols
     obj_height = height // rows
+    print("Object size:", obj_width, obj_height)
 
     obj_array = find_objects(img)
     print("Object array shape:", obj_array.shape)
@@ -120,25 +121,26 @@ def add_outlines_with_padding(image_path, output_path, padding=1, darkness_facto
             # Extract non-transparent pixels of the current object
             obj_pixels = [(x, y) for x in range(obj_width) for y in range(obj_height) 
                           if object[y, x, 3] > 0]  # Check alpha channel for transparency
-            
-            # Calculate average color of the object
-            colors = [object[y, x] for x, y in obj_pixels]
-            r_sum, g_sum, b_sum, a_sum = 0, 0, 0, 0
-            count = 0
-            
-            for color in colors:
-                if len(color) == 4 and color[3] > 0:  # Only consider non-transparent pixels
-                    r_sum += int(color[0])  # Cast to int to prevent overflow
-                    g_sum += int(color[1])
-                    b_sum += int(color[2])
-                    a_sum += int(color[3])
-                    count += 1
-            
-            if count == 0:
-                continue  # Skip empty objects
+           
+            if (not outline_color): 
+                # Calculate average color of the object
+                colors = [object[y, x] for x, y in obj_pixels]
+                r_sum, g_sum, b_sum, a_sum = 0, 0, 0, 0
+                count = 0
                 
-            avg_color = (r_sum // count, g_sum // count, b_sum // count, 255)
-            outline_color = get_darker_color(avg_color, darkness_factor)
+                for color in colors:
+                    if len(color) == 4 and color[3] > 0:  # Only consider non-transparent pixels
+                        r_sum += int(color[0])  # Cast to int to prevent overflow
+                        g_sum += int(color[1])
+                        b_sum += int(color[2])
+                        a_sum += int(color[3])
+                        count += 1
+                
+                if count == 0:
+                    continue  # Skip empty objects
+                    
+                avg_color = (r_sum // count, g_sum // count, b_sum // count, 255)
+                outline_color = get_darker_color(avg_color, darkness_factor)
             
             # Create a padded object with the outline
             padded_object = np.zeros((new_obj_width,new_obj_height, 4), dtype=np.uint8)
@@ -180,13 +182,13 @@ def add_outlines_with_padding(image_path, output_path, padding=1, darkness_facto
     # combined_image.save("final_test.png")
 
     combined_image.save(output_path)
+    return combined_image
 
-def create_hover_version(image_path, output_path, brightness_factor=1.2):
+def create_hover_version(img, output_path, brightness_factor=1.2):
     """
     Create a hover version of the combined image by increasing brightness.
     """
     # Load the image
-    img = Image.open(image_path).convert("RGBA")
     img_data = np.array(img)
 
     # Apply brightness adjustment
@@ -200,14 +202,21 @@ def create_hover_version(image_path, output_path, brightness_factor=1.2):
 
 if __name__ == "__main__":
     # Ask for input and output paths
-    input_path = "frontend/src/assets/imgs/fruitsOriginal.png"  # Replace with your input path
-    
+    original_name = "maggotOriginal"  # Replace with your original name
+    input_path = f"frontend/src/utils/{original_name}.png"  # Replace with your input path
+    img = Image.open(input_path)
+
+    name = "maggot"  # Replace with your desired name
     # Generate output paths
-    output_path = "frontend/src/assets/imgs/fruits.png"  # Replace with your output path
-    hover_output_path = "frontend/src/assets/imgs/fruits_hovered.png"  # Hover version output path
+    output_path = f"frontend/src/utils/{name}.png"  # Replace with your output path
+    output_path1 = f"frontend/src/utils/{name}1.png"  # Replace with your output path
+    # hover_output_path = "frontend/src/assets/imgs/fruits_hovered.png"  # Hover version output path
     
     # Generate the outlined image
-    add_outlines_with_padding(input_path, output_path, padding=1, darkness_factor=0.3)
+    new_img = add_outlines_with_padding(img, output_path, padding=1, darkness_factor=0.3)
+    new_img.save(output_path1)
+
+    final_img = add_outlines_with_padding(new_img, output_path, padding=1, darkness_factor=0.3, outline_color=(200, 70,70, 255))
     
-    # Generate the hover version
-    create_hover_version(output_path, hover_output_path, brightness_factor=1.3)
+    # # Generate the hover version
+    # create_hover_version(output_path, hover_output_path, brightness_factor=1.3)

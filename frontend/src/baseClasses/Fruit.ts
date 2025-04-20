@@ -1,11 +1,11 @@
 import { v4 } from "uuid";
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { defaultFruitAmount, fruitSize } from "../contexts/settingsStore";
-import { Bounds, findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
 import { EntityTypeEnum, MapEntity } from "./MapEntity";
+import { Bounds } from "./Models";
 
-// Define the FruitRef type for backend communication
-export type FruitRef = {
+export type FruitData = {
   id: string; // Unique identifier for the fruit
   coords: { x: number; y: number }; // Absolute coordinates of the fruit
   amount: number; // Amount of the resource
@@ -36,8 +36,7 @@ export class Fruit extends MapEntity {
     this.size = size;
   }
 
-  // Convert the Fruit instance to a FruitRef object
-  toFruitRef(): FruitRef {
+  toFruitData(): FruitData {
     return {
       id: this.id,
       coords: this.coords,
@@ -45,13 +44,13 @@ export class Fruit extends MapEntity {
       col: this.col,
       row: this.row,
       stage: this.stage,
-      size: this.size, // Include size in the FruitRef
+      size: this.size,
     };
   }
 
   draw(ctx: CanvasRenderingContext2D, bounds: Bounds = getEntityBounds(this), isHovered: boolean = false): void {
-    const { images } = usePreloadedImagesStore.getState();
-    const img = isHovered ?  images["fruits_hovered"]: images["fruits"];
+    const { getImage } = usePreloadedImagesStore.getState();
+    const img = isHovered ?  getImage("fruits_hovered"): getImage("fruits");
     if (!img) {
       console.error(`Image for entity ${"fruits"} not loaded`);
       return;
@@ -59,8 +58,7 @@ export class Fruit extends MapEntity {
     ctx.drawImage(img,  this.col*Fruit.spriteDim, this.row*Fruit.spriteDim,  Fruit.spriteDim, Fruit.spriteDim, bounds.left, bounds.top, bounds.width, bounds.height);
   }
 
-  // Static method to create a Fruit instance from a FruitRef
-  static fromFruitRef(ref: FruitRef): Fruit {
+  static fromFruitData(ref: FruitData): Fruit {
     return new Fruit(ref.coords, ref.amount, ref.col, ref.row, ref.stage, ref.size);
   }
 

@@ -1,8 +1,8 @@
-import { makeNewAnt } from "../../baseClasses/Ant";
+import { AntTypes, makeNewAnt } from "../../baseClasses/Ant";
 import { createFreshColony, useColonyStore } from "../../contexts/colonyStore";
 import { useSettingsStore } from "../../contexts/settingsStore";
 
-export const makeAnt = async () => {
+export const makeAnt = async (type: AntTypes) => {
     console.log("Making an ant...");
     const { food, eggs, ants, updateColony, putColonyInfo} = useColonyStore.getState();
     const { foodPerAnt } = useSettingsStore.getState();
@@ -16,7 +16,7 @@ export const makeAnt = async () => {
         return;
     }
 
-    const newAnt = makeNewAnt();
+    const newAnt = makeNewAnt(type);
 
     updateColony({
         ants: [...ants, newAnt],

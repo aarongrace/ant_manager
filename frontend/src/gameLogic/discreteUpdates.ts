@@ -1,5 +1,6 @@
-import { AntTypeEnum } from "../baseClasses/Ant";
+import { AntTypes } from "../baseClasses/Ant";
 import { Fruit } from "../baseClasses/Fruit";
+import { useIconsStore } from "../baseClasses/Icon";
 import { MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { eggChance, useSettingsStore } from "../contexts/settingsStore";
@@ -8,6 +9,7 @@ import { decayFoodSource } from "./entityHelperFunctions";
 
 export const updateDiscreteGameState = () => {
     const { ants } = useColonyStore.getState();
+    const { setTaskNumbers } = useIconsStore.getState();
     ants.forEach((ant) => {
         handleAntLogic(ant); // Use the new combined function
     });
@@ -16,7 +18,16 @@ export const updateDiscreteGameState = () => {
     consumeFood();
     decayFoodSource();
     layEgg();
+    updateEnemies();
+    setTaskNumbers();
 };
+
+const updateEnemies = () => {
+    const { enemies } = useColonyStore.getState();
+    enemies.forEach((enemy) => {
+        enemy.discreteUpdate();
+    });
+}
 
 const layEgg = () => {
     if (Math.random()  < eggChance){
@@ -30,11 +41,11 @@ const consumeFood = () => {
     const { workerFoodConsumption, soldierFoodConsumption, queenFoodConsumption, foodConsumptionScaleFactor, foodWasteBaseline } = useSettingsStore.getState();
     const wasteFactor = Math.max(0.6, 1 + (food - foodWasteBaseline) / foodWasteBaseline);
     const foodConsumed = (ants.reduce((total, ant) => {
-        if (ant.type === AntTypeEnum.Worker) {
+        if (ant.type === AntTypes.Worker) {
             return total + workerFoodConsumption;
-        } else if (ant.type === AntTypeEnum.Soldier) {
+        } else if (ant.type === AntTypes.Soldier) {
             return total + soldierFoodConsumption;
-        } else if (ant.type === AntTypeEnum.Queen) {
+        } else if (ant.type === AntTypes.Queen) {
             return total + queenFoodConsumption;
         }
         return total;
@@ -55,13 +66,11 @@ const consumeFood = () => {
 const handleNoFood = (negativeFoodLeft: number) => {
     const {ants, updateColony } = useColonyStore.getState();
     if (Math.random() * 10 < negativeFoodLeft * negativeFoodLeft){
-        const randomAnt = ants.find((ant) => ant.type === AntTypeEnum.Worker || ant.type === AntTypeEnum.Soldier);
+        const randomAnt = ants.find((ant) => ant.type === AntTypes.Worker || ant.type === AntTypes.Soldier);
         if (!randomAnt) {
-            // No worker or soldier ants left kill the queen
             updateColony({ ants: [] });
         } else {
-            const newAnts = ants.filter((ant) => ant.id !== randomAnt.id);
-            updateColony({ ants: newAnts });
+            randomAnt.die();
         }
 
     }

@@ -3,6 +3,7 @@ from typing import List
 from beanie import Document
 from pydantic import ValidationError
 
+from game_logic.enemy import Enemy
 from game_logic.fruit import Fruit
 from game_logic.ant import Ant
 from game_logic.map_entity import MapEntity
@@ -18,6 +19,7 @@ class Colony(Document):
     name: str  # Name of the colony
     ants: List[Ant]  # Number of ants in the colony
     mapEntities: List[MapEntity]
+    enemies: List[Enemy]
     fruits: List[Fruit]
     eggs: int = 5  # Number of eggs in the colony, defaulted to 5
     food: float  # Amount of food available
@@ -37,6 +39,7 @@ class Colony(Document):
             name="",
             ants=[],
             mapEntities=[],
+            enemies=[],
             fruits=[],
             eggs=0,
             food=0,

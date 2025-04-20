@@ -58,7 +58,6 @@ body {
 /* Main content area */
 .App-main {
     height: calc(100vh - 80px); /* Strict height to prevent overflow */
-    padding: 20px;
     background-color: #472b1e; /* Dark brown background */
     display: flex;
     align-items: center;
