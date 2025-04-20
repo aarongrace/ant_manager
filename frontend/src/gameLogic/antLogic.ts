@@ -5,7 +5,7 @@ import { Fruit } from "../baseClasses/Fruit";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { carriedEntitySize } from "../contexts/settingsStore";
-import { findIdleCoords, hasArrived, moveWhileBusy, setAntObjective, setDestination, setAntToIdle as startIdling, startPatrol } from "./antHelperFunctions";
+import { findIdleCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination, startPatrol } from "./antHelperFunctions";
 import { findEnemyByCondition } from "./enemyHelperFunctions";
 import { calculateDistance, findClosestFoodSource, findGateway, findMapEntity, getRandomCoords, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
 
@@ -32,7 +32,7 @@ export const initializeAntLogic = () => {
                 }
                 break;
             case TaskTypes.Idle:
-                startIdling(ant);
+                setAntToIdle(ant);
                 break;
         }
         ant.movementInitialized = true;
@@ -62,7 +62,7 @@ const handleForage = (ant: Ant) => {
         const destinationEntity = findMapEntity(ant.destination);
         if (!destinationEntity) {
             console.warn("Destination entity not found");
-            startIdling(ant);
+            setAntToIdle(ant);
             return;
         }
         switch (destinationEntity.type) {
@@ -81,7 +81,7 @@ const handleForage = (ant: Ant) => {
 const handleAttack = (ant: Ant) => {
     const enemy = findEnemyByCondition((enemy) => enemy.id === ant.objective);
     if (!enemy) {
-        if (ant.type === AntTypes.Soldier) { startPatrol(ant); } else { startIdling(ant); }
+        if (ant.type === AntTypes.Soldier) { startPatrol(ant); } else { setAntToIdle(ant); }
     } else {
         ant.movingTo.x = enemy.coords.x;
         ant.movingTo.y = enemy.coords.y;
@@ -92,6 +92,7 @@ const handleAttack = (ant: Ant) => {
 }
 
 const handlePatrol = (ant: Ant) => {
+    ant.isAttacking = false;
     const isInRange = (enemy: Enemy) => {
         return calculateDistance(ant.coords, enemy.coords) < Ant.patrolRange;
     }

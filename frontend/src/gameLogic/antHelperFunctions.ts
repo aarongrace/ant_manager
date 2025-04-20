@@ -4,7 +4,7 @@ import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { edgeMargin, useSettingsStore } from "../contexts/settingsStore";
 import { findEnemyByCondition } from "./enemyHelperFunctions";
-import { findMapEntity, getRandomCoords } from "./entityHelperFunctions";
+import { findMapEntity, getNestEntranceCoords, getRandomCoords } from "./entityHelperFunctions";
 
 
 export const findClosestAnt = (coords: { x: number, y: number }): Ant | null => {
@@ -162,8 +162,15 @@ export const setAntToIdle = (ant: Ant) => {
 
 export const findIdleCoords = (ant: Ant) => {
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    ant.movingTo.x = ant.anchorPoint.x + (Math.random() - 1) * 0.1 * canvasWidth;
-    ant.movingTo.y = ant.anchorPoint.y + (Math.random() - 1) * 0.1 * canvasHeight;
+    
+    if (ant.type === AntTypes.Queen) {
+        const nestCoords = getNestEntranceCoords();
+        ant.movingTo.x = nestCoords.x + (Math.random() - 1) * 0.1 * canvasWidth;
+        ant.movingTo.y = nestCoords.y + (Math.random() - 1) * 0.1 * canvasHeight;
+    } else {
+        ant.movingTo.x = ant.anchorPoint.x + (Math.random() - 1) * 0.1 * canvasWidth;
+        ant.movingTo.y = ant.anchorPoint.y + (Math.random() - 1) * 0.1 * canvasHeight;
+    }
 };
 
 export const hasArrived = (ant: Ant) => {
