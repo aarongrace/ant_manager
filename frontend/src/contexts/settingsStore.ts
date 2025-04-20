@@ -28,9 +28,9 @@ export const useSettingsStore = create<SettingsStore> ((set) => ({
     foodPerAnt: 20,
     entitySpawnFactor: 1.5,
 
-    workerFoodConsumption: 1, // per half second
-    soldierFoodConsumption: 1.5,
-    queenFoodConsumption: 6,
+    workerFoodConsumption: 0.2, // per half second
+    soldierFoodConsumption: 0.6,
+    queenFoodConsumption: 3,
     foodConsumptionScaleFactor: 0.13,
     foodWasteBaseline: 200,
 
@@ -50,8 +50,10 @@ export const workerSpeed = 0.06;
 export const soldierSpeed = 0.04;
 export const queenSpeed = 0.03;
 export const minDistanceBetweenEntities = 50;
-export const eggChance = 0.03;
+export const eggChance = 0.06;
 export const edgeMargin = 12;
+
+export const baseEnemySpawnChance = 0.05;
 
 export const foodDecayFactor = 0.3;
 export const fruitSize = 40;

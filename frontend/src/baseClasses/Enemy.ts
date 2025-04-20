@@ -40,7 +40,6 @@ export class Enemy implements InteractiveElement{
   isDead: boolean = false; // Frontend-only field
   clickable: boolean = true;
 
-  static spawnChance = 0.04;
   static resetObjectiveRange = 100;
 
 

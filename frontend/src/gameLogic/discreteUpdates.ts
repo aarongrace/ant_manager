@@ -1,10 +1,10 @@
 import { AntTypes } from "../baseClasses/Ant";
-import { createEnemy, Enemy } from "../baseClasses/Enemy";
+import { createEnemy } from "../baseClasses/Enemy";
 import { Fruit } from "../baseClasses/Fruit";
 import { useIconsStore } from "../baseClasses/Icon";
 import { MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { eggChance, useSettingsStore } from "../contexts/settingsStore";
+import { baseEnemySpawnChance, eggChance, useSettingsStore } from "../contexts/settingsStore";
 import { findAntByCondition } from "./antHelperFunctions";
 import { handleAntLogic } from "./antLogic"; // Import the new combined function
 import { decayFoodSource } from "./entityHelperFunctions";
@@ -95,7 +95,8 @@ const deleteEmptyMapEntities = () => {
 
 const spawnRandomEnemy = () => {
     const { enemies, updateColony } = useColonyStore.getState();
-    if (Math.random() < Enemy.spawnChance) {
+    const spawnChance = baseEnemySpawnChance / (Math.log(enemies.length + 2) ** 2);
+    if (Math.random() < spawnChance) {
         updateColony({
             enemies: [...enemies, createEnemy()],
         });
