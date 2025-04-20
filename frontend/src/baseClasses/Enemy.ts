@@ -1,8 +1,11 @@
 import { v4 } from "uuid";
+import { useColonyStore } from "../contexts/colonyStore";
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { useSettingsStore } from "../contexts/settingsStore";
-import { findClosestAnt } from "../gameLogic/antHelperFunctions";
+import { findClosestAnt, setOneAntOnEnemy } from "../gameLogic/antHelperFunctions";
+import { calculateDistance } from "../gameLogic/entityHelperFunctions";
 import { Ant } from "./Ant";
+import { InteractiveElement } from "./Models";
 
 export enum EnemyTypeEnum {
   Maggot = "maggot",
@@ -20,7 +23,7 @@ export type EnemyData = {
 };
 
 // Define the Enemy class
-export class Enemy {
+export class Enemy implements InteractiveElement{
   id: string;
   type: EnemyTypeEnum; // Type of the enemy (e.g., maggot, mantis, beetle)
   coords: { x: number; y: number }; // Coordinates of the enemy
@@ -34,6 +37,12 @@ export class Enemy {
   hp: number; // Health points of the enemy
   movementInitialized: boolean = false; // Frontend-only field
   attackDelay: number = 0; // Frontend-only field
+  isDead: boolean = false; // Frontend-only field
+  clickable: boolean = true;
+
+  static spawnChance = 0.04;
+  static resetObjectiveRange = 100;
+
 
   constructor(
     type: EnemyTypeEnum,
@@ -74,6 +83,11 @@ export class Enemy {
     if (!this.movementInitialized) this.movementInitialized = true;
   }
 
+  onClick(event: React.MouseEvent<HTMLCanvasElement>) {
+    event.stopPropagation(); // Prevent event from bubbling up
+    setOneAntOnEnemy(this);
+  }
+
   attack() {
     this.isAttacking = false;
     this.attackDelay = EnemyTypeInfo[this.type].attackDelay;
@@ -86,9 +100,25 @@ export class Enemy {
     }
   }
 
+  receiveAttack(damage: number): boolean {
+    this.hp -= damage; // Decrease HP by the damage amount
+    if (this.hp <= 0) {
+      this.die();
+      return true; // Ant is dead
+    } else { return false; }
+  }
+
+  die(){
+    const { enemies, updateColony } = useColonyStore.getState();
+    updateColony({ enemies: enemies.filter((enemy) => enemy.id !== this.id) });
+    this.isDead = true; 
+  }
+
   setObjective() {
     if ((
-      (!this.objective || this.objective.isDead) && this.attackDelay <= 0
+      (!this.objective || this.objective.isDead 
+        || calculateDistance(this.coords, this.objective.coords) > Enemy.resetObjectiveRange
+      ) && this.attackDelay <= 0
     ) || (this.movementInitialized == false)) {
       this.objective = findClosestAnt(this.coords);
     }
@@ -102,9 +132,7 @@ export class Enemy {
   }
 
   continuousUpdate(delta: number) {
-    if (!this.movementInitialized) {
-      return;
-    }
+    if (!this.movementInitialized) { return; }
 
     const dx = this.movingTo.x - this.coords.x;
     const dy = this.movingTo.y - this.coords.y;
@@ -143,12 +171,26 @@ export class Enemy {
     }
   }
 
+  drawHpBar(ctx: CanvasRenderingContext2D) {
+    const hpBarWidth = EnemyTypeInfo[this.type].defaultHp / 3;
+    const hpBarHeight = 4;
+    const hpBarYOffset =  - EnemyTypeInfo[this.type].hpBarYOffset; // Y offset for the HP bar
+    const hpPercent = this.hp / EnemyTypeInfo[this.type].defaultHp; // Calculate the percentage of HP remaining
+
+    ctx.fillStyle = "black"; // Background color
+    ctx.fillRect(-hpBarWidth/2,hpBarYOffset, hpBarWidth, hpBarHeight); // Draw the background bar
+
+    ctx.fillStyle = "red"; // Foreground color
+    ctx.fillRect(-hpBarWidth/2, hpBarYOffset, hpBarWidth * hpPercent, hpBarHeight); // Draw the foreground bar
+  }
+
+
+
   getBounds() {
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    const sizeFactor = this.hp / EnemyTypeInfo[this.type].defaultHp;
     const size = {
-      width: EnemyTypeInfo[this.type].defaultSize.width * sizeFactor,
-      height: EnemyTypeInfo[this.type].defaultSize.height * sizeFactor,
+      width: EnemyTypeInfo[this.type].defaultSize.width,
+      height: EnemyTypeInfo[this.type].defaultSize.height,
     };
 
     const posX = this.coords.x + canvasWidth / 2;
@@ -157,12 +199,7 @@ export class Enemy {
     const left = posX - size.width / 2;
     const top = posY - size.height / 2;
 
-    return {
-      left: left,
-      top: top,
-      width: size.width,
-      height: size.height,
-    };
+    return { left: left, top: top, width: size.width, height: size.height, };
   }
 
   setAngle() {
@@ -187,8 +224,10 @@ export class Enemy {
     const bounds = this.getBounds();
 
     ctx.save();
-    ctx.translate(bounds.left, bounds.top);
-    ctx.drawImage(img, col * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight, 0, 0, bounds.width, bounds.height);
+    ctx.translate(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2);
+    this.drawHpBar(ctx);
+    ctx.drawImage( img, col * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight,
+      -bounds.width / 2, -bounds.height / 2, bounds.width, bounds.height);
     ctx.restore();
   }
 
@@ -222,9 +261,31 @@ const getRandomType = (): EnemyTypeEnum => {
 export const createEnemy = (
   type: EnemyTypeEnum = getRandomType()
 ): Enemy => {
+  const { canvasWidth, canvasHeight } = useSettingsStore.getState();
+  const edge = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+  let x = 0, y = 0;
+  switch (edge) {
+    case 0: // Top edge
+      x = Math.random() * canvasWidth - canvasWidth / 2;
+      y = -canvasHeight / 2 - 30; // Move further outside the top edge
+      break;
+    case 1: // Right edge
+      x = canvasWidth / 2 + 30; // Move further outside the right edge
+      y = Math.random() * canvasHeight - canvasHeight / 2;
+      break;
+    case 2: // Bottom edge
+      x = Math.random() * canvasWidth - canvasWidth / 2;
+      y = canvasHeight / 2 + 30; // Move further outside the bottom edge
+      break;
+    case 3: // Left edge
+      x = -canvasWidth / 2 - 30; // Move further outside the left edge
+      y = Math.random() * canvasHeight - canvasHeight / 2;
+      break;
+  }
+
   return new Enemy(
     type,
-    { x: 0, y: 0 },
+    { x, y },
     EnemyTypeInfo[type].defaultSpeed,
     EnemyTypeInfo[type].defaultHp
   );
@@ -244,10 +305,11 @@ export const EnemyTypeInfo: {
     attackRange: number;
     attackDelay: number;
     attackDamage: number; // Added attack damage field
+    hpBarYOffset: number; // Added hpBarYOffset
   };
 } = {
   [EnemyTypeEnum.Maggot]: {
-    speed: 5,
+    speed: 5.5,
     defaultSpeed: 0.02,
     defaultSize: { width: 60, height: 60 },
     defaultHp: 60,
@@ -257,11 +319,12 @@ export const EnemyTypeInfo: {
     attackCols: 7,
     isRanged: true,
     attackRange: 30,
-    attackDelay: 1000,
+    attackDelay: 1400,
     attackDamage: 30, // Added attack damage value
+    hpBarYOffset: 20, // Added hpBarYOffset
   },
   [EnemyTypeEnum.Mantis]: {
-    speed: 10,
+    speed: 7,
     defaultSpeed: 0.04,
     defaultSize: { width: 60, height: 60 },
     defaultHp: 120,
@@ -272,11 +335,12 @@ export const EnemyTypeInfo: {
     isRanged: false,
     attackRange: 40,
     attackDelay: 300,
-    attackDamage: 45, // Added attack damage value
+    attackDamage: 25, // Added attack damage value
+    hpBarYOffset: 29, // Added hpBarYOffset
   },
   [EnemyTypeEnum.Beetle]: {
-    speed: 7,
-    defaultSpeed: 0.03,
+    speed: 10,
+    defaultSpeed: 0.05,
     defaultSize: { width: 60, height: 60 },
     defaultHp: 100,
     totalCols: 8,
@@ -285,8 +349,9 @@ export const EnemyTypeInfo: {
     attackCols: 4,
     isRanged: false,
     attackRange: 40,
-    attackDelay: 300,
-    attackDamage: 30, // Added attack damage value
+    attackDelay: 1000,
+    attackDamage: 17, // Added attack damage value
+    hpBarYOffset: 27, // Added hpBarYOffset
   },
 };
 

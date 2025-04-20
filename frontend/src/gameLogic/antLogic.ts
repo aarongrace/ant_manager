@@ -1,17 +1,21 @@
 import { v4 } from "uuid";
-import { Ant, TaskTypes } from "../baseClasses/Ant";
+import { Ant, AntTypes, TaskTypes } from "../baseClasses/Ant";
+import { Enemy } from "../baseClasses/Enemy";
 import { Fruit } from "../baseClasses/Fruit";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { carriedEntitySize } from "../contexts/settingsStore";
-import { findIdleCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination } from "./antHelperFunctions";
-import { findClosestFoodSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
+import { findIdleCoords, hasArrived, moveWhileBusy, setAntObjective, setDestination, setAntToIdle as startIdling, startPatrol } from "./antHelperFunctions";
+import { findEnemyByCondition } from "./enemyHelperFunctions";
+import { calculateDistance, findClosestFoodSource, findGateway, findMapEntity, getRandomCoords, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
 
 //todo add capability to draw multiple carried entities
 
 export const handleAntLogic = (ant: Ant) => {
-    updateObjective(ant);
-    handleDestinationCheck(ant);
+    if (ant.task === TaskTypes.Forage) { handleForage(ant);
+    } else if (ant.task === TaskTypes.Idle) { handleIdling(ant);
+    } else if (ant.task === TaskTypes.Attack) { handleAttack(ant);
+    } else if (ant.task === TaskTypes.Patrol) { handlePatrol(ant); }
 };
 
 // this is crucial because movingTo, anchorPoints and etc. are not stored in the backend
@@ -28,61 +32,84 @@ export const initializeAntLogic = () => {
                 }
                 break;
             case TaskTypes.Idle:
-                setAntToIdle(ant);
+                startIdling(ant);
                 break;
         }
         ant.movementInitialized = true;
     });
 };
 
-const updateObjective = (ant: Ant) => {
-    if (ant.task === TaskTypes.Forage) {
-        if (!hasValidObjective(ant)) {
-            console.log("Ant has no objective, setting one.");
-            setAntObjective(ant, findClosestFoodSource(ant));
-            if (ant.carrying && ant.carrying.amount === ant.carryingCapacity) {
-                setDestination(ant, findGateway());
-            }
+const handleIdling = (ant: Ant) => {
+    if (hasArrived(ant)) {
+        if (Math.random() < 0.2) {
+            ant.randomlyRotate();
         }
-    } else if (ant.task === TaskTypes.Idle) {
-        if (hasArrived(ant)) {
-            if (Math.random() < 0.2) {
-                ant.randomlyRotate();
-            }
-            if (Math.random() < 0.1) {
-                findIdleCoords(ant);
-            }
+        if (Math.random() < 0.1) {
+            findIdleCoords(ant);
         }
     }
-};
+}
 
-const handleDestinationCheck = (ant: Ant) => {
-    if (ant.task === TaskTypes.Idle) {
-        return;
+const handleForage = (ant: Ant) => {
+    if (!hasValidObjective(ant)) {
+        console.log("Ant has no objective, setting one.");
+        setAntObjective(ant, findClosestFoodSource(ant));
+        if (ant.carrying && ant.carrying.amount === ant.carryingCapacity) {
+            setDestination(ant, findGateway());
+        }
     }
     if (hasArrived(ant)) {
-        switch (ant.task) {
-            case TaskTypes.Forage:
-                const destinationEntity = findMapEntity(ant.destination);
-                if (!destinationEntity) {
-                    console.warn("Destination entity not found");
-                    setAntToIdle(ant);
-                    return;
-                }
-                switch (destinationEntity.type) {
-                    case EntityTypeEnum.FoodResource:
-                        handleAtFoodSource(ant, destinationEntity);
-                        break;
-                    case EntityTypeEnum.Gateway:
-                        handleAtGateway(ant);
-                        break;
-                    default:
-                        console.log("Ant reached an unknown entity type");
-                }
+        const destinationEntity = findMapEntity(ant.destination);
+        if (!destinationEntity) {
+            console.warn("Destination entity not found");
+            startIdling(ant);
+            return;
+        }
+        switch (destinationEntity.type) {
+            case EntityTypeEnum.FoodResource:
+                handleAtFoodSource(ant, destinationEntity);
                 break;
+            case EntityTypeEnum.Gateway:
+                handleAtGateway(ant);
+                break;
+            default:
+                console.log("Ant reached an unknown entity type");
         }
     }
-};
+}
+
+const handleAttack = (ant: Ant) => {
+    const enemy = findEnemyByCondition((enemy) => enemy.id === ant.objective);
+    if (!enemy) {
+        if (ant.type === AntTypes.Soldier) { startPatrol(ant); } else { startIdling(ant); }
+    } else {
+        ant.movingTo.x = enemy.coords.x;
+        ant.movingTo.y = enemy.coords.y;
+        if (hasArrived(ant)) {
+            ant.isAttacking = true;
+        }
+    }
+}
+
+const handlePatrol = (ant: Ant) => {
+    const isInRange = (enemy: Enemy) => {
+        return calculateDistance(ant.coords, enemy.coords) < Ant.patrolRange;
+    }
+    const enemy = findEnemyByCondition(isInRange);
+    if (enemy) {
+        ant.setEnemy(enemy);
+    } else {
+        // todo add patrol logic
+        if (hasArrived(ant)) {
+            findNewPatrolCoords(ant);
+        }
+    }
+}
+
+const findNewPatrolCoords = (ant: Ant) => {
+    ant.movingTo = getRandomCoords();
+}
+
 
 const handleAtGateway = (ant: Ant) => {
     const { food, updateColony } = useColonyStore.getState();
@@ -90,11 +117,10 @@ const handleAtGateway = (ant: Ant) => {
         updateColony({ food: food + ant.carrying.amount});
         ant.carrying = null;
     }
-
     if (hasValidObjective(ant)) {
         setDestination(ant, findMapEntity(ant.objective));
     } else {
-        updateObjective(ant);
+        setAntObjective(ant, findClosestFoodSource(ant));
     }
 };
 

@@ -1,51 +1,57 @@
 import { AntTypes } from "../baseClasses/Ant";
+import { createEnemy, Enemy } from "../baseClasses/Enemy";
 import { Fruit } from "../baseClasses/Fruit";
 import { useIconsStore } from "../baseClasses/Icon";
 import { MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { eggChance, useSettingsStore } from "../contexts/settingsStore";
+import { findAntByCondition } from "./antHelperFunctions";
 import { handleAntLogic } from "./antLogic"; // Import the new combined function
 import { decayFoodSource } from "./entityHelperFunctions";
 
 export const updateDiscreteGameState = () => {
     const { ants } = useColonyStore.getState();
-    const { setTaskNumbers } = useIconsStore.getState();
+
     ants.forEach((ant) => {
         handleAntLogic(ant); // Use the new combined function
     });
-    addRandomMapEntity();
-    deleteEmptyMapEntities();
-    consumeFood();
-    decayFoodSource();
-    layEgg();
-    updateEnemies();
-    setTaskNumbers();
-};
 
-const updateEnemies = () => {
     const { enemies } = useColonyStore.getState();
     enemies.forEach((enemy) => {
         enemy.discreteUpdate();
     });
-}
+
+    const { setTaskNumbers } = useIconsStore.getState();
+    setTaskNumbers();
+
+    addRandomMapEntity();
+    deleteEmptyMapEntities();
+    spawnRandomEnemy();
+    consumeFoodAndRestoreHp();
+    decayFoodSource();
+    layEgg();
+};
 
 const layEgg = () => {
-    if (Math.random()  < eggChance){
+    if (findAntByCondition((ant)=>ant.type===AntTypes.Queen) && Math.random()  < eggChance){
         const { eggs, updateColony } = useColonyStore.getState();
         updateColony({ eggs: eggs + 1})
     }
 }
 
-const consumeFood = () => {
+const consumeFoodAndRestoreHp = () => {
     const { ants, food, updateColony } = useColonyStore.getState();
     const { workerFoodConsumption, soldierFoodConsumption, queenFoodConsumption, foodConsumptionScaleFactor, foodWasteBaseline } = useSettingsStore.getState();
     const wasteFactor = Math.max(0.6, 1 + (food - foodWasteBaseline) / foodWasteBaseline);
     const foodConsumed = (ants.reduce((total, ant) => {
         if (ant.type === AntTypes.Worker) {
+            ant.hp += 0.2;
             return total + workerFoodConsumption;
         } else if (ant.type === AntTypes.Soldier) {
+            ant.hp += 0.5;
             return total + soldierFoodConsumption;
         } else if (ant.type === AntTypes.Queen) {
+            ant.hp += 0.6;
             return total + queenFoodConsumption;
         }
         return total;
@@ -85,6 +91,17 @@ const deleteEmptyMapEntities = () => {
         updateColony({ mapEntities: nonEmptyMapEntities });
     }
 };
+
+
+const spawnRandomEnemy = () => {
+    const { enemies, updateColony } = useColonyStore.getState();
+    if (Math.random() < Enemy.spawnChance) {
+        updateColony({
+            enemies: [...enemies, createEnemy()],
+        });
+    }
+};
+
 
 const addRandomMapEntity = () => {
     const { entitySpawnFactor } = useSettingsStore.getState();

@@ -11,11 +11,12 @@ export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const worldX = event.clientX - rect.left;
     const worldY = event.clientY - rect.top;
 
-    const {  mapEntities } = useColonyStore.getState();
+    const {  mapEntities, enemies } = useColonyStore.getState();
     const { taskIcons: icons } = useIconsStore.getState();
     const clickedElements: InteractiveElement[] = [
         ...mapEntities.filter((entity) => entity.clickable),
-        ...icons.filter((icon) => icon.clickable)
+        ...icons.filter((icon) => icon.clickable),
+        ...enemies.filter((enemy) => enemy.clickable),
     ];
 
     clickedElements.forEach((element) => {

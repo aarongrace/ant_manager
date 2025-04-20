@@ -64,8 +64,8 @@ export const decayFoodSource = () => {
 }
 
 // Helper function to find a random valid position on the map
-export const findRandomCoords = (
-    minDistance: number=minDistanceBetweenEntities,
+export const findValidEntityCoords = (
+    minDistance: number = minDistanceBetweenEntities,
     maxAttempts: number = 100
 ): { x: number; y: number } | null => {
     const { mapEntities } = useColonyStore.getState();
@@ -76,7 +76,7 @@ export const findRandomCoords = (
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         const coords = {
             x: Math.random() * validWidth - validWidth / 2,
-            y: Math.random() * validHeight- validHeight/ 2,
+            y: Math.random() * validHeight - validHeight / 2,
         };
 
         // Check if the position is valid
@@ -97,14 +97,14 @@ export const findRandomCoords = (
 };
 
 
-  // Method to calculate the bounds of the entity
+// Method to calculate the bounds of the entity
 export const getEntityBounds = (entity: MapEntity): Bounds => {
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
     let sizeFactor = 1;
 
     if (entity.type === EntityTypeEnum.FoodResource) {
-      const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || 50;
-      sizeFactor = entity.amount / defaultAmount + 0.5;
+        const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || 50;
+        sizeFactor = entity.amount / defaultAmount + 0.5;
     }
 
     const posX = entity.coords.x + canvasWidth / 2;
@@ -114,14 +114,32 @@ export const getEntityBounds = (entity: MapEntity): Bounds => {
     const top = posY - (entity.size.height / 2) * sizeFactor;
 
     return {
-      left: left,
-      top: top,
-      width: entity.size.width * sizeFactor,
-      height: entity.size.height * sizeFactor,
+        left: left,
+        top: top,
+        width: entity.size.width * sizeFactor,
+        height: entity.size.height * sizeFactor,
     };
-  }
+}
 
+export const getRandomCoords = () => {
+    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
+    return {
+        x: Math.random() * (canvasWidth - edgeMargin * 2) - (canvasWidth / 2 - edgeMargin),
+        y: Math.random() * (canvasHeight - edgeMargin * 2) - (canvasHeight / 2 - edgeMargin),
+    }
+}
 
-  export const drawFruit = (ctx: CanvasRenderingContext2D, row:number, col:number, bounds:Bounds) => {
+export const calculateDistance = (coord1: { x: number; y: number }, coord2: { x: number; y: number }) => {
+    return Math.sqrt(
+        Math.pow(coord2.x - coord1.x, 2) + Math.pow(coord2.y - coord1.y, 2)
+    );
+}
 
-  }
+export const getNestEntranceCoords = () => {
+    const { mapEntities } = useColonyStore.getState();
+    const nestEntrance = mapEntities.find((entity) => entity.type === EntityTypeEnum.Gateway);
+    if (!nestEntrance) {
+        return { x: 0, y: 0 }; // Default coordinates if not found
+    }
+    return nestEntrance.coords;
+};

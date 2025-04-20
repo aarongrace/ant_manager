@@ -1,8 +1,10 @@
-import { Ant, AntTypes, TaskTypes } from "../baseClasses/Ant";
+import { Ant, AntTypeInfo, AntTypes, TaskTypes } from "../baseClasses/Ant";
+import { Enemy } from "../baseClasses/Enemy";
 import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { edgeMargin, useSettingsStore } from "../contexts/settingsStore";
-import { findMapEntity } from "./entityHelperFunctions";
+import { findEnemyByCondition } from "./enemyHelperFunctions";
+import { findMapEntity, getRandomCoords } from "./entityHelperFunctions";
 
 
 export const findClosestAnt = (coords: { x: number, y: number }): Ant | null => {
@@ -26,21 +28,50 @@ export const findClosestAnt = (coords: { x: number, y: number }): Ant | null => 
 
 export const setOneAntToTask = (task: TaskTypes):void => {
     const { ants } = useColonyStore.getState();
+    const antsExceptForQueen = ants.filter(ant => ant.type !== AntTypes.Queen);   
     const suitableType = task === TaskTypes.Forage ? AntTypes.Worker : AntTypes.Soldier;
-    for (let ant of ants) {
-        if (ant.task != task && ant.type === suitableType) {
-            ant.task = task;
+
+    const findAntAndSetTask = (condition: (ant:Ant) => boolean) => {
+        for (let ant of antsExceptForQueen) {
+            if (ant.task != task && condition(ant)) {
+                ant.task = task;
+                return;
+            }
+        }
+    }
+    switch (task) {
+        case TaskTypes.Idle:
+        case TaskTypes.Forage:
+            findAntAndSetTask((ant) => ant.type === AntTypes.Worker);
+            findAntAndSetTask((ant) => ant.type === AntTypes.Soldier);
+            break;
+        case TaskTypes.Patrol:
+            findAntAndSetTask((ant) => ant.type === AntTypes.Soldier && ant.task !== TaskTypes.Attack);
+            break;
+        case TaskTypes.Attack:
+            const enemy = findEnemyByCondition((enemy) => true);
+            if (enemy) {
+                setOneAntOnEnemy(enemy);
+            }
+    }
+}
+
+export const setOneAntOnEnemy = (enemy: Enemy): void => {
+    const { ants } = useColonyStore.getState();
+    const antsExceptForQueen = ants.filter(ant => ant.type !== AntTypes.Queen);
+    for (let ant of antsExceptForQueen) {
+        if (ant.task != TaskTypes.Attack && ant.type === AntTypes.Soldier) {
+            ant.setEnemy(enemy);
             return;
         }
     }
-    for (let ant of ants) {
-        if (ant.task != task && ant.type !== suitableType) {
-            ant.task = task;
+    for (let ant of antsExceptForQueen) {
+        if (ant.task != TaskTypes.Attack && ant.type === AntTypes.Worker) {
+            ant.setEnemy(enemy);
             return;
         }
     }
 }
-
 
 export const findAntByCondition = (condition: (ant: Ant) => boolean): Ant | null => {
     const { ants } = useColonyStore.getState();
@@ -139,9 +170,14 @@ export const hasArrived = (ant: Ant) => {
     const dx = ant.movingTo.x - ant.coords.x;
     const dy = ant.movingTo.y - ant.coords.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    return distance < 5; // Adjusted for absolute coordinates
+    const arrivalThreshold = ant.task == TaskTypes.Attack ? AntTypeInfo[ant.type].attackRange :  5; // Adjusted for absolute coordinates
+    return distance < arrivalThreshold;
 };
 
+export const startPatrol = (ant: Ant) => {
+    ant.task = TaskTypes.Patrol;
+    ant.movingTo = getRandomCoords();
+}
 
 export const moveWhileBusy = (ant: Ant) => {
     // this function moves ant slightly towards the objective while busy
@@ -203,3 +239,16 @@ export const findOrRemoveAntForFoodSource = (entity: MapEntity, shouldRemove: bo
     }
 }
 
+export const setAntToOptimalTask = (ant: Ant) => {
+    switch (ant.type) {
+        case AntTypes.Queen:
+            ant.task = TaskTypes.Idle;
+            break;
+        case AntTypes.Worker:
+            ant.task = TaskTypes.Forage;
+            break;
+        case AntTypes.Soldier:
+            ant.task = TaskTypes.Patrol;
+            break;
+    }
+}

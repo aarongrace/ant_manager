@@ -25,6 +25,8 @@ const moveAnt = (ant: Ant, delta: number) => {
         initializeAntLogic();
         return;
     }
+    if (ant.isAttacking){ return;}
+
     reignInCoords(ant.movingTo);
 
     const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions

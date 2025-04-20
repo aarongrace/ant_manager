@@ -152,6 +152,12 @@ The coordinates are set up so that (1,1) is in the lower right quadrant, and (-1
 
 If you want to install a npm module for the frontend, you need to cd to the frontend folder and install it there with npm install .... The npm package.json and node modules in the root folder are only used for concurrently and installing packages there might confuse VSCode into thinking that certain modules are enabled for the frontend when they are not.
 
+## Todos
+
+1. Add patrol logic where patrol path and range can be set for specific ants
+2. Create sprites for ant attack
+3. Make ants clickable and hoverable. Add range indicator for hovering over soldier ants
+
 ---
 
 ## Versions

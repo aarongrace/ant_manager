@@ -24,6 +24,7 @@ const Dashboard: React.FC = () => {
       await fetchColonyInfo();
       initializeAntLogic();
       resizeCanvas();
+      initializeIcons();
     }
     initialize();
     window.addEventListener('resize', resizeCanvas);
@@ -32,7 +33,6 @@ const Dashboard: React.FC = () => {
   const resizeCanvas = () => {
     const { setCanvasDimensions } = useSettingsStore.getState();
     setCanvasDimensions(window.innerWidth * canvasProportions.width, window.innerHeight * canvasProportions.height);
-    initializeIcons();
   }
 
   
@@ -50,8 +50,6 @@ const Dashboard: React.FC = () => {
         <main className="dashboard-content">
           {/* Colony Overview */}
           <section className="dashboard-section colony-overview">
-            <p><strong>Colony Name:</strong> {colonyName}</p>
-            <p><strong>Colony Age:</strong> {age} days</p>
             <p><strong>Number of Ants:</strong> {ants.length}</p>
             <p><strong>Food:</strong> {Math.floor(food)}</p>
             <p><strong>Sand:</strong> {sand}</p>

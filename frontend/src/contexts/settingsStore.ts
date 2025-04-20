@@ -57,8 +57,9 @@ export const foodDecayFactor = 0.3;
 export const fruitSize = 40;
 export const defaultFruitAmount = 50;
 
+
 export const canvasProportions = {
-    width: 0.6,
+    width: 0.7,
     height: 0.77,
 };
 export const idleSpeedFactor = 0.5;

@@ -11,8 +11,8 @@ export class TaskIcon implements InteractiveElement{
     static defaultSize = { width: 37, height: 40 };
     static bottomMargin = 5;
     static leftMargin = 10;
-    static betweenMargin = 15;
-    static textMargin = 15;
+    static betweenMargin = 27;
+    static textMargin = 4;
     clickable: boolean = true;
     type: TaskType;
     coords: { x: number; y: number };
@@ -20,14 +20,13 @@ export class TaskIcon implements InteractiveElement{
 
 
     static getTaskIconAreaBounds = () => {
-        const { canvasWidth, canvasHeight } = useSettingsStore.getState();
-        const iconTop = canvasHeight - TaskIcon.defaultSize.height - TaskIcon.bottomMargin;
+        const { canvasHeight } = useSettingsStore.getState();
         const height = TaskIcon.defaultSize.height + TaskIcon.bottomMargin * 2;
         return {
             left: 0,
             top: canvasHeight - height,
             width: (TaskIcon.defaultSize.width + TaskIcon.betweenMargin + TaskIcon.textMargin) 
-            * Object.values(TaskType).length + TaskIcon.leftMargin,
+            * Object.values(TaskType).length + TaskIcon.leftMargin * 2,
             height: height,
         };
     }
@@ -37,8 +36,10 @@ export class TaskIcon implements InteractiveElement{
     }
 
     onClick =  (event: React.MouseEvent<HTMLCanvasElement>):void => {
+        const { setTaskNumbers } = useIconsStore.getState();
         console.log(`Icon clicked: ${this.type}`);
         setOneAntToTask(this.type);
+        setTaskNumbers();
     };
     getBounds = () => {
         return {
@@ -49,7 +50,6 @@ export class TaskIcon implements InteractiveElement{
         };
     }
     draw(ctx: CanvasRenderingContext2D): void {
-        console.log(this);
         const { getImage } = usePreloadedImagesStore.getState();
         const { getTaskNumbers } = useIconsStore.getState();
         const img = getImage(this.type);
@@ -62,7 +62,7 @@ export class TaskIcon implements InteractiveElement{
         ctx.fillStyle = "white";
         ctx.font = "bold 25px Arial";
         ctx.textBaseline = "middle";
-        const textX = this.coords.x + this.size.width / 2 + 10;
+        const textX = this.coords.x + this.size.width / 2 + TaskIcon.textMargin;
         const textY = this.coords.y;
         ctx.fillText(getTaskNumbers(this.type).toString(), textX, textY);
     }

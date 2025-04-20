@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { defaultFruitAmount, fruitSize } from "../contexts/settingsStore";
-import { findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { findValidEntityCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
 import { EntityTypeEnum, MapEntity } from "./MapEntity";
 import { Bounds } from "./Models";
 
@@ -64,7 +64,7 @@ export class Fruit extends MapEntity {
 
   // Static method to create a random fruit
   static createRandomFruit(): Fruit {
-    var coords = findRandomCoords();
+    var coords = findValidEntityCoords();
     if (!coords) {
       coords = { x: 0, y: 0 };
     }

@@ -2,7 +2,10 @@ import { v4 } from "uuid";
 import { useColonyStore } from "../contexts/colonyStore";
 import { carriedEntitySize, queenSpeed, soldierCarryingCapacity, soldierSpeed, useSettingsStore, workerCarryingCapacity, workerSpeed } from "../contexts/settingsStore";
 import { getRandomAntType } from "../gameLogic/antHelperFunctions";
+import { findEnemyByCondition } from "../gameLogic/enemyHelperFunctions";
+import { getNestEntranceCoords } from "../gameLogic/entityHelperFunctions";
 import { antNames } from "./antNames";
+import { Enemy } from "./Enemy";
 import { Fruit } from "./Fruit";
 import { EntityTypeEnum, MapEntity } from "./MapEntity";
 
@@ -10,8 +13,8 @@ import { EntityTypeEnum, MapEntity } from "./MapEntity";
 export enum TaskTypes {
   Idle = "idle",
   Forage = "forage",
-  Attack = "attack",
   Patrol = "patrol",
+  Attack = "attack",
 }
 
 export enum AntTypes {
@@ -66,6 +69,9 @@ export class Ant {
   movementInitialized: boolean = false; // New field: Indicates if movement has been initialized (frontend only)
   isDead: boolean = false; // New field: Indicates if the ant is dead
   hp: number; // New field: Health points
+  isAttacking: boolean = false;
+
+  static patrolRange = 400;
 
   constructor(antData: AntData) {
     this.id = antData.id;
@@ -84,9 +90,7 @@ export class Ant {
     this.frame = 0; // Default value for frame
     this.spriteFrameTimer = 0; // Default value for sprite frame timer
     this.angle = Math.random() * Math.PI * 2; // Default value for orientation
-    this.isBusy = false; // Default value for isBusy
     this.sizeFactor = antData.sizeFactor; // Initialize sizeFactor field
-    this.movementInitialized = false; // Default value for movementInitialized
     this.hp = antData.hp; // Initialize hp
   }
 
@@ -139,7 +143,15 @@ export class Ant {
     }
 
     this.spriteFrameTimer += delta;
+
+
+
     if (this.spriteFrameTimer >= updateInterval) {
+
+      if (this.isAttacking && this.frame == 2) {
+        this.attack();
+      }
+
       this.frame = (this.frame + 1) % 3; // Cycle through 3 frames
       this.spriteFrameTimer -= updateInterval;
     }
@@ -197,7 +209,7 @@ export class Ant {
   }
 
   drawHpBar(ctx: CanvasRenderingContext2D) {
-    const htBarWidth = AntTypeInfo[this.type].defaultHp / 3;
+    const htBarWidth = AntTypeInfo[this.type].defaultHp / 4;
     const hpBarHeight = 4;
     const hpBarYOffset =  - this.sizeFactor * AntTypeInfo[this.type].hpBarYOffset; // Y offset for the HP bar
     const hpPercent = this.hp / AntTypeInfo[this.type].defaultHp; // Calculate the percentage of HP remaining
@@ -205,8 +217,24 @@ export class Ant {
     ctx.fillStyle = "black"; // Background color
     ctx.fillRect(-htBarWidth / 2, hpBarYOffset, htBarWidth, hpBarHeight); // Draw the background bar
 
-    ctx.fillStyle = "red"; // Foreground color
+    ctx.fillStyle = "green"; // Foreground color
     ctx.fillRect(-htBarWidth / 2, hpBarYOffset, htBarWidth * hpPercent, hpBarHeight); // Draw the foreground bar
+  }
+
+  setEnemy(enemy: Enemy) {
+    this.task = TaskTypes.Attack; // Set the task to attack
+    this.objective = enemy.id; // Set the objective to the enemy ID
+    this.destination = enemy.id; // Set the destination to the enemy ID
+    this.movingTo.x = 0; // Reset movingTo coordinates
+    this.movingTo.y = 0; // Reset movingTo coordinates
+  }
+
+  attack(){
+    const enemy = findEnemyByCondition((enemy) => enemy.id === this.objective);
+    if (enemy) {
+      this.isAttacking = false; // Reset the attacking state
+      enemy.receiveAttack(AntTypeInfo[this.type].defaultAttack);
+    }
   }
 
   die(){
@@ -226,15 +254,17 @@ export const makeNewAnt = (type = getRandomAntType()): Ant => {
    * (Math.random() / 3 + 0.833));
   const hp = AntTypeInfo[type].defaultHp; // Get hp from AntTypeInfo
 
+  const { x: nestX, y: nestY } = getNestEntranceCoords();
+
   const antData: AntData = {
     id: v4(),
     name: antNames[Math.floor(Math.random() * antNames.length)],
     age: 0,
     type: type,
-    task: TaskTypes.Idle,
+    task: type === AntTypes.Soldier ? TaskTypes.Patrol : TaskTypes.Forage,
     coords: { 
-      x: Math.random() * canvasWidth - canvasWidth / 2, 
-      y: Math.random() * canvasHeight - canvasHeight / 2 
+      x: (Math.random()-1) * 100 + nestX,
+      y: (Math.random()-1) * 100 + nestY,
     }, // Absolute coordinates
     objective: "", // Default value for objective
     destination: "",
@@ -280,8 +310,8 @@ export const convertAntData = (antData: AntData[]): Ant[] => {
 };
 
 
-export const AntTypeInfo: { [key in AntTypes]: { speed: number; carryingCapacity: number; defaultHp: number; hpBarYOffset: number; cost: number } } = {
-  [AntTypes.Queen]: { speed: queenSpeed, carryingCapacity: 0, defaultHp: 200, hpBarYOffset: 30, cost: 1000 }, // Added Queen entry
-  [AntTypes.Worker]: { speed: workerSpeed, carryingCapacity: workerCarryingCapacity, defaultHp: 40, hpBarYOffset: 17, cost: 20 },
-  [AntTypes.Soldier]: { speed: soldierSpeed, carryingCapacity: soldierCarryingCapacity, defaultHp: 100, hpBarYOffset: 21, cost: 40 },
+export const AntTypeInfo: { [key in AntTypes]: { speed: number; carryingCapacity: number; defaultHp: number; hpBarYOffset: number; cost: number; defaultAttack: number; attackRange: number } } = {
+  [AntTypes.Queen]: { speed: queenSpeed, carryingCapacity: 0, defaultHp: 200, hpBarYOffset: 30, cost: 1000, defaultAttack: 0, attackRange: 0 }, // Added Queen entry
+  [AntTypes.Worker]: { speed: workerSpeed, carryingCapacity: workerCarryingCapacity, defaultHp: 40, hpBarYOffset: 17, cost: 20, defaultAttack: 2, attackRange: 25 },
+  [AntTypes.Soldier]: { speed: soldierSpeed, carryingCapacity: soldierCarryingCapacity, defaultHp: 160, hpBarYOffset: 21, cost: 40, defaultAttack: 10, attackRange: 50 },
 };

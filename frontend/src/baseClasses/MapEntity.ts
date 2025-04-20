@@ -2,7 +2,7 @@ import { v4 } from "uuid";
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { defaultFruitAmount, fruitSize as fruitLength, useSettingsStore } from "../contexts/settingsStore";
 import { findOrRemoveAntForFoodSource } from "../gameLogic/antHelperFunctions";
-import { findRandomCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { findValidEntityCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
 import { Bounds, InteractiveElement } from "./Models";
 
 export enum EntityTypeEnum {
@@ -100,7 +100,7 @@ export class MapEntity implements InteractiveElement{
     // the last food source is reserved for fruits and should not be included in the random selection
     const validFoodSources = foodSources.filter((source) => source.name !== "fruits");
     const foodSource = validFoodSources[Math.floor(Math.random() * validFoodSources.length)];
-    var coords = findRandomCoords();
+    var coords = findValidEntityCoords();
     if (!coords) {
       coords = {
         x: 0,
