@@ -1,13 +1,12 @@
-import { AntTypes, makeNewAnt } from "../../baseClasses/Ant";
+import { Ant, AntType } from "../../baseClasses/Ant";
 import { createFreshColony, useColonyStore } from "../../contexts/colonyStore";
-import { useSettingsStore } from "../../contexts/settingsStore";
+import { vals } from "../../contexts/globalVars";
 
-export const makeAnt = async (type: AntTypes) => {
+export const makeAnt = async (type: AntType) => {
     console.log("Making an ant...");
     const { food, eggs, ants, updateColony, putColonyInfo} = useColonyStore.getState();
-    const { foodPerAnt } = useSettingsStore.getState();
 
-    if (food < foodPerAnt) {
+    if (food < vals.food.foodPerAnt) {
         console.log("Not enough food to make an ant");
         return;
     }
@@ -16,11 +15,11 @@ export const makeAnt = async (type: AntTypes) => {
         return;
     }
 
-    const newAnt = makeNewAnt(type);
+    const newAnt = Ant.makeNewAnt(type);
 
     updateColony({
         ants: [...ants, newAnt],
-        food: food - foodPerAnt,
+        food: food - vals.food.foodPerAnt,
         eggs: eggs - 1,
     });
     putColonyInfo();

@@ -1,21 +1,21 @@
 import { v4 } from "uuid";
-import { Ant, AntTypes, TaskTypes } from "../baseClasses/Ant";
+import { Ant, AntType, TaskType } from "../baseClasses/Ant";
 import { Enemy } from "../baseClasses/Enemy";
 import { Fruit } from "../baseClasses/Fruit";
-import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
+import { EntityType, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { carriedEntitySize } from "../contexts/settingsStore";
-import { findIdleCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination, startPatrol } from "./antHelperFunctions";
+import { vals } from "../contexts/globalVars"; // Updated to use env
+import { findIdleCoords, findNewPatrolCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination, startPatrol } from "./antHelperFunctions";
 import { findEnemyByCondition } from "./enemyHelperFunctions";
-import { calculateDistance, findClosestFoodSource, findGateway, findMapEntity, getRandomCoords, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
+import { calculateDistance, findClosestFoodSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
 
 //todo add capability to draw multiple carried entities
 
 export const handleAntLogic = (ant: Ant) => {
-    if (ant.task === TaskTypes.Forage) { handleForage(ant);
-    } else if (ant.task === TaskTypes.Idle) { handleIdling(ant);
-    } else if (ant.task === TaskTypes.Attack) { handleAttack(ant);
-    } else if (ant.task === TaskTypes.Patrol) { handlePatrol(ant); }
+    if (ant.task === TaskType.Forage) { handleForage(ant);
+    } else if (ant.task === TaskType.Idle) { handleIdling(ant);
+    } else if (ant.task === TaskType.Attack) { handleAttack(ant);
+    } else if (ant.task === TaskType.Patrol) { handlePatrol(ant); }
 };
 
 // this is crucial because movingTo, anchorPoints and etc. are not stored in the backend
@@ -24,14 +24,14 @@ export const initializeAntLogic = () => {
     ants.forEach((ant) => {
 
         switch (ant.task) {
-            case TaskTypes.Forage:
+            case TaskType.Forage:
                 if (!hasValidObjective(ant)) {
-                    setAntObjective(ant, findClosestFoodSource(ant));
+                    setAntObjective(ant, findClosestFoodSource(ant.coords));
                 } else {
                     setDestination(ant, findMapEntity(ant.destination)); // this sets the movement too
                 }
                 break;
-            case TaskTypes.Idle:
+            case TaskType.Idle:
                 setAntToIdle(ant);
                 break;
         }
@@ -53,7 +53,7 @@ const handleIdling = (ant: Ant) => {
 const handleForage = (ant: Ant) => {
     if (!hasValidObjective(ant)) {
         console.log("Ant has no objective, setting one.");
-        setAntObjective(ant, findClosestFoodSource(ant));
+        setAntObjective(ant, findClosestFoodSource(ant.coords));
         if (ant.carrying && ant.carrying.amount === ant.carryingCapacity) {
             setDestination(ant, findGateway());
         }
@@ -66,10 +66,10 @@ const handleForage = (ant: Ant) => {
             return;
         }
         switch (destinationEntity.type) {
-            case EntityTypeEnum.FoodResource:
+            case EntityType.FoodResource:
                 handleAtFoodSource(ant, destinationEntity);
                 break;
-            case EntityTypeEnum.Gateway:
+            case EntityType.Gateway:
                 handleAtGateway(ant);
                 break;
             default:
@@ -81,7 +81,7 @@ const handleForage = (ant: Ant) => {
 const handleAttack = (ant: Ant) => {
     const enemy = findEnemyByCondition((enemy) => enemy.id === ant.objective);
     if (!enemy) {
-        if (ant.type === AntTypes.Soldier) { startPatrol(ant); } else { setAntToIdle(ant); }
+        if (ant.type === AntType.Soldier) { startPatrol(ant); } else { setAntToIdle(ant); }
     } else {
         ant.movingTo.x = enemy.coords.x;
         ant.movingTo.y = enemy.coords.y;
@@ -94,7 +94,7 @@ const handleAttack = (ant: Ant) => {
 const handlePatrol = (ant: Ant) => {
     ant.isAttacking = false;
     const isInRange = (enemy: Enemy) => {
-        return calculateDistance(ant.coords, enemy.coords) < Ant.patrolRange;
+        return calculateDistance(ant.coords, enemy.coords) < vals.ant.patrolRange;
     }
     const enemy = findEnemyByCondition(isInRange);
     if (enemy) {
@@ -107,9 +107,6 @@ const handlePatrol = (ant: Ant) => {
     }
 }
 
-const findNewPatrolCoords = (ant: Ant) => {
-    ant.movingTo = getRandomCoords();
-}
 
 
 const handleAtGateway = (ant: Ant) => {
@@ -121,7 +118,7 @@ const handleAtGateway = (ant: Ant) => {
     if (hasValidObjective(ant)) {
         setDestination(ant, findMapEntity(ant.objective));
     } else {
-        setAntObjective(ant, findClosestFoodSource(ant));
+        setAntObjective(ant, findClosestFoodSource(ant.coords));
     }
 };
 
@@ -135,7 +132,7 @@ const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
             return;
         } else if (foodSource.amount <= 0) { // if the food source is empty
             ant.isBusy = false; // Reset the busy state
-            setAntObjective(ant, findClosestFoodSource(ant));
+            setAntObjective(ant, findClosestFoodSource(ant.coords));
         } else {
             ant.isBusy = true; // Set the ant to busy state
             ant.carrying.amount += 1;
@@ -151,13 +148,13 @@ const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
         }
     } else {
         if (foodSource instanceof Fruit) {    
-            ant.carrying = new Fruit(undefined, 1, foodSource.col, foodSource.row, 0,carriedEntitySize);
+            ant.carrying = new Fruit(undefined, 1, foodSource.col, foodSource.row, 0, vals.ui.carriedEntitySize); // Updated to use env
         } else {
             ant.carrying = new MapEntity(
                 v4(),
-                EntityTypeEnum.FoodResource,
+                EntityType.FoodResource,
                 undefined,
-                carriedEntitySize,
+                vals.ui.carriedEntitySize, // Updated to use env
                 1,
                 foodSource.imgName
             );

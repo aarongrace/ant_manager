@@ -10,13 +10,14 @@
   justify-content: center;
   height: 100vh;
   width: 100%;
-  overflow:auto;
-  scrollbar-width: none;;
+  overflow: auto;
+  scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
-.dashboard-container::-webkit-scrollbar{ display: none;}
-
+.dashboard-container::-webkit-scrollbar {
+  display: none;
+}
 
 .dashboard-container button {
   padding: 0.5rem 1rem;
@@ -29,45 +30,38 @@
   transition: background-color 0.3s ease;
 }
 
+.dashboard-container button:hover {
+  background-color: rgb(90, 90, 100);
+}
+
 /* Panels container */
 .panels-container {
-  width: 38%; /* From 10% to 40% of the width */
+  width: 38%;
   padding: 1px;
   margin-right: 2%;
-  overflow-y: hidden; /* Allow scrolling if content overflows */
   display: flex;
   justify-content: center;
   flex: 0.8 0.9 0%;
 }
 
-
+/* Map container */
 .map-container {
   padding: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
   border: 2px solid #d4a373; /* Soft brown border */
   border-radius: 1rem; /* Rounded corners for bubble effect */
-
   width: fit-content;
   height: fit-content;
 }
 
-.map-canvas{
+.map-canvas {
   padding: 2px;
   border: 2px solid #d4a373; /* Soft brown border */
   border-radius: 1rem; /* Rounded corners for bubble effect */
 }
-
-.map-text{
-  font-size: 0.75rem;
-  color: #333; /* Dark text color */
-  text-align: center;
-  margin-top: 20px;
-}
-
 
 /* Section styling */
 .dashboard-section {
@@ -89,30 +83,17 @@
   color: #e76f51; /* Warm orange */
 }
 
-/* Resource Panel */
-.resource-panel ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.resource-panel li {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-
+/* Reproduction Panel */
 .reproduction-panel {
   display: flex;
   flex-direction: row;
-
 }
 
 .reproduction-panel .reproduction-left {
-  display: flex; /* Enable flexbox for child elements */
-  flex-direction: column; /* Arrange child elements in a column */
-  align-items: stretch; /* Stretch items to fill the container's width */
-  justify-content: center; /* Center items vertically */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
 }
 
 .reproduction-panel button {
@@ -123,11 +104,23 @@
   background-color: #257729; /* Darker green on hover */
 }
 
+/* Controls Panel */
+.controls-panel ul {
+  list-style-type: disc;
+  padding-left: 0.7rem;
+  text-align: left;
+}
 
-/* User and Clan Info */
-.user-clan-info p {
-  margin: 0.5rem 0;
-  font-size: 1.2rem;
+.controls-panel ul ul {
+  list-style-type: circle;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.controls-panel li {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #333; /* Dark text color */
 }
 
 /* Responsive Design */

@@ -1,36 +1,38 @@
 import { v4 } from "uuid";
+import { vals } from "../contexts/globalVars"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
-import { defaultFruitAmount, fruitSize as fruitLength, useSettingsStore } from "../contexts/settingsStore";
 import { findOrRemoveAntForFoodSource } from "../gameLogic/antHelperFunctions";
 import { findValidEntityCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
 import { Bounds, InteractiveElement } from "./Models";
 
-export enum EntityTypeEnum {
+export enum EntityType {
   Gateway = "gateway",
   FoodResource = "foodResource",
 }
 
 export type MapEntityData = {
   id: string; // Unique identifier for the map entity
-  type: EntityTypeEnum; // Type of the entity (e.g., gateway, foodResource)
+  type: EntityType; // Type of the entity (e.g., gateway, foodResource)
   coords: { x: number; y: number }; // Absolute coordinates of the entity
   size: { width: number; height: number }; // Size of the entity
   amount: number; // Amount of the resource
   imgName: string; // Name of the image associated with the entity
 };
 
-export class MapEntity implements InteractiveElement{
+export class MapEntity implements InteractiveElement {
   id: string; // Unique identifier for the map entity
-  type: EntityTypeEnum; // Type of the entity (e.g., gateway, foodResource)
+  type: EntityType; // Type of the entity (e.g., gateway, foodResource)
   coords: { x: number; y: number }; // Absolute coordinates of the entity (e.g., { x: -100, y: 50 })
   size: { width: number; height: number }; // Size of the entity (e.g., { width: 10, height: 20 })
   amount: number; // Amount of the resource (if applicable)
   imgName: string; // Name of the image associated with the entity
   clickable: boolean = true; // Whether the entity is clickable or not
+  hoverable: boolean = false;
+  isHovered: boolean = false;
 
   constructor(
     id: string = v4(),
-    type: EntityTypeEnum = EntityTypeEnum.FoodResource,
+    type: EntityType = EntityType.FoodResource,
     coords: { x: number; y: number } = { x: 0, y: 0 },
     size: { width: number; height: number } = { width: 10, height: 10 },
     amount: number = 100,
@@ -42,7 +44,7 @@ export class MapEntity implements InteractiveElement{
     this.size = size;
     this.amount = amount;
     this.imgName = imgName;
-    this.clickable = this.type !== EntityTypeEnum.Gateway;
+    this.clickable = this.type !== EntityType.Gateway;
   }
 
   toMapEntityData(): MapEntityData {
@@ -74,14 +76,13 @@ export class MapEntity implements InteractiveElement{
     );
   }
 
+  getBounds = () => getEntityBounds(this);
 
-  getBounds = ()=> getEntityBounds(this);
-
-  draw(ctx: CanvasRenderingContext2D, bounds:Bounds = this.getBounds(), isHovered: boolean = false): void {
+  draw(ctx: CanvasRenderingContext2D, bounds: Bounds = this.getBounds()): void {
     const { getImage } = usePreloadedImagesStore.getState();
     const hoveredImgName = `${this.imgName}_hovered`;
-    var img = isHovered ? getImage(hoveredImgName) : getImage(this.imgName);
-    if (isHovered && !img) {
+    var img = this.isHovered ? getImage(hoveredImgName) : getImage(this.imgName);
+    if (this.isHovered && !img) {
       img = getImage(this.imgName);
     }
     if (!img) {
@@ -93,7 +94,7 @@ export class MapEntity implements InteractiveElement{
 
   onClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     findOrRemoveAntForFoodSource(this, event.button === 2);
-  }
+  };
 
   // Static method to create a random map entity
   static createRandomMapEntity(): MapEntity {
@@ -111,7 +112,7 @@ export class MapEntity implements InteractiveElement{
     const amount = Math.floor((Math.random() / 2 + 0.5) * foodSource.default_amount);
     return new MapEntity(
       v4(),
-      EntityTypeEnum.FoodResource,
+      EntityType.FoodResource,
       coords,
       { width: foodSource.default_width, height: foodSource.default_height },
       amount,
@@ -119,13 +120,12 @@ export class MapEntity implements InteractiveElement{
     );
   }
 
-
   // Static method to recreate the nest entrance
   static recreateNestEntrance(): MapEntity {
-    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
+    const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
     return new MapEntity(
       v4(),
-      EntityTypeEnum.Gateway,
+      EntityType.Gateway,
       {
         x: 0.75 * canvasWidth - canvasWidth / 2,
         y: 0.6 * canvasHeight - canvasHeight / 2,
@@ -137,7 +137,6 @@ export class MapEntity implements InteractiveElement{
   }
 }
 
-
 type foodSourceType = {
   name: string;
   default_amount: number;
@@ -146,7 +145,11 @@ type foodSourceType = {
 };
 
 export const foodSources: foodSourceType[] = [
-  { name: "ham", default_amount: 50, default_width: 48, default_height: 36},
-
-  { name: "fruits", default_amount: defaultFruitAmount, default_width: fruitLength, default_height: fruitLength },
+  { name: "ham", default_amount: 50, default_width: 48, default_height: 36 },
+  {
+    name: "fruits",
+    default_amount: vals.food.defaultFruitAmount, // Updated to use env
+    default_width: vals.food.fruitSize, // Updated to use env
+    default_height: vals.food.fruitSize, // Updated to use env
+  },
 ];

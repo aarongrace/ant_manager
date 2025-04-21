@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { getUserID } from "./userStore";
 
-import { Ant, AntData, AntTypes, convertAntData, convertAnts, makeNewAnt, recreateQueen } from "../baseClasses/Ant";
+import { Ant, AntData, AntType, convertAntData, convertAnts, recreateQueen } from "../baseClasses/Ant";
 import { createEnemy, Enemy, EnemyData } from "../baseClasses/Enemy";
 import { Fruit, FruitData } from "../baseClasses/Fruit";
 import { MapEntity, MapEntityData } from "../baseClasses/MapEntity"; // Import MapEntity
@@ -149,7 +149,8 @@ export const createFreshColony = () => {
   };
   const enemy = createEnemy(); // Create an enemy
 
-  const ants = [queen, makeNewAnt(AntTypes.Soldier), makeNewAnt(AntTypes.Worker), makeNewAnt(),makeNewAnt(),makeNewAnt(),makeNewAnt(),makeNewAnt()];
+  const ants = [queen, Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Worker),
+    Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(AntType.Worker)];
 
   return {
     ants: ants,

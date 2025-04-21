@@ -1,11 +1,10 @@
-import { Ant, AntTypeInfo, AntTypes, TaskTypes } from "../baseClasses/Ant";
+import { Ant, AntType, AntTypeInfo, TaskType } from "../baseClasses/Ant";
 import { Enemy } from "../baseClasses/Enemy";
-import { EntityTypeEnum, MapEntity } from "../baseClasses/MapEntity";
+import { EntityType, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { edgeMargin, useSettingsStore } from "../contexts/settingsStore";
+import { vals } from "../contexts/globalVars"; // Use env for constants
 import { findEnemyByCondition } from "./enemyHelperFunctions";
 import { findMapEntity, getNestEntranceCoords, getRandomCoords } from "./entityHelperFunctions";
-
 
 export const findClosestAnt = (coords: { x: number, y: number }): Ant | null => {
     const { ants } = useColonyStore.getState();
@@ -23,55 +22,54 @@ export const findClosestAnt = (coords: { x: number, y: number }): Ant | null => 
         }
     }
     return closestAnt;
-}
+};
 
-
-export const setOneAntToTask = (task: TaskTypes):void => {
+export const setOneAntToTask = (task: TaskType): void => {
     const { ants } = useColonyStore.getState();
-    const antsExceptForQueen = ants.filter(ant => ant.type !== AntTypes.Queen);   
-    const suitableType = task === TaskTypes.Forage ? AntTypes.Worker : AntTypes.Soldier;
+    const antsExceptForQueen = ants.filter(ant => ant.type !== AntType.Queen);
+    const suitableType = task === TaskType.Forage ? AntType.Worker : AntType.Soldier;
 
-    const findAntAndSetTask = (condition: (ant:Ant) => boolean) => {
+    const findAntAndSetTask = (condition: (ant: Ant) => boolean) => {
         for (let ant of antsExceptForQueen) {
-            if (ant.task != task && condition(ant)) {
+            if (ant.task !== task && condition(ant)) {
                 ant.task = task;
                 return;
             }
         }
-    }
+    };
     switch (task) {
-        case TaskTypes.Idle:
-        case TaskTypes.Forage:
-            findAntAndSetTask((ant) => ant.type === AntTypes.Worker);
-            findAntAndSetTask((ant) => ant.type === AntTypes.Soldier);
+        case TaskType.Idle:
+        case TaskType.Forage:
+            findAntAndSetTask((ant) => ant.type === AntType.Worker);
+            findAntAndSetTask((ant) => ant.type === AntType.Soldier);
             break;
-        case TaskTypes.Patrol:
-            findAntAndSetTask((ant) => ant.type === AntTypes.Soldier && ant.task !== TaskTypes.Attack);
+        case TaskType.Patrol:
+            findAntAndSetTask((ant) => ant.type === AntType.Soldier && ant.task !== TaskType.Attack);
             break;
-        case TaskTypes.Attack:
+        case TaskType.Attack:
             const enemy = findEnemyByCondition((enemy) => true);
             if (enemy) {
                 setOneAntOnEnemy(enemy);
             }
     }
-}
+};
 
 export const setOneAntOnEnemy = (enemy: Enemy): void => {
     const { ants } = useColonyStore.getState();
-    const antsExceptForQueen = ants.filter(ant => ant.type !== AntTypes.Queen);
+    const antsExceptForQueen = ants.filter(ant => ant.type !== AntType.Queen);
     for (let ant of antsExceptForQueen) {
-        if (ant.task != TaskTypes.Attack && ant.type === AntTypes.Soldier) {
+        if (ant.task !== TaskType.Attack && ant.type === AntType.Soldier) {
             ant.setEnemy(enemy);
             return;
         }
     }
     for (let ant of antsExceptForQueen) {
-        if (ant.task != TaskTypes.Attack && ant.type === AntTypes.Worker) {
+        if (ant.task !== TaskType.Attack && ant.type === AntType.Worker) {
             ant.setEnemy(enemy);
             return;
         }
     }
-}
+};
 
 export const findAntByCondition = (condition: (ant: Ant) => boolean): Ant | null => {
     const { ants } = useColonyStore.getState();
@@ -83,10 +81,10 @@ export const findAntByCondition = (condition: (ant: Ant) => boolean): Ant | null
     return null;
 };
 
-export const findAntByTaskAndOrObjective = (task: TaskTypes, objectiveId: string = ""): Ant | null => {
+export const findAntByTaskAndOrObjective = (task: TaskType, objectiveId: string = ""): Ant | null => {
     const { ants } = useColonyStore.getState();
     for (let ant of ants) {
-        if (ant.task === task && ant.type !== AntTypes.Queen && ant.objective !== objectiveId) {
+        if (ant.task === task && ant.type !== AntType.Queen && ant.objective !== objectiveId) {
             console.log("Found ant with task:", task);
             return ant;
         }
@@ -101,8 +99,8 @@ export const setAntObjective = (ant: Ant, objective: MapEntity | undefined) => {
     ant.objective = objective.id;
     setDestination(ant, objective);
     switch (objective.type) {
-        case EntityTypeEnum.FoodResource:
-            ant.task = TaskTypes.Forage;
+        case EntityType.FoodResource:
+            ant.task = TaskType.Forage;
             break;
     }
     ant.isBusy = false;
@@ -112,10 +110,9 @@ export const setDestination = (ant: Ant, destination: MapEntity | undefined) => 
     if (!destination) {
         return;
     }
-    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
     ant.destination = destination.id;
 
-    const offsetFactor = destination.type === EntityTypeEnum.Gateway ? 50 : 20;
+    const offsetFactor = destination.type === EntityType.Gateway ? 50 : 20;
 
     // Calculate the angle between the ant and the destination
     const dx = destination.coords.x - ant.coords.x;
@@ -126,7 +123,10 @@ export const setDestination = (ant: Ant, destination: MapEntity | undefined) => 
         const randomOffset = Math.random() - 0.5;
         const bias = isX ? Math.cos(angle) : Math.sin(angle);
         const biasedOffset = (randomOffset - bias * 1.1) * offsetFactor;
-        return Math.min(canvasWidth / 2 - edgeMargin, Math.max(-canvasWidth / 2 + edgeMargin, coord + biasedOffset));
+        return Math.min(
+            vals.ui.canvasWidth / 2 - vals.ui.edgeMargin,
+            Math.max(-vals.ui.canvasWidth / 2 + vals.ui.edgeMargin, coord + biasedOffset)
+        );
     };
 
     ant.movingTo.x = getBiasedRandomCoords(destination.coords.x, true);
@@ -144,32 +144,29 @@ export const findAntByTargetEntity = (entity: MapEntity): Ant | null => {
 };
 
 export const setAntToIdle = (ant: Ant) => {
-    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    ant.task = TaskTypes.Idle;
+    ant.task = TaskType.Idle;
     ant.objective = "";
     ant.destination = "";
     ant.isBusy = false;
 
-    if (ant.type === AntTypes.Queen) {
+    if (ant.type === AntType.Queen) {
         ant.anchorPoint = { ...ant.coords };
         ant.movingTo = { ...ant.anchorPoint };
     } else {
-        ant.anchorPoint.x = (canvasWidth / 2 - ant.coords.x) * 0.15 * Math.random() + ant.coords.x;
-        ant.anchorPoint.y = (canvasHeight / 2 - ant.coords.y) * 0.1 * Math.random() + ant.coords.y;
+        ant.anchorPoint.x = (vals.ui.canvasWidth / 2 - ant.coords.x) * 0.15 * Math.random() + ant.coords.x;
+        ant.anchorPoint.y = (vals.ui.canvasHeight / 2 - ant.coords.y) * 0.1 * Math.random() + ant.coords.y;
         findIdleCoords(ant);
     }
 };
 
 export const findIdleCoords = (ant: Ant) => {
-    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    
-    if (ant.type === AntTypes.Queen) {
+    if (ant.type === AntType.Queen) {
         const nestCoords = getNestEntranceCoords();
-        ant.movingTo.x = nestCoords.x + (Math.random() - 1) * 0.1 * canvasWidth;
-        ant.movingTo.y = nestCoords.y + (Math.random() - 1) * 0.1 * canvasHeight;
+        ant.movingTo.x = nestCoords.x + (Math.random() - 1) * 0.1 * vals.ui.canvasWidth;
+        ant.movingTo.y = nestCoords.y + (Math.random() - 1) * 0.1 * vals.ui.canvasHeight;
     } else {
-        ant.movingTo.x = ant.anchorPoint.x + (Math.random() - 1) * 0.1 * canvasWidth;
-        ant.movingTo.y = ant.anchorPoint.y + (Math.random() - 1) * 0.1 * canvasHeight;
+        ant.movingTo.x = ant.anchorPoint.x + (Math.random() - 1) * 0.1 * vals.ui.canvasWidth;
+        ant.movingTo.y = ant.anchorPoint.y + (Math.random() - 1) * 0.1 * vals.ui.canvasHeight;
     }
 };
 
@@ -177,13 +174,24 @@ export const hasArrived = (ant: Ant) => {
     const dx = ant.movingTo.x - ant.coords.x;
     const dy = ant.movingTo.y - ant.coords.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    const arrivalThreshold = ant.task == TaskTypes.Attack ? AntTypeInfo[ant.type].attackRange :  5; // Adjusted for absolute coordinates
+    const arrivalThreshold = ant.task === TaskType.Attack ? AntTypeInfo[ant.type].attackRange :  5; // Adjusted for absolute coordinates
     return distance < arrivalThreshold;
 };
 
 export const startPatrol = (ant: Ant) => {
-    ant.task = TaskTypes.Patrol;
-    ant.movingTo = getRandomCoords();
+    ant.task = TaskType.Patrol;
+    ant.objective = "";
+    ant.destination = "";
+    findNewPatrolCoords(ant);
+}
+
+export const findNewPatrolCoords = (ant: Ant) => {
+    if (ant.patrolAnchorPointSet){
+        ant.movingTo.x = ant.anchorPoint.x + (Math.random()-1) * vals.ant.patrolRange/2;
+        ant.movingTo.y = ant.anchorPoint.y + (Math.random()-1) * vals.ant.patrolRange/2;
+    } else {
+        ant.movingTo = getRandomCoords();
+    }
 }
 
 export const moveWhileBusy = (ant: Ant) => {
@@ -206,16 +214,21 @@ export const moveWhileBusy = (ant: Ant) => {
 
 
 export const reignInCoords = (coords: { x: number, y: number }) => {
-    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    coords.x = Math.max(-canvasWidth / 2 + edgeMargin, Math.min(canvasWidth / 2 - edgeMargin, coords.x));
-    coords.y = Math.max(-canvasHeight / 2 + edgeMargin, Math.min(canvasHeight / 2 - edgeMargin, coords.y));
+    coords.x = Math.max(
+        -vals.ui.canvasWidth / 2 + vals.ui.edgeMargin,
+        Math.min(vals.ui.canvasWidth / 2 - vals.ui.edgeMargin, coords.x)
+    );
+    coords.y = Math.max(
+        -vals.ui.canvasHeight / 2 + vals.ui.edgeMargin,
+        Math.min(vals.ui.canvasHeight / 2 - vals.ui.edgeMargin, coords.y)
+    );
 }
 
 // Helper method to get a random AntType
-export const getRandomAntType = (): AntTypes => {
-  const antTypes = Object.values(AntTypes).filter(
-    (antType) => antType !== AntTypes.Queen
-  ) as AntTypes[];
+export const getRandomAntType = (): AntType => {
+  const antTypes = Object.values(AntType).filter(
+    (antType) => antType !== AntType.Queen
+  ) as AntType[];
   return antTypes[Math.floor(Math.random() * antTypes.length)];
 };
 
@@ -224,12 +237,12 @@ export const findOrRemoveAntForFoodSource = (entity: MapEntity, shouldRemove: bo
     const { ants } = useColonyStore.getState();
     if (!shouldRemove) {
         // send ant to food source if left click
-        var ant = findAntByTaskAndOrObjective(TaskTypes.Idle, entity.id);
+        var ant = findAntByTaskAndOrObjective(TaskType.Idle, entity.id);
         if (!ant) {
-            ant = findAntByTaskAndOrObjective(TaskTypes.Forage, entity.id);
+            ant = findAntByTaskAndOrObjective(TaskType.Forage, entity.id);
         }
         if (!ant) { // find any available ant
-            ant = ants.filter(ant => ant.objective !== entity.id && ant.type !== AntTypes.Queen)[0];
+            ant = ants.filter(ant => ant.objective !== entity.id && ant.type !== AntType.Queen)[0];
         }
         if (ant) {
             setAntObjective(ant, entity);
@@ -248,14 +261,56 @@ export const findOrRemoveAntForFoodSource = (entity: MapEntity, shouldRemove: bo
 
 export const setAntToOptimalTask = (ant: Ant) => {
     switch (ant.type) {
-        case AntTypes.Queen:
-            ant.task = TaskTypes.Idle;
+        case AntType.Queen:
+            ant.task = TaskType.Idle;
             break;
-        case AntTypes.Worker:
-            ant.task = TaskTypes.Forage;
+        case AntType.Worker:
+            ant.task = TaskType.Forage;
             break;
-        case AntTypes.Soldier:
-            ant.task = TaskTypes.Patrol;
+        case AntType.Soldier:
+            ant.task = TaskType.Patrol;
             break;
     }
+}
+
+export const drawPatrolCircle = (ctx: CanvasRenderingContext2D, ant: Ant) => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(0, 0, vals.ant.patrolRange, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(222, 161, 47, 0.7)";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.restore();
+}
+
+export const drawAttackArrow = (ctx: CanvasRenderingContext2D, ant: Ant) => {
+    const enemy = findEnemyByCondition((enemy) => enemy.id === ant.objective);
+    if (!enemy) {
+        return;
+    }
+    drawAarow(ctx, ant.coords, enemy.coords, "rgba(236, 4, 4, 0.7)");
+}
+//add debugging by printing the coords for a unique ant
+const drawAarow = (ctx: CanvasRenderingContext2D, from: { x: number, y: number }, to: { x: number, y: number }, color: string) => {
+    const distance = Math.sqrt((to.x - from.x) ** 2 + (to.y - from.y) ** 2);
+    if (distance < 20){
+        return;
+    }
+    const headLength = 10;
+    const offset = 0;
+    const angle = Math.atan2(to.y - from.y, to.x - from.x);
+
+    const startX = from.x + offset * Math.cos(angle);
+    const startY = from.y + offset * Math.sin(angle);   
+    const endX = to.x - offset * Math.cos(angle);
+    const endY = to.y - offset * Math.sin(angle);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.restore();
 }

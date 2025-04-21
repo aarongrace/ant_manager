@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { AntTypeInfo, AntTypes } from '../../baseClasses/Ant';
+import { AntType, AntTypeInfo } from '../../baseClasses/Ant';
 import { useIconsStore } from '../../baseClasses/Icon';
 import { useColonyStore } from '../../contexts/colonyStore';
+import { vals } from '../../contexts/globalVars';
 import { usePreloadedImagesStore } from '../../contexts/preloadImages';
-import { canvasProportions, useSettingsStore } from '../../contexts/settingsStore';
 import { initializeAntLogic } from '../../gameLogic/antLogic';
+import { handleKeyDown, handleKeyUp } from '../../gameLogic/handleKeyboard';
 import SurfaceCanvas from '../canvas/Surface';
 import './dashboard.css';
 import { makeAnt, resetColony } from './dashboard.services';
@@ -28,16 +29,19 @@ const Dashboard: React.FC = () => {
     }
     initialize();
     window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('keydown',handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
   }, []);
 
   const resizeCanvas = () => {
-    const { setCanvasDimensions } = useSettingsStore.getState();
-    setCanvasDimensions(window.innerWidth * canvasProportions.width, window.innerHeight * canvasProportions.height);
+    vals.ui.canvasWidth = window.innerWidth * vals.ui.canvasProportions.width;
+    vals.ui.canvasHeight = window.innerHeight * vals.ui.canvasProportions.height;
+    initializeIcons();
   }
 
   
   const taskCounts = ants.reduce((acc: Record<string, number>, ant) => {
-    if (ant.type != AntTypes.Queen) { // queen should not be counted as she technically doesn't have a task
+    if (ant.type != AntType.Queen) { // queen should not be counted as she technically doesn't have a task
       acc[ant.task] = (acc[ant.task] || 0) + 1;
     }
     return acc;
@@ -63,11 +67,28 @@ const Dashboard: React.FC = () => {
               <p>Eggs: {eggs}</p>
             </div>
             <div className="reproduction-buttons">
-              <button onClick={() => makeAnt(AntTypes.Worker)}>+ Worker (-{AntTypeInfo[AntTypes.Worker].cost} food)</button>
-              <button onClick={() => makeAnt(AntTypes.Soldier)}>+ Soldier (-{AntTypeInfo[AntTypes.Soldier].cost} food)</button>
+              <button onClick={() => makeAnt(AntType.Worker)}>+ Worker (-{AntTypeInfo[AntType.Worker].cost} food)</button>
+              <button onClick={() => makeAnt(AntType.Soldier)}>+ Soldier (-{AntTypeInfo[AntType.Soldier].cost} food)</button>
             </div>
           </section>
 
+          {/* Controls Section */}
+          <section className="dashboard-section controls-panel">
+            <h3>Controls</h3>
+            <ul>
+              <li>Click on food source to collect</li>
+              <li>Right-click to undo</li>
+              <li>Hold <strong>Control</strong> to toggle selection</li>
+              <li>Drag to select ants</li>
+              <li>When selected, click to set target:</li>
+              <ul>
+                <li>Closest food source when collecting</li>
+                <li>Closest enemy when attacking</li>
+                <li>Target anchor point when patrolling</li>
+              </ul>
+              <li>Click on task icons to assign tasks.</li>
+            </ul>
+          </section>
 
         </main>
       </div>

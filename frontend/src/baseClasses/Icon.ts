@@ -1,13 +1,12 @@
 import { create } from "zustand";
 import { useColonyStore } from "../contexts/colonyStore";
+import { vals } from "../contexts/globalVars"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
-import { useSettingsStore } from "../contexts/settingsStore";
 import { setOneAntToTask } from "../gameLogic/antHelperFunctions";
-import { AntTypes, TaskTypes as TaskType } from "./Ant";
+import { AntType, TaskType } from "./Ant";
 import { InteractiveElement } from "./Models";
 
-
-export class TaskIcon implements InteractiveElement{
+export class TaskIcon implements InteractiveElement {
     static defaultSize = { width: 37, height: 40 };
     static bottomMargin = 5;
     static leftMargin = 10;
@@ -18,29 +17,36 @@ export class TaskIcon implements InteractiveElement{
     coords: { x: number; y: number };
     size: { width: number; height: number } = TaskIcon.defaultSize;
 
+    hoverable: boolean = true;
+    isHovered: boolean = false;
 
     static getTaskIconAreaBounds = () => {
-        const { canvasHeight } = useSettingsStore.getState();
         const height = TaskIcon.defaultSize.height + TaskIcon.bottomMargin * 2;
         return {
             left: 0,
-            top: canvasHeight - height,
-            width: (TaskIcon.defaultSize.width + TaskIcon.betweenMargin + TaskIcon.textMargin) 
-            * Object.values(TaskType).length + TaskIcon.leftMargin * 2,
+            top: vals.ui.canvasHeight - height, // Updated to use env
+            width:
+                (TaskIcon.defaultSize.width +
+                    TaskIcon.betweenMargin +
+                    TaskIcon.textMargin) *
+                    Object.values(TaskType).length +
+                TaskIcon.leftMargin * 2,
             height: height,
         };
-    }
-    constructor(type: TaskType, coords: { x: number; y: number}) {
+    };
+
+    constructor(type: TaskType, coords: { x: number; y: number }) {
         this.type = type;
         this.coords = coords;
     }
 
-    onClick =  (event: React.MouseEvent<HTMLCanvasElement>):void => {
+    onClick = (event: React.MouseEvent<HTMLCanvasElement>): void => {
         const { setTaskNumbers } = useIconsStore.getState();
         console.log(`Icon clicked: ${this.type}`);
         setOneAntToTask(this.type);
         setTaskNumbers();
     };
+
     getBounds = () => {
         return {
             left: this.coords.x - this.size.width / 2,
@@ -48,7 +54,8 @@ export class TaskIcon implements InteractiveElement{
             width: this.size.width,
             height: this.size.height,
         };
-    }
+    };
+
     draw(ctx: CanvasRenderingContext2D): void {
         const { getImage } = usePreloadedImagesStore.getState();
         const { getTaskNumbers } = useIconsStore.getState();
@@ -57,7 +64,13 @@ export class TaskIcon implements InteractiveElement{
             console.error(`Image for icon type ${this.type} not loaded`);
             return;
         }
-        ctx.drawImage(img, this.coords.x - this.size.width / 2, this.coords.y - this.size.height / 2, this.size.width, this.size.height);
+        ctx.drawImage(
+            img,
+            this.coords.x - this.size.width / 2,
+            this.coords.y - this.size.height / 2,
+            this.size.width,
+            this.size.height
+        );
         ctx.save();
         ctx.fillStyle = "white";
         ctx.font = "bold 25px Arial";
@@ -66,18 +79,15 @@ export class TaskIcon implements InteractiveElement{
         const textY = this.coords.y;
         ctx.fillText(getTaskNumbers(this.type).toString(), textX, textY);
     }
-
-
 }
 
 type IconsStore = {
     taskIcons: TaskIcon[];
     taskNumbers: Record<TaskType, number>;
     initializeIcons: () => void;
-    setTaskNumbers:()=> void;
-    getTaskNumbers: (task:TaskType) => number;
-}
-
+    setTaskNumbers: () => void;
+    getTaskNumbers: (task: TaskType) => number;
+};
 
 export const useIconsStore = create<IconsStore>((set, get) => ({
     taskIcons: [],
@@ -85,25 +95,44 @@ export const useIconsStore = create<IconsStore>((set, get) => ({
     getIcons: () => get().taskIcons,
     initializeIcons: () => {
         get().setTaskNumbers();
-        const { canvasWidth: width, canvasHeight: canvasHeight } = useSettingsStore.getState();
         const icons: TaskIcon[] = [];
         const iconTypes = Object.values(TaskType);
-        const iconY = canvasHeight - TaskIcon.defaultSize.height/2 - TaskIcon.bottomMargin;
+        const iconY =
+            vals.ui.canvasHeight - // Updated to use env
+            TaskIcon.defaultSize.height / 2 -
+            TaskIcon.bottomMargin;
         iconTypes.forEach((type, index) => {
-            icons.push(new TaskIcon(type as TaskType,
-                { x: TaskIcon.leftMargin + TaskIcon.defaultSize.width / 2 + index * (TaskIcon.defaultSize.width + TaskIcon.betweenMargin + TaskIcon.textMargin), y: iconY },))
+            icons.push(
+                new TaskIcon(type as TaskType, {
+                    x:
+                        TaskIcon.leftMargin +
+                        TaskIcon.defaultSize.width / 2 +
+                        index *
+                            (TaskIcon.defaultSize.width +
+                                TaskIcon.betweenMargin +
+                                TaskIcon.textMargin),
+                    y: iconY,
+                })
+            );
         });
-        set(()=> ({ taskIcons: icons }) );
+        set(() => ({ taskIcons: icons }));
     },
     setTaskNumbers: () => {
         const { ants } = useColonyStore.getState();
-        const taskNumbers: Record<TaskType, number> = { [TaskType.Forage]: 0, [TaskType.Attack]: 0, [TaskType.Idle]: 0, [TaskType.Patrol]: 0, };
+        const taskNumbers: Record<TaskType, number> = {
+            [TaskType.Forage]: 0,
+            [TaskType.Attack]: 0,
+            [TaskType.Idle]: 0,
+            [TaskType.Patrol]: 0,
+        };
         ants.forEach((ant) => {
-            if (ant.type !== AntTypes.Queen) {
+            if (ant.type !== AntType.Queen) {
                 taskNumbers[ant.task]++;
             }
         });
         set(() => ({ taskNumbers: taskNumbers }));
     },
-    getTaskNumbers(task) { return get().taskNumbers[task]; },
+    getTaskNumbers(task) {
+        return get().taskNumbers[task];
+    },
 }));

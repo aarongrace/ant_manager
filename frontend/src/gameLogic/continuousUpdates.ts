@@ -1,6 +1,6 @@
-import { Ant, TaskTypes } from "../baseClasses/Ant";
+import { Ant, TaskType } from "../baseClasses/Ant";
 import { useColonyStore } from "../contexts/colonyStore";
-import { edgeMargin, idleSpeedFactor, useSettingsStore } from "../contexts/settingsStore";
+import { vals } from "../contexts/globalVars"; // Updated to use env
 import { reignInCoords } from "./antHelperFunctions";
 import { initializeAntLogic } from "./antLogic";
 
@@ -25,22 +25,26 @@ const moveAnt = (ant: Ant, delta: number) => {
         initializeAntLogic();
         return;
     }
-    if (ant.isAttacking){ return;}
+    if (ant.isAttacking) {
+        return;
+    }
 
     reignInCoords(ant.movingTo);
 
-    const { canvasWidth, canvasHeight } = useSettingsStore.getState(); // Get canvas dimensions
-    const speedFactor = ant.task === TaskTypes.Idle ? idleSpeedFactor : 1;
+    const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
+    const speedFactor = ant.task === TaskType.Idle ? vals.ant.idleSpeedFactor : 1; // Updated to use env
 
     const dx = ant.movingTo.x - ant.coords.x;
     const dy = ant.movingTo.y - ant.coords.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance < 2) { // Adjusted for absolute coordinates
+    if (distance < 2) {
+        // Adjusted for absolute coordinates
         return;
     }
 
-    if (!ant.isBusy) { // Don't recalculate angle if the ant is busy
+    if (!ant.isBusy) {
+        // Don't recalculate angle if the ant is busy
         ant.angle = Math.atan2(dy, dx) + Math.PI / 2; // Arc tangent to get the angle in radians
     }
 
@@ -48,8 +52,14 @@ const moveAnt = (ant: Ant, delta: number) => {
         ant.coords.x += (dx / distance) * ant.speed * delta * speedFactor;
         ant.coords.y += (dy / distance) * ant.speed * delta * speedFactor;
 
-        ant.coords.x = Math.max(-canvasWidth / 2 + edgeMargin, Math.min(canvasWidth / 2 - edgeMargin, ant.coords.x));
-        ant.coords.y = Math.max(-canvasHeight / 2 + edgeMargin, Math.min(canvasHeight / 2 - edgeMargin, ant.coords.y));
+        ant.coords.x = Math.max(
+            -canvasWidth / 2 + vals.ui.edgeMargin, // Updated to use env
+            Math.min(canvasWidth / 2 - vals.ui.edgeMargin, ant.coords.x) // Updated to use env
+        );
+        ant.coords.y = Math.max(
+            -canvasHeight / 2 + vals.ui.edgeMargin, // Updated to use env
+            Math.min(canvasHeight / 2 - vals.ui.edgeMargin, ant.coords.y) // Updated to use env
+        );
     }
 };
 

@@ -154,9 +154,16 @@ If you want to install a npm module for the frontend, you need to cd to the fron
 
 ## Todos
 
-1. Add patrol logic where patrol path and range can be set for specific ants
-2. Create sprites for ant attack
-3. Make ants clickable and hoverable. Add range indicator for hovering over soldier ants
+### Dashboard
+- Create sprites for the background. Implement the sprite system
+- Implement a map system where the player can scroll
+- Add patrol logic where patrol path and range can be set for specific ants.
+- Create sprites for ant attack.
+- Make ants clickable and hoverable. Add range indicator for hovering over soldier ants.
+- Make task icons hoverable. When hovered, the icons should display a range indicator or a path indicator for ants doing that task. The hover can be implemented as part of the global settings store.
+- Add icons for food/debris and ant production.
+- Add an instruction panel to replace the current panels and move the instruction panel to the right. The instruction panel should have a hide/show button.
+- add a custom cursor display
 
 ---
 

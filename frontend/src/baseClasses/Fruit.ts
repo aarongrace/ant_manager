@@ -1,8 +1,8 @@
 import { v4 } from "uuid";
+import { vals } from "../contexts/globalVars"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
-import { defaultFruitAmount, fruitSize } from "../contexts/settingsStore";
 import { findValidEntityCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
-import { EntityTypeEnum, MapEntity } from "./MapEntity";
+import { EntityType, MapEntity } from "./MapEntity";
 import { Bounds } from "./Models";
 
 export type FruitData = {
@@ -19,6 +19,7 @@ export class Fruit extends MapEntity {
   col: number; // Column of the grid
   row: number; // Row of the grid
   stage: number; // Stage of the fruit (0-2)
+  hoverable: boolean = true;
 
   constructor(
     coords: { x: number; y: number } = { x: 0, y: 0 },
@@ -26,9 +27,9 @@ export class Fruit extends MapEntity {
     col: number,
     row: number,
     stage: number,
-    size: { width: number; height: number } = { width: fruitSize, height: fruitSize }
+    size: { width: number; height: number } = { width: vals.food.fruitSize, height: vals.food.fruitSize } // Updated to use env
   ) {
-    super(v4(), EntityTypeEnum.FoodResource, coords, size, amount);
+    super(v4(), EntityType.FoodResource, coords, size, amount);
     this.col = col;
     this.row = row;
     this.stage = stage;
@@ -48,14 +49,24 @@ export class Fruit extends MapEntity {
     };
   }
 
-  draw(ctx: CanvasRenderingContext2D, bounds: Bounds = getEntityBounds(this), isHovered: boolean = false): void {
+  draw(ctx: CanvasRenderingContext2D, bounds: Bounds = getEntityBounds(this)): void {
     const { getImage } = usePreloadedImagesStore.getState();
-    const img = isHovered ?  getImage("fruits_hovered"): getImage("fruits");
+    const img = this.isHovered ? getImage("fruits_hovered") : getImage("fruits");
     if (!img) {
       console.error(`Image for entity ${"fruits"} not loaded`);
       return;
     }
-    ctx.drawImage(img,  this.col*Fruit.spriteDim, this.row*Fruit.spriteDim,  Fruit.spriteDim, Fruit.spriteDim, bounds.left, bounds.top, bounds.width, bounds.height);
+    ctx.drawImage(
+      img,
+      this.col * Fruit.spriteDim,
+      this.row * Fruit.spriteDim,
+      Fruit.spriteDim,
+      Fruit.spriteDim,
+      bounds.left,
+      bounds.top,
+      bounds.width,
+      bounds.height
+    );
   }
 
   static fromFruitData(ref: FruitData): Fruit {
@@ -72,24 +83,25 @@ export class Fruit extends MapEntity {
     const row = this.fruitStagesChart[col][0][Math.floor(Math.random() * this.fruitStagesChart[col][0].length)];
     return new Fruit(
       coords,
-      Math.random() * defaultFruitAmount / 2 + defaultFruitAmount / 2,
+      Math.random() * vals.food.defaultFruitAmount / 2 + vals.food.defaultFruitAmount / 2, // Updated to use env
       col,
       row,
       1, // Default stage
-      { width: fruitSize, height: fruitSize } // Default size
+      { width: vals.food.fruitSize, height: vals.food.fruitSize } // Updated to use env
     );
   }
 
   decreaseAmount(decrease: number): void {
     this.amount -= decrease;
-    if (this.amount <= defaultFruitAmount / 2 && this.stage == 1) {
+    if (this.amount <= vals.food.defaultFruitAmount / 2 && this.stage == 1) { // Updated to use env
       this.stage++;
       this.row = this.setRow(this.stage);
-    } else if ( this.amount <= defaultFruitAmount * 0.75 && this.stage == 0) {
+    } else if (this.amount <= vals.food.defaultFruitAmount * 0.75 && this.stage == 0) { // Updated to use env
       this.stage++;
       this.row = this.setRow(this.stage);
     }
   }
+
   // pineapple: 11
   // blueberry: 16
   // eggplant: 25
@@ -97,7 +109,7 @@ export class Fruit extends MapEntity {
   // red bell-pepper: 33
   static totalCols = 38;
   static spriteDim = 34;
-  static validCols = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37];
+  static validCols = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
 
   static fruitStagesChart = [
     [[0, 1, 2, 4], [3], [5]], // Row 0
