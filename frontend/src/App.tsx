@@ -8,6 +8,7 @@ import AdminCheck from './pages/admin/AdminCheck';
 import AntsPage from './pages/ants/AntsPage';
 import Clan from './pages/clan/Clan';
 import Dashboard from './pages/dashboard/Dashboard';
+import { resizeCanvas } from './pages/dashboard/dashboard.services';
 import Guide from './pages/guide/guide';
 import Profile from './pages/profile/Profile';
 import Store from './pages/store/Store';
@@ -17,6 +18,7 @@ function App() {
   const { preloadImages } = usePreloadedImagesStore.getState();
   useEffect(() => {
     preloadImages();
+    resizeCanvas();
   } , []);
   return (
     <div className="App">

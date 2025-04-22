@@ -1,22 +1,20 @@
 import React, { useEffect } from 'react';
 import { AntType, AntTypeInfo } from '../../baseClasses/Ant';
-import { useIconsStore } from '../../baseClasses/Icon';
 import { useColonyStore } from '../../contexts/colonyStore';
-import { vals } from '../../contexts/globalVars';
 import { usePreloadedImagesStore } from '../../contexts/preloadImages';
 import { initializeAntLogic } from '../../gameLogic/antLogic';
 import { handleKeyDown, handleKeyUp } from '../../gameLogic/handleKeyboard';
 import SurfaceCanvas from '../canvas/Surface';
 import './dashboard.css';
-import { makeAnt, resetColony } from './dashboard.services';
+import { makeAnt, resetColony, resizeCanvas } from './dashboard.services';
 
 
 const Dashboard: React.FC = () => {
   const { name: colonyName, ants, eggs, food, sand, age, perkPurchased, fetchColonyInfo } = useColonyStore();
   const { isLoaded, preloadImages } = usePreloadedImagesStore();
-  const { initializeIcons } = useIconsStore();
 
   useEffect(() => {
+    resizeCanvas();
     const initialize = async () =>{
       if (!isLoaded) {
         await preloadImages();
@@ -24,8 +22,6 @@ const Dashboard: React.FC = () => {
 
       await fetchColonyInfo();
       initializeAntLogic();
-      resizeCanvas();
-      initializeIcons();
     }
     initialize();
     window.addEventListener('resize', resizeCanvas);
@@ -33,11 +29,6 @@ const Dashboard: React.FC = () => {
     window.addEventListener('keyup', handleKeyUp);
   }, []);
 
-  const resizeCanvas = () => {
-    vals.ui.canvasWidth = window.innerWidth * vals.ui.canvasProportions.width;
-    vals.ui.canvasHeight = window.innerHeight * vals.ui.canvasProportions.height;
-    initializeIcons();
-  }
 
   
   const taskCounts = ants.reduce((acc: Record<string, number>, ant) => {

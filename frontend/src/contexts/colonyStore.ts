@@ -4,7 +4,9 @@ import { getUserID } from "./userStore";
 import { Ant, AntData, AntType, convertAntData, convertAnts, recreateQueen } from "../baseClasses/Ant";
 import { createEnemy, Enemy, EnemyData } from "../baseClasses/Enemy";
 import { Fruit, FruitData } from "../baseClasses/Fruit";
+import { GameMap, Tile } from "../baseClasses/Map";
 import { MapEntity, MapEntityData } from "../baseClasses/MapEntity"; // Import MapEntity
+import { vals } from "./globalVars";
 
 // Define the ColonyStore type
 type ColonyStore = {
@@ -16,7 +18,7 @@ type ColonyStore = {
   food: number;
   sand: number;
   age: number;
-  map: string;
+  map: Tile[][];
   perkPurchased: string[];
   fetchColonyInfo: () => Promise<void>;
   putColonyInfo: () => Promise<void>;
@@ -32,7 +34,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   food: 0,
   sand: 0,
   age: 0,
-  map: "",
+  map: [[]],
   perkPurchased: [],
 
   // Fetch a colony from the backend
@@ -68,6 +70,8 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
         return Fruit.fromFruitData(fruit);
       });
       mapEntities.push(...fruits);
+      vals.season = Math.floor(data.age / vals.seasonLength) % 4;
+      GameMap.setTilesArray(data.map);
 
       set({
         ...data,
@@ -140,7 +144,6 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
 export const createFreshColony = () => {
   const nestEntrance = MapEntity.recreateNestEntrance();
-  console.log("Nest entrance:", nestEntrance);
   const mapEntities = [nestEntrance, Fruit.createRandomFruit()];
   const queen = recreateQueen();
   queen.coords = {
@@ -152,11 +155,12 @@ export const createFreshColony = () => {
   const ants = [queen, Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Worker),
     Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(AntType.Worker)];
 
+  GameMap.initializeMap();
   return {
     ants: ants,
     enemies: [enemy], // Initialize enemies
     name: "New Colony",
-    map: "nest",
+    map: GameMap.tilesGrid,
     eggs: 5,
     food: 200,
     sand: 200,

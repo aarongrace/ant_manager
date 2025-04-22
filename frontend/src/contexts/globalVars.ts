@@ -61,4 +61,6 @@ export const vals = {
 
     highlightedTasks: [] as TaskType[],
     managingPatrol: false,
+    seasonLength: 30,
+    season: 0,
 };

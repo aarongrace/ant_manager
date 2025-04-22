@@ -2,6 +2,7 @@ import { AntType } from "../baseClasses/Ant";
 import { createEnemy } from "../baseClasses/Enemy";
 import { Fruit } from "../baseClasses/Fruit";
 import { useIconsStore } from "../baseClasses/Icon";
+import { GameMap } from "../baseClasses/Map";
 import { MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vals } from "../contexts/globalVars"; // Updated to use env
@@ -30,7 +31,19 @@ export const updateDiscreteGameState = () => {
     consumeFoodAndRestoreHp();
     decayFoodSource();
     layEgg();
+
+    incrementAge();
 };
+
+const incrementAge = () =>{
+    const { age, updateColony } = useColonyStore.getState();
+    const newAge = age + 1;
+    updateColony({ age: newAge });
+    if (newAge % vals.seasonLength === 0) {
+        vals.season = (vals.season + 1) % 4;
+    }
+    GameMap.incrementUpdateCounter();
+}
 
 const layEgg = () => {
     const { eggs, updateColony } = useColonyStore.getState();

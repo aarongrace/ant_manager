@@ -65,9 +65,9 @@ const Canvas: React.FC<CanvasProps> = ({ draw, establishContext }) => {
       ref={canvasRef} tabIndex={0}
       onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}
       onMouseMove={(e) => handleMouseMove(e, canvasRef.current!)}
-      width={vals.ui.canvasWidth} // Updated to use env
-      height={vals.ui.canvasHeight} // Updated to use env
-      style={{ width: `${vals.ui.canvasWidth}px`, height: `${vals.ui.canvasHeight}px` }} // Updated to use env
+      width={vals.ui.canvasWidth}
+      height={vals.ui.canvasHeight}
+      style={{ width: `${vals.ui.canvasWidth}px`, height: `${vals.ui.canvasHeight}px` }}
       onContextMenu={(e) => e.preventDefault()}
       className="map-canvas"
     />

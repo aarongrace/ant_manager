@@ -25,7 +25,7 @@ class Colony(Document):
     food: float  # Amount of food available
     sand: float  # Amount of sand available
     age: int  # Age of the colony
-    map: str  # Map associated with the colony
+    map: List[List[List]]  # Map associated with the colony
     perkPurchased: List[str]  # List of perks purchased by the colony
     initialized: bool  # Indicates if the colony has been initialized
 
@@ -45,7 +45,7 @@ class Colony(Document):
             food=0,
             sand=0,
             age=0,
-            map="",
+            map=[[]],
             perkPurchased=[],
             initialized = False,
         )

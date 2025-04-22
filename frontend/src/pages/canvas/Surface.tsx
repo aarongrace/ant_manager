@@ -1,6 +1,7 @@
 import React from 'react';
 import { Ant, AntType, AntTypeInfo, TaskType } from '../../baseClasses/Ant';
 import { TaskIcon, useIconsStore } from '../../baseClasses/Icon';
+import { GameMap } from '../../baseClasses/Map';
 import { Bounds } from '../../baseClasses/Models';
 import { useColonyStore } from '../../contexts/colonyStore';
 import { vals } from '../../contexts/globalVars'; // Updated to use env
@@ -51,12 +52,7 @@ export const SurfaceCanvas: React.FC = (props) => {
     }
 
     function drawBackground(ctx: CanvasRenderingContext2D, callback: () => void) {
-        const bgImage = images["bg3"];
-        if (!bgImage) {
-            console.error("Background image not loaded");
-            return;
-        }
-        ctx.drawImage(bgImage, 0, 0, ctx.canvas.width, ctx.canvas.height);
+        GameMap.drawMap(ctx);
         callback();
     }
 
@@ -110,7 +106,7 @@ export const SurfaceCanvas: React.FC = (props) => {
                 ant.drawHpBar(ctx);
             };
 
-            if (ant.task === TaskType.Patrol && (vals.highlightedTasks.includes(TaskType.Patrol)||vals.managingPatrol)) {
+            if (ant.task === TaskType.Patrol && (vals.highlightedTasks.includes(TaskType.Patrol) || vals.managingPatrol)) {
                 drawPatrolCircle(ctx, ant);
             } else if (ant.task === TaskType.Attack && vals.highlightedTasks.includes(TaskType.Attack)) {
                 // drawAttackArrow(ctx, ant);
@@ -120,7 +116,7 @@ export const SurfaceCanvas: React.FC = (props) => {
                 ant.drawSelectedCircle(ctx);
             }
 
-            
+
             ctx.rotate(ant.angle);
             ctx.drawImage(
                 antSprites,
