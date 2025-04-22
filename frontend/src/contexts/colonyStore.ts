@@ -6,6 +6,7 @@ import { createEnemy, Enemy, EnemyData } from "../baseClasses/Enemy";
 import { Fruit, FruitData } from "../baseClasses/Fruit";
 import { GameMap, Tile } from "../baseClasses/Map";
 import { MapEntity, MapEntityData } from "../baseClasses/MapEntity"; // Import MapEntity
+import { useWarningStore } from "../components/WarningBar";
 import { vals } from "./globalVars";
 
 // Define the ColonyStore type
@@ -39,14 +40,23 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
   // Fetch a colony from the backend
   fetchColonyInfo: async () => {
+    if (vals.offline_mode) {
+      console.warn("Offline mode is enabled. Colony info will not be fetched from the backend.");
+      return;
+    }
+
     const userID = getUserID();
     if (!userID) {
       throw new Error("User ID is not set for fetchColonyInfo");
     }
 
-    const response = await fetch(`http://localhost:8000/colonies/${userID}`);
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+    var response;
+    try{
+      response = await fetch(`http://localhost:8000/colonies/${userID}`);
+    } catch (e) {
+        console.error("Failed to fetch colony data.", e);
+        startOfflineMode();
+        return;
     }
 
     const data = await response.json();
@@ -84,6 +94,11 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
   // Send colony info to the backend
   putColonyInfo: async () => {
+    if (vals.offline_mode) {
+      console.warn("Offline mode is enabled. Colony info will not be sent to the backend.");
+      return;
+    }
+
     const colonyState = get();
     console.log("Putting colony info...", colonyState);
 
@@ -141,6 +156,15 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     }));
   },
 }));
+
+export const startOfflineMode = ()=>{
+  console.warn("starting offline mode");
+  const {updateColony} = useColonyStore.getState();
+  const {startWarning} = useWarningStore.getState();
+  vals.offline_mode = true;
+  updateColony(createFreshColony());
+  startWarning("Connection with backend failed. Starting online mode");
+}
 
 export const createFreshColony = () => {
   const nestEntrance = MapEntity.recreateNestEntrance();

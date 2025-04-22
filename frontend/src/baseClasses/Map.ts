@@ -125,13 +125,10 @@ export class GameMap {
             }
             attempts++;
         }
-        console.log("Clusters: ", clusters);
 
         clusters.forEach((cluster) => {
             const clusterWidth = Math.floor(GameMap.rockClusterSize * Math.random());
             const clusterHeight = Math.floor(GameMap.rockClusterSize * Math.random());
-            console.log("Cluster width: ", clusterWidth);
-            console.log("Cluster height: ", clusterHeight);
             const startRow = Math.max(0, cluster.row - Math.floor(clusterHeight / 2));
             const startCol = Math.max(0, cluster.col - Math.floor(clusterWidth / 2));
             const endRow = Math.min(GameMap.mapTileHeight - 1, cluster.row + Math.floor(clusterHeight / 2));
@@ -140,9 +137,7 @@ export class GameMap {
                 for (let j = startCol; j <= endCol; j++) {
                     const distFactor = 1- Math.sqrt((i - cluster.row) ** 2 + (j - cluster.col) ** 2)/GameMap.rockClusterSize;
                     
-                    console.log("Distance factor: ", distFactor);
                     const randomFactor = Math.pow(Math.random(), (1/(distFactor + 0.01))^2);
-                    console.log("Random factor: ", randomFactor);
                     const tileType = randomFactor > 0.95
                         ? GameMap.rockThreeTile
                         : randomFactor > 0.87
@@ -160,7 +155,6 @@ export class GameMap {
     }
 
     static createImageData() {
-        console.log("Creating image data");
         const viewportWidth = Math.ceil(vals.ui.canvasWidth);
         const viewportHeight = Math.ceil(vals.ui.canvasHeight);
         GameMap.imageData = new ImageData(viewportWidth, viewportHeight);

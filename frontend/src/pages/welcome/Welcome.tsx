@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { startOfflineMode } from "../../contexts/colonyStore";
 import { useProfileStore } from "../../contexts/profileStore";
 import { getUserID, setUserID } from "../../contexts/userStore";
 import "./welcome.css"; // Updated CSS file name
@@ -35,6 +36,9 @@ const Welcome = () => {
     } else {
       console.error("Error registering user", data);
       setError(data.detail);
+
+      startOfflineMode();
+      handlePlayAsGuest();
     }
   };
 
@@ -59,6 +63,7 @@ const Welcome = () => {
     } else {
       console.error("Error logging in", data);
       setError(data.detail);
+
     }
   }
 

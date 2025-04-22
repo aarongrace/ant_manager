@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import { WarningBar } from './components/WarningBar';
 import { usePreloadedImagesStore } from './contexts/preloadImages';
 import './globals.css';
 import Admin from './pages/admin/Admin';
@@ -23,6 +24,7 @@ function App() {
   return (
     <div className="App">
       <Navbar />
+      <WarningBar/>
       <main className="App-main">
         <Routes>
           <Route path="/" element={<Welcome />} />

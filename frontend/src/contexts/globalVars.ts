@@ -63,4 +63,5 @@ export const vals = {
     managingPatrol: false,
     seasonLength: 30,
     season: 0,
+    offline_mode: false,
 };

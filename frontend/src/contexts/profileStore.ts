@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { vals } from "./globalVars";
 import { useUserStore } from "./userStore";
 
 type ProfileData = {
@@ -31,14 +32,26 @@ export const useProfileStore = create<ProfileStore>((set) => ({
 
   // Fetch a profile from the backend
   fetchProfileInfo: async () => {
+    if (vals.offline_mode){
+      console.warn("In offline mode, and will not fetch profile info");
+      return;
+    }
+
     const userID = useUserStore.getState().userID; // Access userID dynamically
     if (!userID) {
       throw new Error("User ID is not set");
     }
 
-    const response = await fetch(`http://localhost:8000/profiles/${userID}`);
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+    var response;
+    try {
+      response = await fetch(`http://localhost:8000/profiles/${userID}`);
+    } catch (e) {
+      console.warn("Failed to fetch profile:", e);
+      vals.offline_mode = true;
+    }
+
+    if (!response || !response.ok) {
+      throw new Error("Failed to fetch profile information");
     }
 
     const data = await response.json();
@@ -55,6 +68,10 @@ export const useProfileStore = create<ProfileStore>((set) => ({
 
   updateProfile: async (profileData: Partial<ProfileData>) => {
     console.log("Updating profile with data:", profileData);
+    if (vals.offline_mode){
+      console.warn("In offline mode and cannot update profile")
+      return;
+    }
 
     const userID = useUserStore.getState().userID;
     try {
