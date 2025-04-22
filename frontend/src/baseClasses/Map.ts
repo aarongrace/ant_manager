@@ -29,7 +29,6 @@ export class GameMap {
     static updateCounter: number = 0;
     static updateInterval: number = 3;
 
-
     static initializeMap() {
         GameMap.initializeTiles();
         GameMap.createImageData();
@@ -50,7 +49,11 @@ export class GameMap {
                     const tile = GameMap.tilesGrid[i][j];
                     const randomFactor = Math.random();
                     if (tile === GameMap.normalTile) {
-                        if (randomFactor < 0.001) {
+                        const seasonFactor = vals.season === 0 ? 4 :
+                        vals.season === 1 ? 2:
+                        vals.season === 2 ? 1: 0.2
+
+                        if (randomFactor < 0.003 * seasonFactor) {
                             GameMap.tilesGrid[i][j] = GameMap.grassOneTile;
                         }
                     } else if (tile === GameMap.grassOneTile) {
@@ -97,8 +100,8 @@ export class GameMap {
                     : randomFactor > 0.997 ? GameMap.rockTwoTile
                     : randomFactor > 0.994  ? GameMap.rockOneTile
                     : randomFactor > 0.98 ? GameMap.grassThreeTile
-                    : randomFactor > 0.95? GameMap.grassTwoTile
-                    : randomFactor > 0.90? GameMap.grassOneTile
+                    : randomFactor > 0.97? GameMap.grassTwoTile
+                    : randomFactor > 0.95? GameMap.grassOneTile
                     : GameMap.normalTile;
                 GameMap.tilesGrid[i][j] = tileType
             }
