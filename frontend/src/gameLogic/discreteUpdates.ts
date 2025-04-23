@@ -1,3 +1,4 @@
+
 import { AntType } from "../baseClasses/Ant";
 import { createEnemy } from "../baseClasses/Enemy";
 import { Fruit } from "../baseClasses/Fruit";
@@ -10,7 +11,7 @@ import { findAntByCondition } from "./antHelperFunctions";
 import { handleAntLogic } from "./antLogic"; // Import the new combined function
 import { decayFoodSource } from "./entityHelperFunctions";
 
-export const updateDiscreteGameState = () => {
+export const updateDiscreteGameState = (setCursor:()=>void) => {
     const { ants } = useColonyStore.getState();
 
     ants.forEach((ant) => {
@@ -25,23 +26,24 @@ export const updateDiscreteGameState = () => {
     const { setTaskNumbers } = useIconsStore.getState();
     setTaskNumbers();
 
-    addRandomMapEntity();
+    // addRandomMapEntity();
     deleteEmptyMapEntities();
     spawnRandomEnemy();
     consumeFoodAndRestoreHp();
     decayFoodSource();
     layEgg();
 
-    incrementAge();
+    incrementAge(setCursor);
 };
 
 
-const incrementAge = () =>{
+const incrementAge = (setCursor:()=>void) =>{
     const { age, updateColony } = useColonyStore.getState();
     const newAge = age + 1;
     updateColony({ age: newAge });
     if (newAge % vals.seasonLength === 0) {
         vals.season = (vals.season + 1) % 4;
+        setCursor();
     }
     GameMap.incrementUpdateCounter();
 }
@@ -114,6 +116,7 @@ const spawnRandomEnemy = () => {
     }
 };
 
+//unused, food sources are now spawned based on tile
 const addRandomMapEntity = () => {
     const { entitySpawnFactor } = vals.food; // Updated to use env
     const { mapEntities, updateColony } = useColonyStore.getState();

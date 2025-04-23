@@ -2,6 +2,7 @@ import { v4 } from "uuid";
 import { Ant, AntType, TaskType } from "../baseClasses/Ant";
 import { Enemy } from "../baseClasses/Enemy";
 import { Fruit } from "../baseClasses/Fruit";
+import { GameMap } from "../baseClasses/Map";
 import { EntityType, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vals } from "../contexts/globalVars"; // Updated to use env
@@ -53,11 +54,19 @@ const handleIdling = (ant: Ant) => {
 const handleForage = (ant: Ant) => {
     if (!hasValidObjective(ant)) {
         console.log("Ant has no objective, setting one.");
-        setAntObjective(ant, findClosestFoodSource(ant.coords));
+        if (!setAntObjective(ant, findClosestFoodSource(ant.coords))){
+            // if no food source is found, set the ant to hover around the gateway without setting it to idle
+            const gateWayCoords = findGateway()?.coords ?? { x: GameMap.center.x, y: GameMap.center.y };
+            ant.movingTo.x = gateWayCoords.x + Math.random() * 20 - 10;
+            ant.movingTo.y = gateWayCoords.y + Math.random() * 20 - 10;
+            ant.setAngle();
+        };
+        // if at carrying capacity, return to deposit the food
         if (ant.carrying && ant.carrying.amount === ant.carryingCapacity) {
             setDestination(ant, findGateway());
         }
     }
+    // if at the food source or the gateway
     if (hasArrived(ant)) {
         const destinationEntity = findMapEntity(ant.destination);
         if (!destinationEntity) {

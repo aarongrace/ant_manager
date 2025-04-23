@@ -155,9 +155,8 @@ If you want to install a npm module for the frontend, you need to cd to the fron
 ## Todos
 
 ### Dashboard
-- change the entire coordinate system to map absolute
-- Implement a map system where the player can scroll
-- refactor the fruit spawn to be tied to the map sprites
+- add a fourth picture for fruit spawns
+- add background music and sound effects
 - Create sprites for ant attack.
 - Make task icons hoverable. When hovered, the icons should display a range indicator or a path indicator for ants doing that task. The hover can be implemented as part of the global settings store.
 - Add icons for food/debris and ant production.

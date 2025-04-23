@@ -75,8 +75,7 @@ export class Fruit extends MapEntity {
   }
 
   // Static method to create a random fruit
-  static createRandomFruit(): Fruit {
-    var coords = findValidEntityCoords();
+  static createRandomFruit(coords = findValidEntityCoords()): Fruit {
     if (!coords) {
       coords = { x: GameMap.center.x, y: GameMap.center.y }; // Default to center if no valid coords found
     }

@@ -9,6 +9,7 @@ import { Enemy } from "./Enemy";
 import { Fruit } from "./Fruit";
 import { GameMap } from "./Map";
 import { EntityType, MapEntity } from "./MapEntity";
+import { Bounds, InteractiveElement } from "./Models";
 
 // Define the TaskEnum type
 export enum TaskType {
@@ -48,7 +49,7 @@ export type AntData = {
 };
 
 // Define the Ant class
-export class Ant {
+export class Ant implements InteractiveElement{
   id: string;
   name: string;
   age: number;
@@ -73,6 +74,10 @@ export class Ant {
   isAttacking: boolean = false;
   patrolAnchorPointSet: boolean = false; // New field: Indicates if the patrol anchor point is set
   isSelected: boolean = false; // New field: Indicates if the ant is selected
+
+  hoverable: boolean =false;
+  isHovered: boolean = false;
+  clickable: boolean = true; // New field: Indicates if the ant is clickable
 
 
   constructor(antData: AntData) {
@@ -210,6 +215,11 @@ export class Ant {
     }
   }
 
+  onClick(event: React.MouseEvent<HTMLCanvasElement>) {
+    this.isSelected = !this.isSelected; // Toggle selection state
+    console.log(`Ant clicked: ${this.name}, selected: ${this.isSelected}`);
+  }
+
   drawSelectedCircle(ctx: CanvasRenderingContext2D) {
     ctx.save();
     ctx.beginPath();
@@ -269,6 +279,18 @@ export class Ant {
     if (enemy) {
       this.isAttacking = false; // Reset the attacking state
       enemy.receiveAttack(AntTypeInfo[this.type].defaultAttack);
+    }
+  }
+
+  getBounds(): Bounds{
+    const viewportTopLeft = GameMap.getViewportTopLeft();
+    const width = AntTypeInfo[this.type].size * this.sizeFactor; // Updated to use env
+    const height = AntTypeInfo[this.type].size * this.sizeFactor; // Updated to use env
+    return {
+      left: this.coords.x - viewportTopLeft.x - width / 2,
+      top: this.coords.y - viewportTopLeft.y - height / 2,
+      width: width,
+      height: height,
     }
   }
 
@@ -355,6 +377,7 @@ export const AntTypeInfo: {
     cost: number;
     defaultAttack: number;
     attackRange: number;
+    size: number; // Added size field
   };
 } = {
   [AntType.Queen]: {
@@ -365,6 +388,7 @@ export const AntTypeInfo: {
     cost: 1000,
     defaultAttack: 0,
     attackRange: 0,
+    size: 39, // Added size value for Queen
   },
   [AntType.Worker]: {
     speed: vals.ant.workerSpeed, // Updated to use env
@@ -374,6 +398,7 @@ export const AntTypeInfo: {
     cost: 20,
     defaultAttack: 2,
     attackRange: 25,
+    size: 19, // Added size value for Worker
   },
   [AntType.Soldier]: {
     speed: vals.ant.soldierSpeed, // Updated to use env
@@ -383,5 +408,6 @@ export const AntTypeInfo: {
     cost: 40,
     defaultAttack: 10,
     attackRange: 50,
+    size: 28, // Added size value for Soldier
   },
 };

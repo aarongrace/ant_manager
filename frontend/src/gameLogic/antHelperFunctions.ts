@@ -93,9 +93,9 @@ export const findAntByTaskAndOrObjective = (task: TaskType, objectiveId: string 
     return null;
 };
 
-export const setAntObjective = (ant: Ant, objective: MapEntity | undefined) => {
+export const setAntObjective = (ant: Ant, objective: MapEntity | undefined): boolean => {
     if (!objective) {
-        return;
+        return false;
     }
     ant.objective = objective.id;
     setDestination(ant, objective);
@@ -105,6 +105,7 @@ export const setAntObjective = (ant: Ant, objective: MapEntity | undefined) => {
             break;
     }
     ant.isBusy = false;
+    return true;
 };
 
 export const setDestination = (ant: Ant, destination: MapEntity | undefined) => {
@@ -313,3 +314,5 @@ const drawAarow = (ctx: CanvasRenderingContext2D, from: { x: number, y: number }
     ctx.stroke();
     ctx.restore();
 }
+
+

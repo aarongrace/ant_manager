@@ -69,7 +69,6 @@ export const SurfaceCanvas: React.FC = (props) => {
     }
 
     function drawAnts(ctx: CanvasRenderingContext2D, ants: Ant[]) {
-        const sizeScaleFactor = { queen: 1, worker: 0.5, soldier: 0.7 };
         const antSprites = images["ant_sprites"];
         const spriteWidth = 39;
         const spriteWidthIncludingPadding = 66;
@@ -82,9 +81,7 @@ export const SurfaceCanvas: React.FC = (props) => {
 
         ants.forEach((ant) => {
             const { x: viewportLeft, y: viewportTop } = GameMap.getViewportTopLeft();
-            // console.log("ant coords: ", ant.coords);   
-            // console.log("Viewport left: ", viewportLeft);
-            // console.log("Viewport top: ", viewportTop);
+
             const viewportX = ant.coords.x - viewportLeft;
             const viewportY = ant.coords.y - viewportTop;
 
@@ -101,8 +98,9 @@ export const SurfaceCanvas: React.FC = (props) => {
                     spriteCol = 1;
             }
             const spriteX = spriteWidthIncludingPadding * (spriteCol * 3 + ant.frame);
-            const width = spriteWidth * sizeScaleFactor[ant.type] * ant.sizeFactor;
-            const height = spriteHeight * sizeScaleFactor[ant.type] * ant.sizeFactor;
+            const bounds = ant.getBounds();
+            const width = bounds.width;
+            const height = bounds.height;
 
             ctx.save();
             ctx.translate(viewportX, viewportY);

@@ -33,7 +33,7 @@ export const vals = {
         selectedCircleRadius: 20,
         scrollDirection: {x: 0, y: 0},
         scrollEdgeOffset: 50,
-        scrollSpeed: 3, 
+        scrollSpeed: 1.5, 
         scrollDelay: 100,
         remainingScrollDelay: 100,
     },
@@ -42,11 +42,12 @@ export const vals = {
     food: {
         foodPerAnt: 20,
         foodWasteBaseline: 200,
-        decayFactor: 0.3,
+        decayFactor: 1.8,
         fruitSize: 40,
         defaultFruitAmount: 50,
         entitySpawnFactor: 1.5,
         minDistanceBetweenEntities: 50,
+        growFruitRateOfDecrease: 0.2,
     },
 
     // Reproduction-related settings

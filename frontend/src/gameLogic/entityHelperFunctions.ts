@@ -1,4 +1,5 @@
 import { Ant } from "../baseClasses/Ant";
+import { Fruit } from "../baseClasses/Fruit";
 import { GameMap } from "../baseClasses/Map";
 import { EntityType, foodSources, MapEntity } from "../baseClasses/MapEntity";
 import { Bounds } from "../baseClasses/Models";
@@ -25,17 +26,22 @@ export const detectAntCollision = (ant: Ant, collisionEntity: MapEntity) => {
 
 export const findClosestFoodSource = (coords:{x:number, y:number}) => {
     const { mapEntities } = useColonyStore.getState();
+    const foodSources = mapEntities.filter((entity) => entity.type === EntityType.FoodResource); // Use EntityTypeEnum
+    const goodEnoughCutoff = 100;
 
-    return mapEntities
-        .filter((entity) => entity.type === EntityType.FoodResource) // Use EntityTypeEnum
-        .reduce<{ entity: MapEntity; distance: number } | null>((closest, entity) => {
-            const dx = entity.coords.x - coords.x;
-            const dy = entity.coords.y - coords.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            return !closest || distance < closest.distance
-                ? { entity, distance }
-                : closest;
-        }, null)?.entity;
+    let closest: {entity: MapEntity, distance: number} | undefined= undefined;
+    for (let i = 0; i < foodSources.length; i++) {
+        const foodSource = foodSources[i];
+        const dx = foodSource.coords.x - coords.x;
+        const dy = foodSource.coords.y - coords.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < goodEnoughCutoff) {
+            return foodSource;
+        } else if (!closest || distance < closest.distance){
+            closest = {entity: foodSource, distance: distance};
+        }
+    }
+    return closest?.entity || undefined;
 };
 
 export const findGateway = () => {
@@ -146,3 +152,15 @@ export const getNestEntranceCoords = () => {
     }
     return nestEntrance.coords;
 };
+
+export const maybeGrowFruit = (coords: { x: number; y: number }) => {
+    const { mapEntities } = useColonyStore.getState();
+    const { updateColony } = useColonyStore.getState();
+    const foodCount = mapEntities.filter((entity) => entity.type === EntityType.FoodResource).length;
+    const k = vals.food.growFruitRateOfDecrease;
+    const fruitFactor = Math.exp(-k * (foodCount - 1));
+    if (fruitFactor > Math.random()) {
+        const fruit = Fruit.createRandomFruit(coords);
+        updateColony({ mapEntities: [...mapEntities, fruit] });
+    }
+}

@@ -98,15 +98,14 @@ export class MapEntity implements InteractiveElement {
   };
 
   // Static method to create a random map entity
-  static createRandomMapEntity(): MapEntity {
+  static createRandomMapEntity(coords = findValidEntityCoords()): MapEntity {
     // the last food source is reserved for fruits and should not be included in the random selection
     const validFoodSources = foodSources.filter((source) => source.name !== "fruits");
     const foodSource = validFoodSources[Math.floor(Math.random() * validFoodSources.length)];
-    var coords = findValidEntityCoords();
     if (!coords) {
       coords = {
-        x: 0,
-        y: 0,
+        x: GameMap.center.x + Math.random() * 100 - 50,
+        y: GameMap.center.y + Math.random() * 100 - 50,
       };
     }
 

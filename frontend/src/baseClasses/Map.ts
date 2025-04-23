@@ -1,6 +1,7 @@
 import { random } from "lodash";
 import { tileData } from "../assets/tileData";
 import { vals } from "../contexts/globalVars";
+import { maybeGrowFruit } from "../gameLogic/entityHelperFunctions";
 export type Tile = [number, number]; // row, col
 type Pixel = [number, number, number]; // r, g, b
 
@@ -46,6 +47,7 @@ export class GameMap {
         }
     }
 
+
     static updateTiles() {
         try {
             for (let i = 0; i < GameMap.mapTileHeight; i++) {
@@ -71,6 +73,7 @@ export class GameMap {
                     } else if (tile === GameMap.grassThreeTile) {
                         if (randomFactor < 0.4) {
                             GameMap.tilesGrid[i][j] = GameMap.normalTile;
+                            maybeGrowFruit({ x: j * GameMap.mapTileSize + GameMap.mapTileSize / 2, y: i * GameMap.mapTileSize + GameMap.mapTileSize / 2 });
                         } 
                     } else if (tile === GameMap.rockOneTile || tile === GameMap.rockTwoTile || tile === GameMap.rockThreeTile) {
                         if (randomFactor < 0.001) {

@@ -17,7 +17,8 @@ var dragEnd = { x: 0, y: 0 };
 
 export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const { x: viewportX, y: viewportY } = getViewportCoords(event, event.currentTarget);
-    const  coords  = {x: viewportX - vals.ui.canvasWidth/2, y: viewportY - vals.ui.canvasHeight/2};
+    const viewportTopLeft = GameMap.getViewportTopLeft();
+    const  coords  = {x: viewportX + viewportTopLeft.x, y: viewportY + viewportTopLeft.y};
 
     if (vals.managingPatrol && !isDragging){
         isDragging = true;
@@ -26,7 +27,18 @@ export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
         return;
     }
 
+    
+    // priority 1: change to see if we can select or deselect an ant
     const { ants } = useColonyStore.getState();
+    for (let i = 0; i < ants.length; i++) {
+        const ant = ants[i];
+        if (isWithinBounds({x: viewportX, y: viewportY}, ant.getBounds())){
+            console.log("Ant clicked");
+            ant.onClick(event);
+            return;
+        }
+    }
+
     ants.forEach((ant) => {
         if (ant.isSelected){
             ant.isSelected = false;
