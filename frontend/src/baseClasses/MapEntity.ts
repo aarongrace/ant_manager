@@ -3,6 +3,7 @@ import { vals } from "../contexts/globalVars"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { findOrRemoveAntForFoodSource } from "../gameLogic/antHelperFunctions";
 import { findValidEntityCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { GameMap } from "./Map";
 import { Bounds, InteractiveElement } from "./Models";
 
 export enum EntityType {
@@ -122,14 +123,10 @@ export class MapEntity implements InteractiveElement {
 
   // Static method to recreate the nest entrance
   static recreateNestEntrance(): MapEntity {
-    const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
     return new MapEntity(
       v4(),
       EntityType.Gateway,
-      {
-        x: 0.75 * canvasWidth - canvasWidth / 2,
-        y: 0.6 * canvasHeight - canvasHeight / 2,
-      },
+      GameMap.getCoordsCloseToCenter(100),
       { width: 100, height: 100 },
       1,
       "nest_entrance"
@@ -153,3 +150,4 @@ export const foodSources: foodSourceType[] = [
     default_height: vals.food.fruitSize, // Updated to use env
   },
 ];
+

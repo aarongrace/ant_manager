@@ -1,5 +1,6 @@
 import { Ant, AntType } from "../../baseClasses/Ant";
 import { useIconsStore } from "../../baseClasses/Icon";
+import { GameMap } from "../../baseClasses/Map";
 import { createFreshColony, useColonyStore } from "../../contexts/colonyStore";
 import { vals } from "../../contexts/globalVars";
 
@@ -35,7 +36,7 @@ export const resetColony = () => {
 }
 export const resizeCanvas = () => {
     const { initializeIcons } = useIconsStore.getState();
-    vals.ui.canvasWidth = window.innerWidth * vals.ui.canvasProportions.width;
-    vals.ui.canvasHeight = window.innerHeight * vals.ui.canvasProportions.height;
+    vals.ui.canvasWidth = Math.min(window.innerWidth * vals.ui.canvasProportions.width, GameMap.mapWidth);;
+    vals.ui.canvasHeight = Math.min(window.innerHeight * vals.ui.canvasProportions.height, GameMap.mapHeight);
     initializeIcons();
 }

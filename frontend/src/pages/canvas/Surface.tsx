@@ -81,8 +81,12 @@ export const SurfaceCanvas: React.FC = (props) => {
         }
 
         ants.forEach((ant) => {
-            const pos_x = ant.coords.x + vals.ui.canvasWidth / 2; // Updated to use env
-            const pos_y = ant.coords.y + vals.ui.canvasHeight / 2; // Updated to use env
+            const { x: viewportLeft, y: viewportTop } = GameMap.getViewportTopLeft();
+            // console.log("ant coords: ", ant.coords);   
+            // console.log("Viewport left: ", viewportLeft);
+            // console.log("Viewport top: ", viewportTop);
+            const viewportX = ant.coords.x - viewportLeft;
+            const viewportY = ant.coords.y - viewportTop;
 
             const spriteY = 0;
             let spriteCol = 0;
@@ -101,7 +105,7 @@ export const SurfaceCanvas: React.FC = (props) => {
             const height = spriteHeight * sizeScaleFactor[ant.type] * ant.sizeFactor;
 
             ctx.save();
-            ctx.translate(pos_x, pos_y);
+            ctx.translate(viewportX, viewportY);
             if (ant.hp < AntTypeInfo[ant.type].defaultHp) { // has to be done before rotation
                 ant.drawHpBar(ctx);
             };

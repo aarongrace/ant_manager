@@ -14,6 +14,7 @@ export const vals = {
         soldierCarryingCapacity: 7,
         idleSpeedFactor: 0.5,
         patrolRange: 250,
+        idleRange: 100,
     },
 
     // UI-related settings
@@ -30,6 +31,11 @@ export const vals = {
         },
         edgeMargin: 12,
         selectedCircleRadius: 20,
+        scrollDirection: {x: 0, y: 0},
+        scrollEdgeOffset: 50,
+        scrollSpeed: 3, 
+        scrollDelay: 100,
+        remainingScrollDelay: 100,
     },
 
     // Food-related settings

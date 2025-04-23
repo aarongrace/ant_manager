@@ -1,3 +1,4 @@
+import { random } from "lodash";
 import { tileData } from "../assets/tileData";
 import { vals } from "../contexts/globalVars";
 export type Tile = [number, number]; // row, col
@@ -5,14 +6,16 @@ type Pixel = [number, number, number]; // r, g, b
 
 export class GameMap {
 
-    static mapTileWidth: number = 125;
-    static mapTileHeight: number = 125;
+    static mapTileWidth: number = 100;
+    static mapTileHeight: number = 72;
     static mapTileSize: number = 16;
     static mapWidth: number = GameMap.mapTileWidth * GameMap.mapTileSize;
     static mapHeight: number = GameMap.mapTileHeight * GameMap.mapTileSize;
+    static center: { x: number; y: number } = { x: GameMap.mapWidth / 2, y: GameMap.mapHeight / 2 };
     static focalPoint: { x: number; y: number } = { x: GameMap.mapWidth / 2, y: GameMap.mapHeight / 2 };
     static tilesGrid: Tile[][] = [[]];
     static imageData: ImageData = new ImageData(GameMap.mapWidth, GameMap.mapHeight);
+    static partialImageData: ImageData = new ImageData(vals.ui.canvasWidth, vals.ui.canvasHeight);
 
     static rowsPerSeason: number = 3;
 
@@ -31,7 +34,8 @@ export class GameMap {
 
     static initializeMap() {
         GameMap.initializeTiles();
-        GameMap.createImageData();
+        GameMap.createFullImageData();
+        GameMap.cropImageData();
     }
 
     static incrementUpdateCounter() {
@@ -83,11 +87,13 @@ export class GameMap {
                     }
                 }
             }
-            GameMap.createImageData();
+            GameMap.createFullImageData();
+            GameMap.cropImageData();
         } 
         catch (error) {
             console.error("Error updating tiles: ", error);
-            GameMap.createImageData();
+            GameMap.createFullImageData();
+            GameMap.cropImageData();
         }
     }
 
@@ -137,7 +143,7 @@ export class GameMap {
                 for (let j = startCol; j <= endCol; j++) {
                     const distFactor = 1- Math.sqrt((i - cluster.row) ** 2 + (j - cluster.col) ** 2)/GameMap.rockClusterSize;
                     
-                    const randomFactor = Math.pow(Math.random(), (1/(distFactor + 0.01))^2);
+                    const randomFactor = Math.pow(Math.random(), (1/(distFactor + 0.01))**2);
                     const tileType = randomFactor > 0.95
                         ? GameMap.rockThreeTile
                         : randomFactor > 0.87
@@ -154,10 +160,11 @@ export class GameMap {
         });
     }
 
-    static createImageData() {
+    // not in use due to edge scroll
+    static createPartialImageData() {
         const viewportWidth = Math.ceil(vals.ui.canvasWidth);
         const viewportHeight = Math.ceil(vals.ui.canvasHeight);
-        GameMap.imageData = new ImageData(viewportWidth, viewportHeight);
+        GameMap.partialImageData= new ImageData(viewportWidth, viewportHeight);
         const viewportLeft = Math.ceil(GameMap.focalPoint.x - viewportWidth / 2);
         const viewportTop = Math.ceil(GameMap.focalPoint.y - viewportHeight / 2);
         const tileSize = GameMap.mapTileSize;
@@ -179,13 +186,50 @@ export class GameMap {
                     const tile = GameMap.tilesGrid[tileRow][tileCol];
                     const pixel = tileData[tile[0] + vals.season * GameMap.rowsPerSeason][tile[1]][pixelY][pixelX];
                     const index = (y * viewportWidth + x) * 4;
-                    GameMap.imageData.data[index] = pixel[0];     // R
-                    GameMap.imageData.data[index + 1] = pixel[1]; // G
-                    GameMap.imageData.data[index + 2] = pixel[2]; // B
-                    GameMap.imageData.data[index + 3] = 255;     // A
+                    GameMap.partialImageData.data[index] = pixel[0];     // R
+                    GameMap.partialImageData.data[index + 1] = pixel[1]; // G
+                    GameMap.partialImageData.data[index + 2] = pixel[2]; // B
+                    GameMap.partialImageData.data[index + 3] = 255;     // A
                 }
             }
         }
+    }
+
+    static createFullImageData() {
+        for (let tileRow = 0; tileRow < GameMap.mapTileHeight; tileRow++) {
+            for (let tileCol = 0; tileCol < GameMap.mapTileWidth; tileCol++) {
+                const tileIndex = GameMap.tilesGrid[tileRow][tileCol];
+                const tile = tileData[tileIndex[0] + vals.season * GameMap.rowsPerSeason][tileIndex[1]];
+                for (let pixelY = 0; pixelY < GameMap.mapTileSize; pixelY++) {
+                    for (let pixelX = 0; pixelX < GameMap.mapTileSize; pixelX++) {
+                        const pixel = tile[pixelY][pixelX];
+                        const index = ((tileRow * GameMap.mapTileSize + pixelY) * GameMap.mapWidth + (tileCol * GameMap.mapTileSize + pixelX)) * 4;
+                        GameMap.imageData.data[index] = pixel[0];     // R
+                        GameMap.imageData.data[index + 1] = pixel[1]; // G
+                        GameMap.imageData.data[index + 2] = pixel[2]; // B
+                        GameMap.imageData.data[index + 3] = 255;     // A
+                    }
+                }
+            }
+        }
+    }
+
+    static cropImageData() {
+        const viewportWidth = Math.ceil(vals.ui.canvasWidth);
+        const viewportHeight = Math.ceil(vals.ui.canvasHeight);
+        const viewportTopLeft = GameMap.getViewportTopLeft();
+        GameMap.partialImageData = new ImageData(viewportWidth, viewportHeight);
+
+        const fullCanvas = document.createElement("canvas");
+        fullCanvas.width = GameMap.mapWidth;
+        fullCanvas.height = GameMap.mapHeight;
+        const fullCtx = fullCanvas.getContext("2d");
+        if (!fullCtx) {
+            console.error("Failed to get 2D context for full canvas");
+            return;
+        }
+        fullCtx.putImageData(GameMap.imageData, 0, 0);
+        GameMap.partialImageData = fullCtx.getImageData(viewportTopLeft.x, viewportTopLeft.y, viewportWidth, viewportHeight);
     }
 
 
@@ -195,7 +239,7 @@ export class GameMap {
             GameMap.initializeMap();
         } else {
             GameMap.tilesGrid = tiles;
-            GameMap.createImageData();
+            GameMap.createPartialImageData();
         }
     }
 
@@ -203,9 +247,22 @@ export class GameMap {
     static drawMap(ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.putImageData(
-            GameMap.imageData,
+            GameMap.partialImageData,
             0, 0);
         ctx.restore();
     }
 
+    static getCoordsCloseToCenter(distance: number): { x: number; y: number } {
+        const x = GameMap.center.x + random(-distance, distance);
+        const y = GameMap.center.y + random(-distance, distance);
+        return { x, y };
+    }
+
+    static getViewportTopLeft(): { x: number; y: number } {
+        const viewportWidth = Math.ceil(vals.ui.canvasWidth);
+        const viewportHeight = Math.ceil(vals.ui.canvasHeight);
+        const viewportLeft = Math.ceil(GameMap.focalPoint.x - viewportWidth / 2);
+        const viewportTop = Math.ceil(GameMap.focalPoint.y - viewportHeight / 2);
+        return { x: viewportLeft, y: viewportTop };
+    }
 }

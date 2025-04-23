@@ -14,7 +14,7 @@ export class TaskIcon implements InteractiveElement {
     static textMargin = 4;
     clickable: boolean = true;
     type: TaskType;
-    coords: { x: number; y: number };
+    pos: { x: number; y: number };
     size: { width: number; height: number } = TaskIcon.defaultSize;
 
     hoverable: boolean = true;
@@ -37,7 +37,7 @@ export class TaskIcon implements InteractiveElement {
 
     constructor(type: TaskType, coords: { x: number; y: number }) {
         this.type = type;
-        this.coords = coords;
+        this.pos = coords;
     }
 
     onClick = (event: React.MouseEvent<HTMLCanvasElement>): void => {
@@ -49,8 +49,8 @@ export class TaskIcon implements InteractiveElement {
 
     getBounds = () => {
         return {
-            left: this.coords.x - this.size.width / 2,
-            top: this.coords.y - this.size.height / 2,
+            left: this.pos.x - this.size.width / 2,
+            top: this.pos.y - this.size.height / 2,
             width: this.size.width,
             height: this.size.height,
         };
@@ -66,8 +66,8 @@ export class TaskIcon implements InteractiveElement {
         }
         ctx.drawImage(
             img,
-            this.coords.x - this.size.width / 2,
-            this.coords.y - this.size.height / 2,
+            this.pos.x - this.size.width / 2,
+            this.pos.y - this.size.height / 2,
             this.size.width,
             this.size.height
         );
@@ -75,8 +75,8 @@ export class TaskIcon implements InteractiveElement {
         ctx.fillStyle = "white";
         ctx.font = "bold 25px Arial";
         ctx.textBaseline = "middle";
-        const textX = this.coords.x + this.size.width / 2 + TaskIcon.textMargin;
-        const textY = this.coords.y;
+        const textX = this.pos.x + this.size.width / 2 + TaskIcon.textMargin;
+        const textY = this.pos.y;
         ctx.fillText(getTaskNumbers(this.type).toString(), textX, textY);
     }
 }

@@ -1,4 +1,5 @@
 import { Ant } from "../baseClasses/Ant";
+import { GameMap } from "../baseClasses/Map";
 import { EntityType, foodSources, MapEntity } from "../baseClasses/MapEntity";
 import { Bounds } from "../baseClasses/Models";
 import { useColonyStore } from "../contexts/colonyStore";
@@ -73,11 +74,12 @@ export const findValidEntityCoords = (
     const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
     const validWidth = canvasWidth - vals.ui.edgeMargin * 3; // Updated to use env
     const validHeight = canvasHeight - vals.ui.edgeMargin * 3; // Updated to use env
+    const viewportTopLeft = GameMap.getViewportTopLeft();
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         const coords = {
-            x: Math.random() * validWidth - validWidth / 2,
-            y: Math.random() * validHeight - validHeight / 2,
+            x: Math.random() * validWidth  + viewportTopLeft.x,
+            y: Math.random() * validHeight  + viewportTopLeft.y,
         };
 
         // Check if the position is valid
@@ -99,16 +101,16 @@ export const findValidEntityCoords = (
 
 // Method to calculate the bounds of the entity
 export const getEntityBounds = (entity: MapEntity): Bounds => {
-    const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
     let sizeFactor = 1;
+    const viewportTopLeft = GameMap.getViewportTopLeft();
 
     if (entity.type === EntityType.FoodResource) {
         const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || vals.food.defaultFruitAmount; // Updated to use env
         sizeFactor = entity.amount / defaultAmount + 0.5;
     }
 
-    const posX = entity.coords.x + canvasWidth / 2;
-    const posY = entity.coords.y + canvasHeight / 2;
+    const posX = entity.coords.x - viewportTopLeft.x;
+    const posY = entity.coords.y - viewportTopLeft.y; 
 
     const left = posX - (entity.size.width / 2) * sizeFactor;
     const top = posY - (entity.size.height / 2) * sizeFactor;
@@ -121,11 +123,12 @@ export const getEntityBounds = (entity: MapEntity): Bounds => {
     };
 };
 
-export const getRandomCoords = () => {
+export const getRandomCoordsInViewport = () => {
     const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
+    const viewportTopLeft = GameMap.getViewportTopLeft();
     return {
-        x: Math.random() * (canvasWidth - vals.ui.edgeMargin * 2) - (canvasWidth / 2 - vals.ui.edgeMargin), // Updated to use env
-        y: Math.random() * (canvasHeight - vals.ui.edgeMargin * 2) - (canvasHeight / 2 - vals.ui.edgeMargin), // Updated to use env
+        x: Math.random() * (canvasWidth - vals.ui.edgeMargin * 2) + (viewportTopLeft.x),
+        y: Math.random() * (canvasHeight - vals.ui.edgeMargin * 2) + (viewportTopLeft.y)
     };
 };
 
@@ -139,7 +142,7 @@ export const getNestEntranceCoords = () => {
     const { mapEntities } = useColonyStore.getState();
     const nestEntrance = mapEntities.find((entity) => entity.type === EntityType.Gateway);
     if (!nestEntrance) {
-        return { x: 0, y: 0 }; // Default coordinates if not found
+        return { x: GameMap.center.x, y: GameMap.center.y }; // Default to center if not found
     }
     return nestEntrance.coords;
 };

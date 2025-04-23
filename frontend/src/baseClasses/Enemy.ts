@@ -5,6 +5,7 @@ import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { findClosestAnt, setOneAntOnEnemy } from "../gameLogic/antHelperFunctions";
 import { calculateDistance } from "../gameLogic/entityHelperFunctions";
 import { Ant } from "./Ant";
+import { GameMap } from "./Map";
 import { InteractiveElement } from "./Models";
 
 export enum EnemyType {
@@ -192,14 +193,14 @@ export class Enemy implements InteractiveElement {
   }
 
   getBounds() {
-    const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
+    const viewportTopLeft = GameMap.getViewportTopLeft();
     const size = {
       width: EnemyTypeInfo[this.type].defaultSize.width,
       height: EnemyTypeInfo[this.type].defaultSize.height,
     };
 
-    const posX = this.coords.x + canvasWidth / 2;
-    const posY = this.coords.y + canvasHeight / 2;
+    const posX = this.coords.x - viewportTopLeft.x;
+    const posY = this.coords.y - viewportTopLeft.y;
 
     const left = posX - size.width / 2;
     const top = posY - size.height / 2;
@@ -279,25 +280,26 @@ const getRandomType = (): EnemyType => {
 
 export const createEnemy = (type: EnemyType = getRandomType()): Enemy => {
   const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
+  const viewportTopLeft = GameMap.getViewportTopLeft();
   const edge = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
   let x = 0,
     y = 0;
   switch (edge) {
     case 0: // Top edge
-      x = Math.random() * canvasWidth - canvasWidth / 2;
-      y = -canvasHeight / 2 - 30; // Move further outside the top edge
+      x = Math.random() * canvasWidth + viewportTopLeft.x;
+      y = viewportTopLeft.y - 30;
       break;
     case 1: // Right edge
-      x = canvasWidth / 2 + 30; // Move further outside the right edge
-      y = Math.random() * canvasHeight - canvasHeight / 2;
+      x = canvasWidth + viewportTopLeft.x + 30; // Move further outside the right edge
+      y = Math.random() * canvasHeight + viewportTopLeft.y;
       break;
     case 2: // Bottom edge
-      x = Math.random() * canvasWidth - canvasWidth / 2;
-      y = canvasHeight / 2 + 30; // Move further outside the bottom edge
+      x = Math.random() * canvasWidth + viewportTopLeft.x;
+      y = canvasHeight + viewportTopLeft.y + 30; // Move further outside the bottom edge
       break;
     case 3: // Left edge
-      x = -canvasWidth / 2 - 30; // Move further outside the left edge
-      y = Math.random() * canvasHeight - canvasHeight / 2;
+      x = viewportTopLeft.x - 30; // Move further outside the left edge
+      y = Math.random() * canvasHeight + viewportTopLeft.y;
       break;
   }
 

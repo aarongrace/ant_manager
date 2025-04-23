@@ -35,6 +35,7 @@ export const updateDiscreteGameState = () => {
     incrementAge();
 };
 
+
 const incrementAge = () =>{
     const { age, updateColony } = useColonyStore.getState();
     const newAge = age + 1;

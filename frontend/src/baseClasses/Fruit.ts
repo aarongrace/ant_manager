@@ -2,6 +2,7 @@ import { v4 } from "uuid";
 import { vals } from "../contexts/globalVars"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { findValidEntityCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { GameMap } from "./Map";
 import { EntityType, MapEntity } from "./MapEntity";
 import { Bounds } from "./Models";
 
@@ -22,7 +23,7 @@ export class Fruit extends MapEntity {
   hoverable: boolean = true;
 
   constructor(
-    coords: { x: number; y: number } = { x: 0, y: 0 },
+    coords: { x: number; y: number } = { x: GameMap.center.x, y: GameMap.center.y },
     amount: number,
     col: number,
     row: number,
@@ -77,7 +78,7 @@ export class Fruit extends MapEntity {
   static createRandomFruit(): Fruit {
     var coords = findValidEntityCoords();
     if (!coords) {
-      coords = { x: 0, y: 0 };
+      coords = { x: GameMap.center.x, y: GameMap.center.y }; // Default to center if no valid coords found
     }
     const col = this.validCols[Math.floor(Math.random() * this.validCols.length)];
     const row = this.fruitStagesChart[col][0][Math.floor(Math.random() * this.fruitStagesChart[col][0].length)];

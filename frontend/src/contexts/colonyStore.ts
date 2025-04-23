@@ -168,7 +168,7 @@ export const startOfflineMode = ()=>{
 
 export const createFreshColony = () => {
   const nestEntrance = MapEntity.recreateNestEntrance();
-  const mapEntities = [nestEntrance, Fruit.createRandomFruit()];
+  const mapEntities = [nestEntrance, Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(),];
   const queen = recreateQueen();
   queen.coords = {
     x: nestEntrance.coords.x + nestEntrance.size.width / 2.5,
@@ -177,7 +177,7 @@ export const createFreshColony = () => {
   const enemy = createEnemy(); // Create an enemy
 
   const ants = [queen, Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Worker),
-    Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(AntType.Worker)];
+    Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(),Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(),]
 
   GameMap.initializeMap();
   return {

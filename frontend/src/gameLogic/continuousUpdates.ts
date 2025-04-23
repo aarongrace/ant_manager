@@ -1,4 +1,5 @@
 import { Ant, TaskType } from "../baseClasses/Ant";
+import { GameMap } from "../baseClasses/Map";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vals } from "../contexts/globalVars"; // Updated to use env
 import { reignInCoords } from "./antHelperFunctions";
@@ -6,7 +7,58 @@ import { initializeAntLogic } from "./antLogic";
 
 export const updateContinuousGameState = (delta: number) => {
     updateAntMovements(delta);
+    handleScrolling(delta);
 };
+
+
+const handleScrolling = (delta: number)=>{
+    if (vals.ui.scrollDirection.x === 0 && vals.ui.scrollDirection.y === 0) {
+        return;
+    } else if (vals.ui.remainingScrollDelay > 0){
+        vals.ui.remainingScrollDelay-= delta;
+        return;
+    }
+
+    const epsilon = 30;
+
+    if (vals.ui.scrollDirection.x < 0) {
+        GameMap.focalPoint.x = Math.max(
+            vals.ui.canvasWidth / 2,
+            GameMap.focalPoint.x + vals.ui.scrollSpeed * vals.ui.scrollDirection.x * delta
+        );
+        if (GameMap.focalPoint.x <= vals.ui.canvasWidth / 2 + epsilon) {
+            GameMap.focalPoint.x = vals.ui.canvasWidth / 2;
+        }
+    } else if (vals.ui.scrollDirection.x > 0) {
+        GameMap.focalPoint.x = Math.min(
+            GameMap.mapWidth - vals.ui.canvasWidth / 2,
+            GameMap.focalPoint.x + vals.ui.scrollSpeed * vals.ui.scrollDirection.x * delta
+        );
+        if (GameMap.focalPoint.x >= GameMap.mapWidth - vals.ui.canvasWidth / 2 - epsilon) {
+            GameMap.focalPoint.x = GameMap.mapWidth - vals.ui.canvasWidth / 2;
+        }
+    }
+
+    if (vals.ui.scrollDirection.y < 0) {
+        GameMap.focalPoint.y = Math.max(
+            vals.ui.canvasHeight / 2,
+            GameMap.focalPoint.y + vals.ui.scrollSpeed * vals.ui.scrollDirection.y * delta
+        );
+        if (GameMap.focalPoint.y <= vals.ui.canvasHeight / 2 + epsilon) {
+            GameMap.focalPoint.y = vals.ui.canvasHeight / 2;
+        }
+    } else if (vals.ui.scrollDirection.y > 0) {
+        GameMap.focalPoint.y = Math.min(
+            GameMap.mapHeight - vals.ui.canvasHeight / 2,
+            GameMap.focalPoint.y + vals.ui.scrollSpeed * vals.ui.scrollDirection.y * delta
+        );
+        if (GameMap.focalPoint.y >= GameMap.mapHeight - vals.ui.canvasHeight / 2 - epsilon) {
+            GameMap.focalPoint.y = GameMap.mapHeight - vals.ui.canvasHeight / 2;
+        }
+    }
+
+    GameMap.cropImageData();
+}
 
 const updateAntMovements = (delta: number) => {
     const { ants, enemies } = useColonyStore.getState();
@@ -31,7 +83,6 @@ const moveAnt = (ant: Ant, delta: number) => {
 
     reignInCoords(ant.movingTo);
 
-    const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
     const speedFactor = ant.task === TaskType.Idle ? vals.ant.idleSpeedFactor : 1; // Updated to use env
 
     const dx = ant.movingTo.x - ant.coords.x;
@@ -51,15 +102,7 @@ const moveAnt = (ant: Ant, delta: number) => {
     if (distance > 0) {
         ant.coords.x += (dx / distance) * ant.speed * delta * speedFactor;
         ant.coords.y += (dy / distance) * ant.speed * delta * speedFactor;
-
-        ant.coords.x = Math.max(
-            -canvasWidth / 2 + vals.ui.edgeMargin, // Updated to use env
-            Math.min(canvasWidth / 2 - vals.ui.edgeMargin, ant.coords.x) // Updated to use env
-        );
-        ant.coords.y = Math.max(
-            -canvasHeight / 2 + vals.ui.edgeMargin, // Updated to use env
-            Math.min(canvasHeight / 2 - vals.ui.edgeMargin, ant.coords.y) // Updated to use env
-        );
+        reignInCoords(ant.coords);
     }
 };
 

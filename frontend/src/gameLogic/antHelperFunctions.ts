@@ -1,10 +1,11 @@
 import { Ant, AntType, AntTypeInfo, TaskType } from "../baseClasses/Ant";
 import { Enemy } from "../baseClasses/Enemy";
+import { GameMap } from "../baseClasses/Map";
 import { EntityType, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vals } from "../contexts/globalVars"; // Use env for constants
 import { findEnemyByCondition } from "./enemyHelperFunctions";
-import { findMapEntity, getNestEntranceCoords, getRandomCoords } from "./entityHelperFunctions";
+import { findMapEntity, getNestEntranceCoords, getRandomCoordsInViewport } from "./entityHelperFunctions";
 
 export const findClosestAnt = (coords: { x: number, y: number }): Ant | null => {
     const { ants } = useColonyStore.getState();
@@ -124,8 +125,8 @@ export const setDestination = (ant: Ant, destination: MapEntity | undefined) => 
         const bias = isX ? Math.cos(angle) : Math.sin(angle);
         const biasedOffset = (randomOffset - bias * 1.1) * offsetFactor;
         return Math.min(
-            vals.ui.canvasWidth / 2 - vals.ui.edgeMargin,
-            Math.max(-vals.ui.canvasWidth / 2 + vals.ui.edgeMargin, coord + biasedOffset)
+            GameMap.mapWidth - vals.ui.edgeMargin,
+            Math.max(vals.ui.edgeMargin, coord + biasedOffset)
         );
     };
 
@@ -150,24 +151,19 @@ export const setAntToIdle = (ant: Ant) => {
     ant.isBusy = false;
 
     if (ant.type === AntType.Queen) {
-        ant.anchorPoint = { ...ant.coords };
-        ant.movingTo = { ...ant.anchorPoint };
+        const nestCoords = getNestEntranceCoords();
+        ant.anchorPoint.x = nestCoords.x + (Math.random() - 1) * vals.ant.idleRange;
+        ant.anchorPoint.y = nestCoords.y + (Math.random() - 1) * vals.ant.idleRange;
     } else {
-        ant.anchorPoint.x = (vals.ui.canvasWidth / 2 - ant.coords.x) * 0.15 * Math.random() + ant.coords.x;
-        ant.anchorPoint.y = (vals.ui.canvasHeight / 2 - ant.coords.y) * 0.1 * Math.random() + ant.coords.y;
-        findIdleCoords(ant);
+        ant.anchorPoint.x = ant.coords.x + (Math.random() - 1) * vals.ant.idleRange;
+        ant.anchorPoint.y = ant.coords.y + (Math.random() - 1) * vals.ant.idleRange;
     }
+    findIdleCoords(ant);
 };
 
 export const findIdleCoords = (ant: Ant) => {
-    if (ant.type === AntType.Queen) {
-        const nestCoords = getNestEntranceCoords();
-        ant.movingTo.x = nestCoords.x + (Math.random() - 1) * 0.1 * vals.ui.canvasWidth;
-        ant.movingTo.y = nestCoords.y + (Math.random() - 1) * 0.1 * vals.ui.canvasHeight;
-    } else {
-        ant.movingTo.x = ant.anchorPoint.x + (Math.random() - 1) * 0.1 * vals.ui.canvasWidth;
-        ant.movingTo.y = ant.anchorPoint.y + (Math.random() - 1) * 0.1 * vals.ui.canvasHeight;
-    }
+    ant.movingTo.x = ant.anchorPoint.x + (Math.random() - 1) * 0.1 * vals.ui.canvasWidth;
+    ant.movingTo.y = ant.anchorPoint.y + (Math.random() - 1) * 0.1 * vals.ui.canvasHeight;
 };
 
 export const hasArrived = (ant: Ant) => {
@@ -190,7 +186,7 @@ export const findNewPatrolCoords = (ant: Ant) => {
         ant.movingTo.x = ant.anchorPoint.x + (Math.random()-1) * vals.ant.patrolRange/2;
         ant.movingTo.y = ant.anchorPoint.y + (Math.random()-1) * vals.ant.patrolRange/2;
     } else {
-        ant.movingTo = getRandomCoords();
+        ant.movingTo = getRandomCoordsInViewport();
     }
 }
 
@@ -215,12 +211,15 @@ export const moveWhileBusy = (ant: Ant) => {
 
 export const reignInCoords = (coords: { x: number, y: number }) => {
     coords.x = Math.max(
-        -vals.ui.canvasWidth / 2 + vals.ui.edgeMargin,
-        Math.min(vals.ui.canvasWidth / 2 - vals.ui.edgeMargin, coords.x)
+        vals.ui.edgeMargin,
+        Math.min(GameMap.mapWidth - vals.ui.edgeMargin, coords.x)
     );
     coords.y = Math.max(
-        -vals.ui.canvasHeight / 2 + vals.ui.edgeMargin,
-        Math.min(vals.ui.canvasHeight / 2 - vals.ui.edgeMargin, coords.y)
+        vals.ui.edgeMargin,
+        Math.min(
+            GameMap.mapHeight - vals.ui.edgeMargin,
+            coords.y
+        )
     );
 }
 

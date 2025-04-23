@@ -7,6 +7,7 @@ import { getNestEntranceCoords } from "../gameLogic/entityHelperFunctions";
 import { antNames } from "./antNames";
 import { Enemy } from "./Enemy";
 import { Fruit } from "./Fruit";
+import { GameMap } from "./Map";
 import { EntityType, MapEntity } from "./MapEntity";
 
 // Define the TaskEnum type
@@ -56,8 +57,8 @@ export class Ant {
   coords: { x: number; y: number }; // Renamed from position to coords
   objective: string; // Renamed from target to objective
   destination: string;
-  movingTo: { x: number; y: number } = { x: 0, y: 0 }; // New field for frontend only
-  anchorPoint: { x: number; y: number } = { x: 0, y: 0 }; // New field for frontend only
+  movingTo: { x: number; y: number } = { x: GameMap.center.x, y: GameMap.center.y }; // New field for frontend only
+  anchorPoint: { x: number; y: number } = { x: GameMap.center.x, y: GameMap.center.y }; // New field for frontend only
   carrying: MapEntity | null; // Updated to use MapEntity for frontend
   carryingCapacity: number; // Moved carryingCapacity above amountCarried
   speed: number; // Added speed field
@@ -83,8 +84,8 @@ export class Ant {
     this.coords = antData.coords; // Initialize coords field
     this.objective = antData.objective; // Initialize objective field
     this.destination = antData.destination;
-    this.movingTo = { x: 0, y: 0 };
-    this.anchorPoint = { x: 0, y: 0 };
+    this.movingTo = { x: GameMap.center.x, y: GameMap.center.y }; // Initialize movingTo field
+    this.anchorPoint = { x: GameMap.center.x, y: GameMap.center.y }; // Initialize anchorPoint field
     this.carrying = this.convertCarryingToData(antData.carrying); // Initialize carrying field
     this.carryingCapacity = antData.carryingCapacity; // Initialize carryingCapacity field
     this.speed = antData.speed; // Initialize speed field
@@ -259,8 +260,8 @@ export class Ant {
     this.task = TaskType.Attack; // Set the task to attack
     this.objective = enemy.id; // Set the objective to the enemy ID
     this.destination = enemy.id; // Set the destination to the enemy ID
-    this.movingTo.x = 0; // Reset movingTo coordinates
-    this.movingTo.y = 0; // Reset movingTo coordinates
+    this.movingTo.x = enemy.coords.x; // Set the movingTo coordinates to the enemy's coordinates
+    this.movingTo.y = enemy.coords.y; // Set the movingTo coordinates to the enemy's coordinates
   }
 
   attack() {
@@ -325,10 +326,7 @@ export const recreateQueen = (): Ant => {
     age: 2, // Age of the queen
     type: AntType.Queen, // Type is queen
     task: TaskType.Idle, // Default task is idle
-    coords: {
-      x: 0.75 * vals.ui.canvasWidth - vals.ui.canvasWidth / 2,
-      y: 0.6 * vals.ui.canvasHeight - vals.ui.canvasHeight / 2,
-    }, // Absolute coordinates
+    coords: GameMap.getCoordsCloseToCenter(50), // Absolute coordinates
     objective: "", // No objective initially
     destination: "", // No destination initially
     carrying: null, // Default value for carrying
