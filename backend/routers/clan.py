@@ -1,0 +1,134 @@
+from fastapi import APIRouter, HTTPException, Request, Depends
+from beanie import Document
+from pydantic import BaseModel
+from datetime import datetime
+import uuid
+
+clanRouter = APIRouter()
+
+class ClanBase(BaseModel):
+    name: str
+    max_size: int = 50
+    description: str = ""
+
+class Clan(Document):
+    id: str  # Unique ID
+    name: str
+    leader: str  # User ID of the clan leader
+    members: list[str]  # List of User IDs
+    max_size: int  # Maximum allowed members
+    created_date: datetime
+    description: str = ""
+
+    class Settings:
+        name = "clans" 
+
+    @classmethod
+    def initialize_default(cls, leader_id: str, name: str = "Test Clan") -> "Clan":
+        return cls(
+            id=str(uuid.uuid4()),
+            name=name,
+            leader=leader_id,
+            members=[leader_id],
+            max_size=50,
+            created_date=datetime.now(),
+            description="Default Clan",
+        )
+
+def require_user(request: Request):
+    if not hasattr(request.state, "user"):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return request.state.user
+
+@clanRouter.post("/create")
+async def create_clan(data: ClanBase, request: Request):
+    user = require_user(request) 
+
+    existing = await Clan.find_one(Clan.name == data.name)
+    if existing:
+        raise HTTPException(status_code=400, detail="Clan already exists")
+
+    clan = Clan(
+        id=str(uuid.uuid4()),
+        name=data.name,
+        leader=user["id"],
+        members=[user["id"]],
+        max_size=data.max_size,
+        created_date=datetime.now(),
+        description=data.description,
+        picture=""
+    )
+
+    await clan.insert()
+    return {"status": "success", "clan_id": clan.id}
+
+'''
+Join an existing clan
+'''
+@clanRouter.post("/{clan_id}/join")
+async def join_clan(clan_id: str, request: Request):
+    user = request.state.user
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    clan = await Clan.get(clan_id)
+    if not clan:
+        raise HTTPException(status_code=404, detail="Clan not found")
+
+    if user["id"] in clan.members:
+        raise HTTPException(status_code=400, detail="Already in clan")
+
+    if len(clan.members) >= clan.max_size:
+        raise HTTPException(status_code=400, detail="Clan is full")
+
+    clan.members.append(user["id"])
+    await clan.save()
+    return {"status": "success", "message": f"Joined {clan.name}"}
+
+'''
+List all clans
+'''
+@clanRouter.get("/all")
+async def list_all_clans():
+    clans = await Clan.find_all().to_list()
+    return clans
+
+
+'''
+Get a clan by ID
+'''
+@clanRouter.get("/{clan_id}")
+async def get_clan(clan_id: str):
+    clan = await Clan.get(clan_id)
+    if not clan:
+        raise HTTPException(status_code=404, detail="Clan not found")
+    return clan
+
+'''
+Leave a clan
+'''
+@clanRouter.post("/{clan_id}/leave")
+async def leave_clan(clan_id: str, request: Request):
+    user = request.state.user
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    clan = await Clan.get(clan_id)
+    if not clan:
+        raise HTTPException(status_code=404, detail="Clan not found")
+
+    if user["id"] not in clan.members:
+        raise HTTPException(status_code=400, detail="You are not a member of this clan")
+
+    clan.members.remove(user["id"])
+
+    # If the leader leaves, maybe delete clan or promote someone else?
+    if clan.leader == user["id"]:
+        if clan.members:
+            clan.leader = clan.members[0]  # promote first member
+        else:
+            await clan.delete()
+            return {"status": "success", "message": "Clan deleted because leader left and no members remained"}
+
+    await clan.save()
+    return {"status": "success", "message": f"Left {clan.name}"}

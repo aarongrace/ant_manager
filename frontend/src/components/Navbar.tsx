@@ -17,7 +17,7 @@ const Navbar = () => {
 
   return (
     <header className="App-header">
-      <div className="game-title">Clash of Colonies</div>
+      <img src="/ant.png" className="App-logo" alt="logo" />
       <nav className="nav-links">
         <Link to="/dashboard" className="nav-link">Dashboard</Link>
         <Link to="/profile" className="nav-link">Profile</Link>

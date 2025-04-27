@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
 
   return (
     <div className="profile-container">
-      <h1 className="profile-header">Ant Colony Profile</h1>
+      <h1 className="profile-header">{name} Profile</h1>
       <form className="profile-form">
         <div className="form-group">
           <label htmlFor="name">Name:</label>
@@ -48,6 +48,7 @@ const Profile: React.FC = () => {
             type="text"
             id="name"
             name="name"
+            className="profile-input"
             value={formData.name}
             onChange={handleInputChange}
           />
@@ -58,8 +59,10 @@ const Profile: React.FC = () => {
             type="email"
             id="email"
             name="email"
+            className="profile-input"
             value={formData.email}
             onChange={handleInputChange}
+            placeholder="user@email.com"
           />
         </div>
         <div className="form-group">
@@ -68,8 +71,10 @@ const Profile: React.FC = () => {
             type="text"
             id="clan"
             name="clan"
-            value={formData.clan}
+            className="profile-input"
+            value={formData.clan ? formData.clan : "No Clan"}
             onChange={handleInputChange}
+            disabled // cant edit clan either must go to /clan to handle that stuff
           />
         </div>
         <div className="form-group">
@@ -78,6 +83,7 @@ const Profile: React.FC = () => {
             type="text"
             id="role"
             name="role"
+            className="profile-input"
             value={formData.role}
             onChange={handleInputChange}
             disabled // Role is typically not editable
@@ -89,6 +95,7 @@ const Profile: React.FC = () => {
             type="text"
             id="picture"
             name="picture"
+            className="profile-input"
             value={formData.picture}
             onChange={handleInputChange}
           />

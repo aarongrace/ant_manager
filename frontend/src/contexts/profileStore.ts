@@ -57,7 +57,7 @@ export const useProfileStore = create<ProfileStore>((set) => ({
     const data = await response.json();
     console.log("Profile data:", data);
     set({
-      id: data.id,
+      id: data['_id'],
       name: data.name,
       email: data.email,
       clan: data.clan,

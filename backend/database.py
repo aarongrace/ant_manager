@@ -4,6 +4,7 @@ from beanie import init_beanie
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from routers.profile import Profile, ensure_guest_profile_exists
 from routers.colony import Colony, ensure_guest_colony_exists
+from routers.clan import Clan
 from pathlib import Path
 import os
 
@@ -18,7 +19,7 @@ class MyConfig(BaseSettings):
 async def initialize_database():
     setting = MyConfig()
     client = AsyncIOMotorClient(setting.connect_string)
-    await init_beanie(database=client["clash_of_colonies"], document_models=[Profile, Colony])
+    await init_beanie(database=client["clash_of_colonies"], document_models=[Profile, Colony, Clan])
 
 
     await ensure_guest_profile_exists()

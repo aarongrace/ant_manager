@@ -102,14 +102,14 @@
 
 /* Container for the welcome page */
 .welcome-container {
-  height: 100vh; /* Full viewport height */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: #F6F0E0; /* Reddish beige background */
-  padding: 0px 60px 20px 60px;
+  padding: 20px 60px 20px 60px;
   border-radius: 50px;
+  margin-top: 60px;
 }
 
 /* Logo styling */

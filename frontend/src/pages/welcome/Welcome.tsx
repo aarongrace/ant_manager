@@ -3,40 +3,43 @@ import { useNavigate } from "react-router-dom";
 import { startOfflineMode } from "../../contexts/colonyStore";
 import { useProfileStore } from "../../contexts/profileStore";
 import { getUserID, setUserID } from "../../contexts/userStore";
-import "./welcome.css"; // Updated CSS file name
+import "./welcome.css";
 
 const Welcome = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  })
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [isLoggingIn, setIsLoggingIn] = useState(true);
   const [error, setError] = useState("");
   const { fetchProfileInfo } = useProfileStore();
   const navigate = useNavigate();
-
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     const { username, password } = formData;
     const res = await fetch(`http://localhost:8000/profiles/register`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
+      credentials: "include",
     });
     const data = await res.json();
     if (res.ok) {
-      console.log("User Registered", data);
-      console.log("User ID:", data.userId);
-      setUserID(data.userId);
-      fetchProfileInfo();
-      navigate('/dashboard');
+      const loginRes = await fetch(`http://localhost:8000/profiles/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+        credentials: "include",
+      });
+      if (loginRes.ok) {
+        const loginData = await loginRes.json();
+        setUserID(loginData.userId);
+        fetchProfileInfo();
+        navigate("/dashboard");
+      } else {
+        console.error("Error auto-logging in after signup");
+      }
     } else {
       console.error("Error registering user", data);
       setError(data.detail);
-
       startOfflineMode();
       handlePlayAsGuest();
     }
@@ -47,31 +50,23 @@ const Welcome = () => {
     const { username, password } = formData;
     const res = await fetch(`http://localhost:8000/profiles/login`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
+      credentials: "include",
     });
     const data = await res.json();
     if (res.ok) {
-      console.log("User Logged In", data);
       setUserID(data.userId);
-      console.log("User ID:", data.userId);
-      console.log(getUserID());
       fetchProfileInfo();
-      navigate('/dashboard');
+      navigate("/dashboard");
     } else {
       console.error("Error logging in", data);
       setError(data.detail);
-
     }
-  }
+  };
 
   const handlePlayAsGuest = () => {
-    // Placeholder logic for playing as a guest
-    console.log("Playing as guest...");
     setUserID("guest");
-
     navigate("/dashboard");
   };
 
@@ -83,37 +78,35 @@ const Welcome = () => {
           type="text"
           placeholder="Username"
           className="log-in-input"
-          onChange={(e) => setFormData({...formData, username: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
           required
         />
         <input
           type="password"
           placeholder="Password"
           className="log-in-input"
-          onChange={(e) => setFormData({...formData, password: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           required
         />
         <button type="submit" className="log-in-submit">
-          {isLoggingIn ? 'Login' : 'Sign Up'}
+          {isLoggingIn ? "Login" : "Sign Up"}
         </button>
       </form>
-        {isLoggingIn ? (
-          <p className="disclaimer">
-            Don't have an account? <span onClick={() => setIsLoggingIn(false)} className="disclaimer-link">Sign Up</span>
-          </p>
-        ) : (
-          <p className="disclaimer">
-            Already have an account? <span onClick={() => setIsLoggingIn(true)} className="disclaimer-link">Login</span>
-          </p>
-        )}
-        <p onClick={handlePlayAsGuest} className="disclaimer">
-          Or if you want to then <span className="disclaimer-link">Play as Guest</span>
+
+      {isLoggingIn ? (
+        <p className="disclaimer">
+          Don't have an account? <span onClick={() => setIsLoggingIn(false)} className="disclaimer-link">Sign Up</span>
         </p>
-        {error && <p className="error-message">{error}</p>}
-        {/* <button onClick={handlePlayAsGuest} className="welcome-button guest">
-          <p className="guest-text">Play as Guest</p>
-          <CircleHelp size={20} />
-        </button> */}
+      ) : (
+        <p className="disclaimer">
+          Already have an account? <span onClick={() => setIsLoggingIn(true)} className="disclaimer-link">Login</span>
+        </p>
+      )}
+      <p onClick={handlePlayAsGuest} className="disclaimer">
+        Or if you want to then <span className="disclaimer-link">Play as Guest</span>
+      </p>
+
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };
