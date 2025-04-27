@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends
 from beanie import Document
 from pydantic import BaseModel
 from datetime import datetime
+from routers.profile import Profile
 import uuid
 
 clanRouter = APIRouter()
@@ -42,7 +43,7 @@ def require_user(request: Request):
 
 @clanRouter.post("/create")
 async def create_clan(data: ClanBase, request: Request):
-    user = require_user(request) 
+    user = require_user(request)
 
     existing = await Clan.find_one(Clan.name == data.name)
     if existing:
@@ -56,10 +57,17 @@ async def create_clan(data: ClanBase, request: Request):
         max_size=data.max_size,
         created_date=datetime.now(),
         description=data.description,
-        picture=""
     )
 
     await clan.insert()
+
+    profile = await Profile.get(user["id"])
+    if not profile:
+        raise HTTPException(status_code=404, detail="User profile not found")
+
+    profile.clan = clan.id
+    await profile.save()
+
     return {"status": "success", "clan_id": clan.id}
 
 '''
