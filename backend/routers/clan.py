@@ -130,10 +130,15 @@ async def leave_clan(clan_id: str, request: Request):
 
     clan.members.remove(user["id"])
 
-    # If the leader leaves, maybe delete clan or promote someone else?
+    from routers.profile import Profile
+    profile = await Profile.get(user["id"])
+    if profile:
+        profile.clan = "" 
+        await profile.save()
+
     if clan.leader == user["id"]:
         if clan.members:
-            clan.leader = clan.members[0]  # promote first member
+            clan.leader = clan.members[0]
         else:
             await clan.delete()
             return {"status": "success", "message": "Clan deleted because leader left and no members remained"}

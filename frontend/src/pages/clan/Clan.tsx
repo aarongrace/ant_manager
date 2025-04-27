@@ -42,21 +42,32 @@ const Clan = () => {
   const handleCreateClan = async () => {
     if (!newClanName.trim()) return;
     try {
-      const payload = { name: newClanName, max_size: 50, description: newClanDescription };
+      const payload = {
+        name: newClanName,
+        max_size: 50,
+        description: newClanDescription,
+      };
       await fetch(`${BACKEND_URL}/create`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      await fetchClans();
-      await fetchProfileInfo();
+      await fetchProfileInfo(); 
+      const updatedClanId = useProfileStore.getState().clan; 
+      if (updatedClanId) {
+        const response = await fetch(`${BACKEND_URL}/${updatedClanId}`, { credentials: "include" });
+        const data = await response.json();
+        setUserClan(data); 
+      }
+      await fetchClans(); 
       setNewClanName("");
       setNewClanDescription("");
     } catch (error) {
       console.error("Error creating clan:", error);
     }
   };
+  
 
   const handleJoinClan = async (id: string) => {
     try {
@@ -68,17 +79,20 @@ const Clan = () => {
     }
   };
 
-  const handleLeaveClan = async () => {
-    if (!userClan) return;
+  const handleLeaveClan = async (id: string) => {
     try {
-      await fetch(`${BACKEND_URL}/${userClan.id}/leave`, { method: "POST", credentials: "include" });
-      await fetchProfileInfo();
-      setUserClan(null);
-      await fetchClans();
+      await fetch(`${BACKEND_URL}/${id}/leave`, {
+        method: "POST",
+        credentials: "include",
+      });
+      await fetchProfileInfo()
+      setUserClan(null); 
+      await fetchClans(); 
     } catch (error) {
       console.error("Error leaving clan:", error);
     }
   };
+  
 
   return (
     <div className="clan-container">
@@ -93,7 +107,7 @@ const Clan = () => {
           <strong>{userClan.name}</strong>
           <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>{userClan.description}</p>
           <p style={{ marginTop: "10px" }}>Members: {userClan.members.length}</p>
-          <button className="clan-btn" onClick={handleLeaveClan} style={{ marginTop: "15px" }}>
+          <button className="clan-btn" onClick={() => handleLeaveClan(userClan._id)} style={{ marginTop: "15px" }}>
             Leave Clan
           </button>
         </div>
