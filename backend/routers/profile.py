@@ -9,6 +9,10 @@ from pydantic import BaseModel
 class RoleEnum(str, Enum):
     admin = "admin"
     user = "user"
+    banned = "banned"
+
+class RoleUpdate(BaseModel):
+    role: RoleEnum
 
 class ProfileBase(BaseModel):
     username: str  
