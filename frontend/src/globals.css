@@ -4,6 +4,11 @@ html, body {
     padding: 0;
     height: 100%;
     overflow-x: hidden; /* Prevent horizontal scrolling */
+    background-size: 50%;
+
+    background-color: #301a07;
+
+
 }
 
 * {
@@ -13,7 +18,7 @@ html, body {
 }
 
 body {
-    background-color: #472b1e; /* Dark brown background color */
+    background-color: #472b1e37; /* Dark brown background color */
     color: white; /* Default text color */
     font-family: sans-serif; /* Default font family */
     margin: 0; /* Remove default body margin */
@@ -27,7 +32,7 @@ body {
     align-items: center; /* Align items vertically */
     padding: 3px 20px; /* Add padding to the sides */
     color: white;
-    background-color: #7c691f; /* Light beige background for the main content */
+    background-color: #7c691fa4; /* Light beige background for the main content */
     border-bottom: 2px solid #4c4008; /* Earthy brown border at the bottom */
 }
 
@@ -64,4 +69,5 @@ body {
     align-items: center;
     flex-direction: column;
     overflow-y: auto; /* Allow scrolling only for the main content */
+    
 }

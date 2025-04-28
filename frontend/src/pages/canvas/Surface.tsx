@@ -120,17 +120,21 @@ export const SurfaceCanvas: React.FC = (props) => {
 
 
             ctx.rotate(ant.angle);
-            ctx.drawImage(
-                antSprites,
-                spriteX,
-                spriteY,
-                spriteWidth,
-                spriteHeight,
-                -width / 2,
-                -height / 2,
-                width,
-                height
-            );
+            if (ant.type === AntType.Worker || ant.type === AntType.Soldier) {
+                ant.drawSprite(ctx);
+            } else {
+                ctx.drawImage(
+                    antSprites,
+                    spriteX,
+                    spriteY,
+                    spriteWidth,
+                    spriteHeight,
+                    -width / 2,
+                    -height / 2,
+                    width,
+                    height
+                );
+            }
 
             if (ant.carrying) {
                 const carriedObject = ant.carrying;
