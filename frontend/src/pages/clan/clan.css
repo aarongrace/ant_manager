@@ -110,3 +110,43 @@
 .clan-join-btn:hover {
   background-color: #8b5a2b;
 }
+
+.member-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.member-card {
+  background-color: #f4e4c1;
+  padding: 15px;
+  border-radius: 8px;
+  width: 100%;
+  border: 2px solid #8b5a2b; /* dark brown outline */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.member-card strong {
+  font-size: 1.1rem;
+}
+
+.member-card p {
+  margin-top: 5px;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.clan-kick-btn {
+  margin-top: 10px;
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.clan-kick-btn:hover {
+  background-color: #c9302c;
+}

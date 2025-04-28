@@ -75,22 +75,24 @@ Join an existing clan
 '''
 @clanRouter.post("/{clan_id}/join")
 async def join_clan(clan_id: str, request: Request):
-    user = request.state.user
-    if not user:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
+    user = require_user(request)
     clan = await Clan.get(clan_id)
     if not clan:
         raise HTTPException(status_code=404, detail="Clan not found")
-
     if user["id"] in clan.members:
         raise HTTPException(status_code=400, detail="Already in clan")
-
     if len(clan.members) >= clan.max_size:
         raise HTTPException(status_code=400, detail="Clan is full")
 
     clan.members.append(user["id"])
     await clan.save()
+
+    # Now update the user's clan field:
+    profile = await Profile.get(user["id"])
+    if profile:
+        profile.clan = clan.id
+        await profile.save()
+
     return {"status": "success", "message": f"Joined {clan.name}"}
 
 '''
@@ -145,3 +147,32 @@ async def leave_clan(clan_id: str, request: Request):
 
     await clan.save()
     return {"status": "success", "message": f"Left {clan.name}"}
+
+'''
+kick
+'''
+@clanRouter.post("/{clan_id}/kick/{member_id}")
+async def kick_member(clan_id: str, member_id: str, request: Request):
+    user = request.state.user
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    clan = await Clan.get(clan_id)
+    if not clan:
+        raise HTTPException(status_code=404, detail="Clan not found")
+
+    if clan.leader != user["id"]:
+        raise HTTPException(status_code=403, detail="Only the leader can kick members")
+
+    if member_id not in clan.members:
+        raise HTTPException(status_code=400, detail="User not in this clan")
+
+    clan.members.remove(member_id)
+    await clan.save()
+
+    member_profile = await Profile.get(member_id)
+    if member_profile:
+        member_profile.clan = ""
+        await member_profile.save()
+
+    return {"status": "success", "message": "Member kicked successfully"}
