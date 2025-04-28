@@ -148,7 +148,7 @@ const Clan = () => {
               <h3 className="clan-header" style={{color: '#3a2e1f'}}>Members:</h3>
               <div className="member-cards">
                 {memberProfiles.map((member) => (
-                  <div key={member.id} className="member-card">
+                  <div key={member._id} className="member-card">
                     <strong>{member.name}</strong>
                     <p>{member._id === userClan.leader ? "Leader" : "Member"}</p>
                     {userId === userClan.leader && member._id !== userClan.leader && (
