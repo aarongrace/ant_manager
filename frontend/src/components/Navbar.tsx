@@ -1,19 +1,28 @@
 import { CircleHelp } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useProfileStore } from '../contexts/profileStore';
 import "./navbar.css";
 
 const Navbar = () => {
   const role = useProfileStore((state) => state.role);
-
   const location = useLocation();
-  // Hide navbar on the root path
+  const navigate = useNavigate();
+
   if (location.pathname === "/") {
     return null;
   }
 
-  console.log("Navbar role:", role);
-  console.log("nav", role === "admin");
+  const handleLogout = async () => {
+    try {
+      await fetch(`http://localhost:8000/profiles/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      navigate("/");  // send back to welcome page
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   return (
     <header className="App-header">
@@ -28,6 +37,9 @@ const Navbar = () => {
         <Link to="/guide" className="nav-link">
           <CircleHelp size={20} />
         </Link>
+        <button onClick={handleLogout} className="logout-btn">
+          Logout
+        </button>
       </nav>
     </header>
   );
