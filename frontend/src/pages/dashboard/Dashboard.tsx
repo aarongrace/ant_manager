@@ -10,7 +10,7 @@ import { makeAnt, resetColony, resizeCanvas } from './dashboard.services';
 
 
 const Dashboard: React.FC = () => {
-  const { name: colonyName, ants, eggs, food, sand, age, perkPurchased, fetchColonyInfo } = useColonyStore();
+  const { name: colonyName, ants, eggs, food, chitin, age, perkPurchased, fetchColonyInfo } = useColonyStore();
   const { isLoaded, preloadImages } = usePreloadedImagesStore();
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
           <section className="dashboard-section colony-overview">
             <p><strong>Number of Ants:</strong> {ants.length}</p>
             <p><strong>Food:</strong> {Math.floor(food)}</p>
-            <p><strong>Sand:</strong> {sand}</p>
+            <p><strong>Chitin:</strong> {chitin}</p>
             <button onClick={()=>resetColony()}>Reset Colony</button>
           </section>
 

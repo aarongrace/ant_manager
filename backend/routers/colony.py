@@ -23,7 +23,7 @@ class Colony(Document):
     fruits: List[Fruit]
     eggs: int = 5  # Number of eggs in the colony, defaulted to 5
     food: float  # Amount of food available
-    sand: float  # Amount of sand available
+    chitin: float  # Amount of chitin available
     age: int  # Age of the colony
     map: List[List[List]]  # Map associated with the colony
     perkPurchased: List[str]  # List of perks purchased by the colony
@@ -43,7 +43,7 @@ class Colony(Document):
             fruits=[],
             eggs=0,
             food=0,
-            sand=0,
+            chitin=0,
             age=0,
             map=[[]],
             perkPurchased=[],

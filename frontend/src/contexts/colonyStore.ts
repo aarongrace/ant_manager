@@ -17,7 +17,7 @@ type ColonyStore = {
   mapEntities: MapEntity[];
   eggs: number;
   food: number;
-  sand: number;
+  chitin: number;
   age: number;
   map: Tile[][];
   perkPurchased: string[];
@@ -33,7 +33,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   mapEntities: [],
   eggs: 5,
   food: 0,
-  sand: 0,
+  chitin: 0,
   age: 0,
   map: [[]],
   perkPurchased: [],
@@ -121,7 +121,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       fruits: entityData.fruitData,
       eggs: colonyState.eggs,
       food: colonyState.food,
-      sand: colonyState.sand,
+      chitin: colonyState.chitin,
       age: colonyState.age,
       map: colonyState.map,
       perkPurchased: colonyState.perkPurchased,
@@ -163,7 +163,7 @@ export const startOfflineMode = ()=>{
   const {startWarning} = useWarningStore.getState();
   vals.offline_mode = true;
   updateColony(createFreshColony());
-  startWarning("Connection with backend failed. Starting online mode");
+  startWarning("Connection with backend failed. Starting online mode", 3000);
 }
 
 export const createFreshColony = () => {
@@ -185,9 +185,9 @@ export const createFreshColony = () => {
     enemies: [enemy], // Initialize enemies
     name: "New Colony",
     map: GameMap.tilesGrid,
-    eggs: 5,
+    eggs: 10,
     food: 200,
-    sand: 200,
+    chitin: 200,
     age: 0,
     mapEntities: mapEntities,
     perkPurchased: [],

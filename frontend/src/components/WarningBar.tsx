@@ -3,14 +3,20 @@ import { create } from "zustand";
 interface WarningStore {
     warningText: string;
     isDisplayed: boolean;
-    startWarning: (text: string) => void;
+    startWarning: (text: string, time:number) => void;
 }
 
+
+//todo add more parameters
 export const useWarningStore = create<WarningStore>((set, get)=>({
     warningText:  "",
     isDisplayed:  false,
-    startWarning: (text: string) =>{
+    startWarning: (text: string, time: number=2000) =>{
         console.log("starting warning");
+        if (text === get().warningText && get().isDisplayed){
+            console.log("Warning already displayed");
+            return;
+        }
         set({warningText: text, isDisplayed: true});
         console.log(get().warningText);
         console.log(get().isDisplayed);
@@ -18,7 +24,7 @@ export const useWarningStore = create<WarningStore>((set, get)=>({
             set({ isDisplayed: false,
                 warningText: "",
             })
-        }, 2000)
+        }, time)
     }
 }))
 
@@ -39,7 +45,7 @@ export const WarningBar = ()=>{
             fontSize: "1.5rem",
             zIndex: 9999,
         }}>
-            <h1>Warning: {warningText}</h1>
+            <h1>{warningText}</h1>
         </div>
     )
 }

@@ -77,10 +77,6 @@ const moveAnt = (ant: Ant, delta: number) => {
         initializeAntLogic();
         return;
     }
-    if (ant.isAttacking) {
-        return;
-    }
-
     reignInCoords(ant.movingTo);
 
     const speedFactor = ant.task === TaskType.Idle ? vals.ant.idleSpeedFactor : 1; // Updated to use env
@@ -91,14 +87,14 @@ const moveAnt = (ant: Ant, delta: number) => {
 
     const threshold = ant.task === TaskType.Attack ? AntTypeInfo[ant.type].attackRange - 5 : 2;
 
-    if (distance < threshold || ant.isAttacking) {
-        // Adjusted for absolute coordinates
-        return;
-    }
-
     if (!ant.isBusy) {
         // Don't recalculate angle if the ant is busy
         ant.angle = Math.atan2(dy, dx) + Math.PI / 2; // Arc tangent to get the angle in radians
+    }
+
+    if (distance < threshold || ant.isAttacking) {
+        // Adjusted for absolute coordinates
+        return;
     }
 
     if (distance > 0) {

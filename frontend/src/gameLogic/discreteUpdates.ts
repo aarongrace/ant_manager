@@ -5,6 +5,7 @@ import { Fruit } from "../baseClasses/Fruit";
 import { useIconsStore } from "../baseClasses/Icon";
 import { GameMap } from "../baseClasses/Map";
 import { MapEntity } from "../baseClasses/MapEntity";
+import { useWarningStore } from "../components/WarningBar";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vals } from "../contexts/globalVars"; // Updated to use env
 import { findAntByCondition } from "./antHelperFunctions";
@@ -34,8 +35,21 @@ export const updateDiscreteGameState = (setCursor:()=>void) => {
     layEgg();
 
     incrementAge(setCursor);
+
+    checkIfAllDead();
 };
 
+
+const checkIfAllDead = () => {
+    const { ants, updateColony } = useColonyStore.getState();
+    const { startWarning } = useWarningStore.getState();
+    const allDead = ants.every((ant) => ant.hp <= 0);
+    if (allDead) {
+        console.log("All ants are dead. Game over.");
+        updateColony({ ants: [], enemies: [] });
+        startWarning("All ants are dead. Game over.", 5000);
+    }
+}
 
 const incrementAge = (setCursor:()=>void) =>{
     const { age, updateColony } = useColonyStore.getState();
@@ -63,13 +77,13 @@ const consumeFoodAndRestoreHp = () => {
     const wasteFactor = Math.max(0.6, 1 + (food - foodWasteBaseline) / foodWasteBaseline);
     const foodConsumed = (ants.reduce((total, ant) => {
         if (ant.type === AntType.Worker) {
-            ant.hp += 0.2;
+            ant.hp += 0.4;
             return total + workerFoodConsumption;
         } else if (ant.type === AntType.Soldier) {
-            ant.hp += 0.5;
+            ant.hp += 0.8;
             return total + soldierFoodConsumption;
         } else if (ant.type === AntType.Queen) {
-            ant.hp += 0.6;
+            ant.hp += 0.9;
             return total + queenFoodConsumption;
         }
         return total;
@@ -87,14 +101,12 @@ const consumeFoodAndRestoreHp = () => {
 
 const handleNoFood = (negativeFoodLeft: number) => {
     const { ants, updateColony } = useColonyStore.getState();
-    if (Math.random() * 10 < negativeFoodLeft * negativeFoodLeft) {
-        const randomAnt = ants.find((ant) => ant.type === AntType.Worker || ant.type === AntType.Soldier);
-        if (!randomAnt) {
-            updateColony({ ants: [] });
-        } else {
-            randomAnt.die();
-        }
-    }
+    const {startWarning} = useWarningStore.getState();
+    ants.forEach((ant) => {
+        ant.hp -= Math.abs(negativeFoodLeft) * 50 * Math.random(); 
+    });
+    startWarning("Not enough food! Ants are starving!", 1000);
+    
 };
 
 const deleteEmptyMapEntities = () => {
