@@ -5,11 +5,12 @@ import "./clan.css";
 const BACKEND_URL = "http://localhost:8000/clan";
 
 const Clan = () => {
-  const { clan, fetchProfileInfo } = useProfileStore();
+  const { clan, id: userId, fetchProfileInfo } = useProfileStore();
   const [clans, setClans] = useState<any[]>([]);
   const [newClanName, setNewClanName] = useState("");
   const [newClanDescription, setNewClanDescription] = useState("");
   const [userClan, setUserClan] = useState<any>(null);
+  const [memberProfiles, setMemberProfiles] = useState<any[]>([]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -20,6 +21,7 @@ const Clan = () => {
           const response = await fetch(`${BACKEND_URL}/${clanId}`, { credentials: "include" });
           const data = await response.json();
           setUserClan(data);
+          await fetchMemberProfiles(data.members);
         } catch (error) {
           console.error("Error fetching user's clan:", error);
         }
@@ -28,6 +30,21 @@ const Clan = () => {
     };
     initialize();
   }, []);
+
+  const fetchMemberProfiles = async (memberIds: string[]) => {
+    try {
+      const responses = await Promise.all(
+        memberIds.map(id =>
+          fetch(`http://localhost:8000/profiles/${id}`, { credentials: "include" })
+            .then(res => res.ok ? res.json() : null)
+        )
+      );
+      const validProfiles = responses.filter(profile => profile !== null);
+      setMemberProfiles(validProfiles);
+    } catch (error) {
+      console.error("Error fetching member profiles:", error);
+    }
+  };
 
   const fetchClans = async () => {
     try {
@@ -53,27 +70,34 @@ const Clan = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      await fetchProfileInfo(); 
-      const updatedClanId = useProfileStore.getState().clan; 
+      await fetchProfileInfo();
+      const updatedClanId = useProfileStore.getState().clan;
       if (updatedClanId) {
         const response = await fetch(`${BACKEND_URL}/${updatedClanId}`, { credentials: "include" });
         const data = await response.json();
-        setUserClan(data); 
+        setUserClan(data);
+        await fetchMemberProfiles(data.members);
       }
-      await fetchClans(); 
+      await fetchClans();
       setNewClanName("");
       setNewClanDescription("");
     } catch (error) {
       console.error("Error creating clan:", error);
     }
   };
-  
 
   const handleJoinClan = async (id: string) => {
     try {
       await fetch(`${BACKEND_URL}/${id}/join`, { method: "POST", credentials: "include" });
-      await fetchClans();
       await fetchProfileInfo();
+      const updatedClanId = useProfileStore.getState().clan;
+      if (updatedClanId) {
+        const response = await fetch(`${BACKEND_URL}/${updatedClanId}`, { credentials: "include" });
+        const data = await response.json();
+        setUserClan(data);
+        await fetchMemberProfiles(data.members);
+      }
+      await fetchClans();
     } catch (error) {
       console.error("Error joining clan:", error);
     }
@@ -85,34 +109,70 @@ const Clan = () => {
         method: "POST",
         credentials: "include",
       });
-      await fetchProfileInfo()
-      setUserClan(null); 
-      await fetchClans(); 
+      await fetchProfileInfo();
+      setUserClan(null);
+      setMemberProfiles([]);
+      await fetchClans();
     } catch (error) {
       console.error("Error leaving clan:", error);
     }
   };
-  
 
+  const handleKickMember = async (memberId: string) => {
+    if (!userClan || !userClan._id) return;
+  
+    try {
+      await fetch(`${BACKEND_URL}/${userClan._id}/kick/${memberId}`, {
+        method: "POST",
+        credentials: "include",
+      });
+  
+      const updatedClanResponse = await fetch(`${BACKEND_URL}/${userClan._id}`, { credentials: "include" });
+      const updatedClanData = await updatedClanResponse.json();
+      setUserClan(updatedClanData);
+  
+      await fetchMemberProfiles(updatedClanData.members);
+    } catch (error) {
+      console.error("Error kicking member:", error);
+    }
+  };
+  
   return (
     <div className="clan-container">
-      <h1 className="clan-header">Clans</h1>
-      <p className="clan-description">
-        Clans are great ways to interact with other players. You can trade resources, share strategies, and build a community.
-      </p>
-
       {userClan ? (
-        <div className="clan-section">
-          <h2 className="clan-subtitle">Your Clan</h2>
-          <strong>{userClan.name}</strong>
-          <p style={{ fontSize: "0.9rem", opacity: 0.7 }}>{userClan.description}</p>
-          <p style={{ marginTop: "10px" }}>Members: {userClan.members.length}</p>
-          <button className="clan-btn" onClick={() => handleLeaveClan(userClan._id)} style={{ marginTop: "15px" }}>
-            Leave Clan
-          </button>
-        </div>
+        <>
+        <h1 className="clan-header">{userClan.name}</h1>
+        <p className="clan-description" style={{ fontSize: "1rem", opacity: 0.8 }}>{userClan.description}</p>
+          <div className="clan-section">
+            <div className="clan-members">
+              <h3 className="clan-header" style={{color: '#3a2e1f'}}>Members:</h3>
+              <div className="member-cards">
+                {memberProfiles.map((member) => (
+                  <div key={member.id} className="member-card">
+                    <strong>{member.name}</strong>
+                    <p>{member._id === userClan.leader ? "Leader" : "Member"}</p>
+                    {userId === userClan.leader && member._id !== userClan.leader && (
+                      <button className="clan-kick-btn" onClick={() => handleKickMember(member._id)}>
+                        Kick
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button className="clan-btn" onClick={() => handleLeaveClan(userClan._id)} style={{ marginTop: "20px" }}>
+              Leave Clan
+            </button>
+          </div>
+        </>
       ) : (
         <>
+          <h1 className="clan-header">Clans</h1>
+          <p className="clan-description">
+            Clans are great ways to interact with other players. You can trade resources, share strategies, and build a community.
+          </p>
+
           <div className="clan-section">
             <h2 className="clan-subtitle">Create a Clan</h2>
             <div className="clan-custom-input">
