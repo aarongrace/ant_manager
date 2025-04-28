@@ -5,6 +5,7 @@ import { saveProfile } from './profile.services';
 
 const Profile: React.FC = () => {
   const { id, name, email, clan, role, picture, fetchProfileInfo } = useProfileStore();
+  const [clanName, setClanName] = useState<string>('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,7 +15,7 @@ const Profile: React.FC = () => {
   });
 
   useEffect(() => {
-    fetchProfileInfo().then(() => {
+    fetchProfileInfo().then(async () => {
       setFormData({
         name: name,
         email: email,
@@ -22,8 +23,22 @@ const Profile: React.FC = () => {
         role: role,
         picture: picture,
       });
+  
+      if (clan) {
+        try {
+          const res = await fetch(`http://localhost:8000/clan/${clan}`, {
+            credentials: "include",
+          });
+          const data = await res.json();
+          setClanName(data.name);
+        } catch (error) {
+          console.error("Error fetching clan name:", error);
+        }
+      } else {
+        setClanName(""); 
+      }
     });
-  }, [ fetchProfileInfo, name, email, clan, role, picture ]); // rerender when any of these values change
+  }, [fetchProfileInfo, name, email, clan, role, picture]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -72,7 +87,7 @@ const Profile: React.FC = () => {
             id="clan"
             name="clan"
             className="profile-input"
-            value={formData.clan ? formData.clan : "No Clan"}
+            value={clan ? clanName : "No Clan"}
             onChange={handleInputChange}
             disabled // cant edit clan either must go to /clan to handle that stuff
           />
