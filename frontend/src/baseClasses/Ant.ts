@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vals } from "../contexts/globalVars"; // Updated to use env
+import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { getRandomAntType, startPatrol } from "../gameLogic/antHelperFunctions";
 import { findEnemyByCondition } from "../gameLogic/enemyHelperFunctions";
 import { getNestEntranceCoords } from "../gameLogic/entityHelperFunctions";
@@ -150,13 +151,14 @@ export class Ant implements InteractiveElement{
     }
 
     this.spriteFrameTimer += delta;
+    const lastFrame  = this.isAttacking ? AntTypeInfo[this.type].numOfAttackFrames - 1 : AntTypeInfo[this.type].numOfFrames - 1;
 
     if (this.spriteFrameTimer >= updateInterval) {
-      if (this.isAttacking && this.frame === 2) {
+      if (this.isAttacking && this.frame === lastFrame) {
         this.attack();
       }
 
-      this.frame = (this.frame + 1) % 3; // Cycle through 3 frames
+      this.frame = (this.frame + 1) % (lastFrame + 1); // Cycle through 3 frames
       this.spriteFrameTimer -= updateInterval;
     }
   }
@@ -193,6 +195,26 @@ export class Ant implements InteractiveElement{
       sizeFactor: this.sizeFactor, // Include sizeFactor field
       hp: this.hp, // Include hp field
     };
+  }
+
+  drawSprite(ctx: CanvasRenderingContext2D) {
+    const imgName = this.type + "_sprites";
+    const { getImage } = usePreloadedImagesStore.getState();
+    const img = getImage(imgName);
+    if (!img) {
+      console.error("Image not found:", imgName);
+      return;
+    }
+    const useAttackSprite = this.isAttacking && this.type === AntType.Soldier;
+    const bounds = this.getBounds();
+    const width = bounds.width;
+    const height = bounds.height;
+    const spriteWidth = img.width / AntTypeInfo[this.type].numOfSpriteFrames;
+    const spriteHeight = img.height;
+    const spriteX = useAttackSprite ? spriteWidth * (5 + this.frame) : spriteWidth * this.frame;
+    const spriteY = 0;
+    ctx.drawImage( img, spriteX, spriteY, spriteWidth, spriteHeight,
+      -width / 2, -height / 2, width, height)
   }
 
   randomlyRotate() {
@@ -378,6 +400,9 @@ export const AntTypeInfo: {
     defaultAttack: number;
     attackRange: number;
     size: number; // Added size field
+    numOfFrames: number; // Added numOfFrames field
+    numOfAttackFrames: number; // Added numOfAttackFrames field
+    numOfSpriteFrames: number; // Added numOfSpriteFrames field
   };
 } = {
   [AntType.Queen]: {
@@ -388,7 +413,10 @@ export const AntTypeInfo: {
     cost: 1000,
     defaultAttack: 0,
     attackRange: 0,
-    size: 39, // Added size value for Queen
+    size: 40, // Added size value for Queen
+    numOfFrames: 3, // Added numOfFrames value for Queen
+    numOfAttackFrames: 3, // Added numOfAttackFrames value for Queen
+    numOfSpriteFrames: 3, // Added numOfSpriteFrames value for Queen
   },
   [AntType.Worker]: {
     speed: vals.ant.workerSpeed, // Updated to use env
@@ -398,7 +426,10 @@ export const AntTypeInfo: {
     cost: 20,
     defaultAttack: 2,
     attackRange: 25,
-    size: 19, // Added size value for Worker
+    size: 25, // Added size value for Worker
+    numOfFrames: 5, // Added numOfFrames value for Worker
+    numOfAttackFrames: 5, // Added numOfAttackFrames value for Worker
+    numOfSpriteFrames: 5, // Added numOfSpriteFrames value for Worker
   },
   [AntType.Soldier]: {
     speed: vals.ant.soldierSpeed, // Updated to use env
@@ -407,7 +438,10 @@ export const AntTypeInfo: {
     hpBarYOffset: 21,
     cost: 40,
     defaultAttack: 10,
-    attackRange: 50,
-    size: 28, // Added size value for Soldier
+    attackRange: 80,
+    size: 60, // Added size value for Soldier
+    numOfFrames: 5, // Added numOfFrames value for Soldier
+    numOfAttackFrames: 6, // Added numOfAttackFrames value for Soldier
+    numOfSpriteFrames: 11, // Added numOfSpriteFrames value for Soldier
   },
 };

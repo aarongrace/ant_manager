@@ -6,8 +6,8 @@ export const vals = {
         workerSpeed: 0.06,
         soldierSpeed: 0.04,
         queenSpeed: 0.03,
-        workerFoodConsumption: 0.2, // per half second
-        soldierFoodConsumption: 0.6,
+        workerFoodConsumption: 0.17, // per half second
+        soldierFoodConsumption: 0.4,
         queenFoodConsumption: 3,
         foodConsumptionScaleFactor: 0.13,
         workerCarryingCapacity: 5,
@@ -42,7 +42,7 @@ export const vals = {
     food: {
         foodPerAnt: 20,
         foodWasteBaseline: 200,
-        decayFactor: 1.8,
+        decayFactor: 1.3,
         fruitSize: 40,
         defaultFruitAmount: 50,
         entitySpawnFactor: 1.5,

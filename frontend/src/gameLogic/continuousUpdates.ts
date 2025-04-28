@@ -1,4 +1,4 @@
-import { Ant, TaskType } from "../baseClasses/Ant";
+import { Ant, AntTypeInfo, TaskType } from "../baseClasses/Ant";
 import { GameMap } from "../baseClasses/Map";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vals } from "../contexts/globalVars"; // Updated to use env
@@ -89,7 +89,9 @@ const moveAnt = (ant: Ant, delta: number) => {
     const dy = ant.movingTo.y - ant.coords.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance < 2) {
+    const threshold = ant.task === TaskType.Attack ? AntTypeInfo[ant.type].attackRange - 5 : 2;
+
+    if (distance < threshold || ant.isAttacking) {
         // Adjusted for absolute coordinates
         return;
     }

@@ -41,11 +41,11 @@ const incrementAge = (setCursor:()=>void) =>{
     const { age, updateColony } = useColonyStore.getState();
     const newAge = age + 1;
     updateColony({ age: newAge });
+    GameMap.incrementUpdateCounter();
     if (newAge % vals.seasonLength === 0) {
         vals.season = (vals.season + 1) % 4;
         setCursor();
     }
-    GameMap.incrementUpdateCounter();
 }
 
 const layEgg = () => {

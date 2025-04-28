@@ -151,7 +151,7 @@ export class Enemy implements InteractiveElement {
       distance <= EnemyTypeInfo[this.type].attackRange &&
       this.attackDelay <= 0; // Check if within attack range
 
-    if (!this.isAttacking) {
+    if (!this.isAttacking && distance > 30) {
       this.coords.x += (dx / distance) * this.speed * delta; // Move towards the target
       this.coords.y += (dy / distance) * this.speed * delta; // Move towards the target
     }
@@ -338,7 +338,7 @@ export const EnemyTypeInfo: {
     moveCols: 4,
     attackCols: 7,
     isRanged: true,
-    attackRange: 30,
+    attackRange: 50,
     attackDelay: 1400,
     attackDamage: 30, // Added attack damage value
     hpBarYOffset: 20, // Added hpBarYOffset
@@ -353,7 +353,7 @@ export const EnemyTypeInfo: {
     moveCols: 4,
     attackCols: 4,
     isRanged: false,
-    attackRange: 40,
+    attackRange: 70,
     attackDelay: 300,
     attackDamage: 25, // Added attack damage value
     hpBarYOffset: 29, // Added hpBarYOffset
@@ -368,7 +368,7 @@ export const EnemyTypeInfo: {
     moveCols: 4,
     attackCols: 4,
     isRanged: false,
-    attackRange: 40,
+    attackRange: 60,
     attackDelay: 1000,
     attackDamage: 17, // Added attack damage value
     hpBarYOffset: 27, // Added hpBarYOffset
