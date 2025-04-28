@@ -1,11 +1,10 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Response
 from beanie import Document
 from datetime import datetime
 from enum import Enum
 import uuid
 from passlib.context import CryptContext
 from pydantic import BaseModel
-
 
 class RoleEnum(str, Enum):
     admin = "admin"
@@ -16,18 +15,18 @@ class ProfileBase(BaseModel):
     password: str
 
 class Profile(Document):
-    id: str  # Unique identifier for the profile
-    name: str  # User's name
-    role: RoleEnum  # User's role (admin or user)
-    createdDate: datetime  # Date the profile was created
-    password: str  # User's password
-    clan: str  # Clan the user belongs to
-    email: str  # Email address
-    picture: str  # Profile picture URL
-    lastLoggedIn: datetime  # Last login timestamp
+    id: str
+    name: str
+    role: RoleEnum
+    createdDate: datetime
+    password: str
+    clan: str
+    email: str
+    picture: str
+    lastLoggedIn: datetime
 
     class Settings:
-        name = "profiles"  # MongoDB collection name
+        name = "profiles"
 
     @classmethod
     def initialize_default(cls, id: str) -> "Profile":
@@ -36,7 +35,7 @@ class Profile(Document):
             name="John Tester",
             role=RoleEnum.user,
             createdDate=datetime.now(),
-            password="default_password",  # Placeholder password
+            password="default_password",
             clan="Clanity Clan",
             email="john@test.com",
             picture="",
@@ -45,9 +44,6 @@ class Profile(Document):
 
 profileRouter = APIRouter()
 
-'''
-handle's user login
-'''
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
@@ -55,7 +51,6 @@ def hash_password(password: str) -> str:
 
 @profileRouter.post('/register')
 async def register(data: ProfileBase):
-    print("Registering:", data.username)
     existing = await Profile.find_one(Profile.name == data.username)
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
@@ -81,19 +76,24 @@ async def register(data: ProfileBase):
     return {"status": "success", "message": "User registered successfully", "userId": str(user.id)}
 
 @profileRouter.post('/login')
-async def login(data: ProfileBase):
-    print("Logging in:", data.username)
+async def login(data: ProfileBase, response: Response):
     user = await Profile.find_one(Profile.name == data.username)
     if not user:
         raise HTTPException(status_code=400, detail="User not found")
-    print("User found:", user)
 
     if not pwd_context.verify(data.password, user.password):
         raise HTTPException(status_code=400, detail="Incorrect password")
 
-    # Update last login time
     user.lastLoggedIn = datetime.now()
-    user.save()
+    await user.save()
+
+    response.set_cookie(
+        key="userId",
+        value=str(user.id),
+        httponly=True,
+        samesite="lax",
+        secure=False 
+    )
 
     return {
         "status": "success",
@@ -109,10 +109,10 @@ async def login(data: ProfileBase):
         "userId": str(user.id),
     }
 
-
-'''
-end of user login
-'''
+@profileRouter.post('/logout')
+async def logout(response: Response):
+    response.delete_cookie(key="userId")
+    return {"status": "success", "message": "Logged out successfully"}
 
 @profileRouter.get("/{id}", response_model=Profile)
 async def get_profile(id: str):
@@ -126,7 +126,7 @@ async def create_profile(profile: Profile):
     existing_profile = await Profile.get(profile.id)
     if existing_profile:
         raise HTTPException(status_code=400, detail="Profile already exists")
-    await profile.insert_one()
+    await profile.insert()
     return profile
 
 @profileRouter.put("/{id}", response_model=Profile)
@@ -150,19 +150,12 @@ async def delete_profile(id: str):
     await profile.delete()
     return {"message": f"Profile with ID '{id}' has been deleted"}
 
-
 async def ensure_guest_profile_exists(reinitialize: bool = False):
     guest_profile = await Profile.get("guest")
 
     if guest_profile and reinitialize:
         await guest_profile.delete()
-        print("Reinitializing guest profile...")
-        print("Guest profile deleted.")
     
     if not guest_profile or reinitialize:
         guest_profile = Profile.initialize_default("guest")
         await guest_profile.insert()
-        print("Guest profile created.")
-    else:
-        print("Guest profile already exists.")
-    
