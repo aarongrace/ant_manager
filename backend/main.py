@@ -6,6 +6,7 @@ from database import initialize_database
 
 from routers.colony import colonyRouter
 from routers.profile import profileRouter
+from routers.trades import tradesRouter
 from routers.clan import clanRouter
 from middleware.auth import AuthMiddleware
 
@@ -30,6 +31,7 @@ app.add_middleware(
 app.include_router(colonyRouter, prefix="/colonies")
 app.include_router(profileRouter, prefix="/profiles")
 app.include_router(clanRouter, prefix="/clan")
+app.include_router(tradesRouter, prefix="/trades")
 
 @app.get("/")
 async def welcome() -> dict:

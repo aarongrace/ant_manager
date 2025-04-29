@@ -1,85 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./admin.css"; // Import the CSS file for styling
+import { updateUserRole } from "./admin.services";
+import "./admin.css";
 
-const Admin = () => {
+const Admin: React.FC = () => {
+  const [username, setUsername] = useState("");
+
+  const handleRoleChange = (newRole: string) => async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    if (!username.trim()) {
+      alert("Please enter a username");
+      return;
+    }
+    try {
+      const updatedUser = await updateUserRole(username, newRole);
+      alert(`User "${updatedUser.name}" updated to role "${updatedUser.role}"`);
+    } catch (error: any) {
+      console.error("Error updating role:", error);
+      alert(error.message || "Error updating role");
+    }
+  };
+
+  const roleButtons = [
+    { label: "Promote", role: "admin" },
+    { label: "Demote", role: "user" },
+    { label: "Ban", role: "banned" },
+    { label: "Unban", role: "user" },
+  ];
+
   return (
     <div className="admin-container">
       <h1 className="admin-title">Admin Panel</h1>
       <p className="admin-description">
-        Manage the game, players, and settings as an admin.
+        Manage players with one convenient interface.
       </p>
-
-      {/* Section for managing admins */}
-      <div className="admin-section">
-        <h2 className="admin-subtitle">Manage Admins</h2>
-        <form className="admin-form">
-          <input
-            type="text"
-            placeholder="Player Username"
-            className="admin-input"
-            required
-          />
-          <button type="submit" className="admin-submit">
-            Make Admin
-          </button>
-        </form>
-      </div>
-
-      {/* Section for banning users */}
-      <div className="admin-section">
-        <h2 className="admin-subtitle">Ban Users</h2>
-        <form className="admin-form">
-          <input
-            type="text"
-            placeholder="Player Username"
-            className="admin-input"
-            required
-          />
-          <button type="submit" className="admin-submit">
-            Ban User
-          </button>
-        </form>
-      </div>
-
-      {/* Section for changing game variables */}
-      <div className="admin-section">
-        <h2 className="admin-subtitle">Change Game Variables</h2>
-        <form className="admin-form">
-          <input
-            type="text"
-            placeholder="Variable Name"
-            className="admin-input"
-            required
-          />
-          <input
-            type="text"
-            placeholder="New Value"
-            className="admin-input"
-            required
-          />
-          <button type="submit" className="admin-submit">
-            Update Variable
-          </button>
-        </form>
-      </div>
-
-      {/* Section for impersonating players */}
-      <div className="admin-section">
-        <h2 className="admin-subtitle">Impersonate Players</h2>
-        <form className="admin-form">
-          <input
-            type="text"
-            placeholder="Player Username"
-            className="admin-input"
-            required
-          />
-          <button type="submit" className="admin-submit">
-            Impersonate
-          </button>
-        </form>
-      </div>
-
+      <form className="admin-form">
+        <input
+          type="text"
+          placeholder="Player Username"
+          className="admin-input"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <div className="admin-buttons">
+          {roleButtons.map(({ label, role }) => (
+            <button
+              key={`${role}-${label}`}
+              onClick={handleRoleChange(role)}
+              className="admin-submit"
+              type="button"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </form>
       <Link to="/dashboard" className="admin-back-button">
         Back to Dashboard
       </Link>
