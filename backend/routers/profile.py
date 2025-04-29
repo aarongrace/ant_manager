@@ -179,6 +179,15 @@ async def delete_profile(id: str):
     logger.info(f"Profile with ID {id} deleted successfully")
     return {"message": f"Profile with ID '{id}' has been deleted"}
 
+@profileRouter.put("/update-role/{username}", response_model=Profile)
+async def update_role(username: str, role_update: RoleUpdate):
+    user = await Profile.find_one(Profile.name == username)
+    if not user:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    user.role = role_update.role
+    await user.save()
+    return user
+    
 async def ensure_guest_profile_exists(reinitialize: bool = False):
     logger.info("Ensuring guest profile exists")
     guest_profile = await Profile.get("guest")
