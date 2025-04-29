@@ -2,7 +2,6 @@ import { useProfileStore } from "../../contexts/profileStore";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
-// Define the type for the user profile
 export interface UserProfile {
   id: string;
   name: string;
@@ -12,10 +11,6 @@ export interface UserProfile {
   picture: string;
 }
 
-/**
- * Save the updated profile data.
- * Updates the local state via your profile store.
- */
 export const saveProfile = async (profileData: UserProfile): Promise<UserProfile> => {
   console.log("Saving profile...", profileData);
   const { updateProfile } = useProfileStore.getState();
@@ -23,9 +18,6 @@ export const saveProfile = async (profileData: UserProfile): Promise<UserProfile
   return profileData;
 };
 
-/**
- * Update a user’s role by calling the backend endpoint that accepts the username.
- */
 export const updateUserRole = async (
   username: string,
   newRole: string
@@ -51,9 +43,30 @@ export const updateUserRole = async (
 
   const updatedProfile: UserProfile = await response.json();
 
-  // Update the local profile store with the new data.
-  const { updateProfile } = useProfileStore.getState();
-  updateProfile(updatedProfile);
-
   return updatedProfile;
+};
+
+export const deleteUserProfile = async (
+  username: string
+): Promise<{ message: string }> => {
+  const response = await fetch(`${API_BASE_URL}/profiles/delete/${username}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    let errorMsg = "Error deleting profile";
+    try {
+      const errorData = await response.json();
+      errorMsg = errorData.detail || errorMsg;
+    } catch (err) {
+      console.error("Failed to parse error response", err);
+    }
+    throw new Error(errorMsg);
+  }
+
+  const result = await response.json();
+  return result;
 };
