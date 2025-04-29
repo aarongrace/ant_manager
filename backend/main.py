@@ -10,24 +10,13 @@ from routers.trades import tradesRouter
 from routers.clan import clanRouter
 from middleware.auth import AuthMiddleware
 
+
 import logging
+import setup_logging
 
+setup_logging.setup_logging()
 
-file_handler = logging.FileHandler("app.log")
-file_handler.setFormatter(
-    logging.Formatter("%(asctime)s: %(name)s: %(levelname).4s: %(message)s")
-)
-
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(
-    logging.Formatter("%(asctime)s: %(name)s: %(levelname).4s: %(message)s")
-)
-logging.basicConfig(
-    level=logging.INFO,
-    handlers=[file_handler, console_handler],
-    format="%(asctime)s: %(name)s: %(levelname).4s: %(message)s",
-)
-
+logger = logging.getLogger(__name__)
 
 
 

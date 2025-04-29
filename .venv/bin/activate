@@ -42,10 +42,10 @@ deactivate nondestructive
 if [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ] ; then
     # transform D:\path\to\venv to /d/path/to/venv on MSYS
     # and to /cygdrive/d/path/to/venv on Cygwin
-    export VIRTUAL_ENV=$(cygpath "/home/grace/proggers/ant_manager/.venv")
+    export VIRTUAL_ENV=$(cygpath "/home/grace/proggers/clash_of_colonies/.venv")
 else
     # use the path as-is
-    export VIRTUAL_ENV="/home/grace/proggers/ant_manager/.venv"
+    export VIRTUAL_ENV="/home/grace/proggers/clash_of_colonies/.venv"
 fi
 
 _OLD_VIRTUAL_PATH="$PATH"

@@ -1,4 +1,4 @@
-#!/home/grace/proggers/ant_manager/.venv/bin/python3.12
+#!/home/grace/proggers/clash_of_colonies/.venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys
