@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { updateUserRole } from "./admin.services";
+import { updateUserRole, deleteUserProfile } from "./admin.services";
 import "./admin.css";
 
 const Admin: React.FC = () => {
@@ -19,15 +19,30 @@ const Admin: React.FC = () => {
       alert(`User "${updatedUser.name}" updated to role "${updatedUser.role}"`);
     } catch (error: any) {
       console.error("Error updating role:", error);
-      alert(error.message || "Error updating role");
+    }
+  };
+
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!username.trim()) {
+      alert("Please enter a username");
+      return;
+    }
+    if (!window.confirm("Are you sure you want to delete this profile? This action cannot be undone.")) {
+      return;
+    }
+    try {
+      const result = await deleteUserProfile(username);
+      alert(result.message);
+    } catch (error: any) {
+      console.error("Error deleting profile:", error);
     }
   };
 
   const roleButtons = [
     { label: "Promote", role: "admin" },
-    { label: "Demote", role: "user" },
+    { label: "Set as User", role: "user" },
     { label: "Ban", role: "banned" },
-    { label: "Unban", role: "user" },
   ];
 
   return (
@@ -56,6 +71,13 @@ const Admin: React.FC = () => {
               {label}
             </button>
           ))}
+          <button
+            onClick={handleDelete}
+            className="admin-submit"
+            type="button"
+          >
+            Delete Profile
+          </button>
         </div>
       </form>
       <Link to="/dashboard" className="admin-back-button">
