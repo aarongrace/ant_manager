@@ -8,10 +8,12 @@ from game_logic.fruit import Fruit
 from game_logic.ant import Ant
 from game_logic.map_entity import MapEntity
 
+import logging
 
 # todo implement batch logic. Right now the updates are not just too frequent, but handling actions in a different router means that if it coincides with the put request, the action gets overwritten
 # either we add a buffer in memory or we handle all the actions on the frontend and fetch less often
 
+logger = logging.getLogger(__name__)
 
 
 class Colony(Document):
@@ -56,11 +58,11 @@ colonyRouter = APIRouter()
 
 @colonyRouter.get("/{id}", response_model=Colony)
 async def get_colony(id: str):
-    print("Fetching colony with ID:", id)
+    logger.info(f"Fetching colony with ID: {id}")
     try:
         colony = await Colony.get(id)
     except ValidationError as e:
-        print("Validation error, resetting colony:", e)
+        logger.warning(f"Validation error while fetching colony: {e}")
         colony = await Colony.initialize_default(id)
         return colony
 
@@ -89,26 +91,22 @@ async def ensure_guest_colony_exists(reinitialize: bool = False):
         guest_colony = await Colony.get("guest")
 
     except ValidationError as e:
-        print("Guest colony validation failed:", e)
-        print("Deleting mismatched guest colony...")
+        logger.warning(f"Validation error while fetching guest colony: {e}")
+        logger.warning("Deleting mismatched guest colony...")
         await Colony.find(Colony.id == "guest").delete()
         guest_colony = None
     
     except Exception as e:
-        print("Error fetching guest colony:", e)
+        logger.warning(f"Error while fetching guest colony: {e}")
         guest_colony = None
 
     # Reinitialize the guest colony if it doesn't exist or reinitialize is True
     if not guest_colony or reinitialize:
         if guest_colony and reinitialize:
-            print("Reinitializing guest colony...")
+            logger.info("Reinitializing guest colony...")
             await guest_colony.delete()
         guest_colony = Colony.initialize_default("guest")
         await guest_colony.insert()
-        print("Guest colony created:", guest_colony)
+        logger.info(f"Guest colony initialized: {guest_colony}")
     else:
-        print("Guest colony already exists and is valid:", guest_colony)
-
-
-# def migrate_colony(old_verison, new_version):
-#     pass
+        logger.info(f"Guest colony already exists: {guest_colony}")

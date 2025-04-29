@@ -10,6 +10,26 @@ from routers.trades import tradesRouter
 from routers.clan import clanRouter
 from middleware.auth import AuthMiddleware
 
+import logging
+
+
+file_handler = logging.FileHandler("app.log")
+file_handler.setFormatter(
+    logging.Formatter("%(asctime)s: %(name)s: %(levelname).4s: %(message)s")
+)
+
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(
+    logging.Formatter("%(asctime)s: %(name)s: %(levelname).4s: %(message)s")
+)
+logging.basicConfig(
+    level=logging.INFO,
+    handlers=[file_handler, console_handler],
+    format="%(asctime)s: %(name)s: %(levelname).4s: %(message)s",
+)
+
+
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

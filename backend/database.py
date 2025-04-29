@@ -8,13 +8,14 @@ from routers.clan import Clan
 from routers.trades import Trade
 from pathlib import Path
 import os
+import logging
 
+logger = logging.getLogger(__name__)
 
 class MyConfig(BaseSettings):
     connect_string: str
     # hardcoding the env file path to the root because it keeps giving errors
     env_file: Path = str(Path(__file__).parent.parent / ".env")
-    print(env_file)
     model_config = SettingsConfigDict(env_file=env_file)
 
 async def initialize_database():
@@ -22,9 +23,9 @@ async def initialize_database():
     client = AsyncIOMotorClient(setting.connect_string)
     await init_beanie(database=client["clash_of_colonies"], document_models=[Profile, Colony, Clan, Trade])
 
-
     await ensure_guest_profile_exists()
     await ensure_guest_colony_exists(reinitialize=True)
+    logger.info("Database initialized and guest profiles/colonies ensured.")
 
 
 async def main():
