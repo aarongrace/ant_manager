@@ -9,9 +9,9 @@ tradesRouter = APIRouter()
 class TradeOfferBase(BaseModel):
     from_user_id: str
     to_user_id: str
-    offer_resource: str  # 'food' or 'sand'
+    offer_resource: str  # 'food' or 'chitin'
     offer_amount: int
-    request_resource: str  # 'food' or 'sand'
+    request_resource: str  # 'food' or 'chitin'
     request_amount: int
 
 class Trade(Document):

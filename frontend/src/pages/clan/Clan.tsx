@@ -18,7 +18,7 @@ const Clan = () => {
   const [tradeOffer, setTradeOffer] = useState({
     offerResource: "food",
     offerAmount: 0,
-    requestResource: "sand",
+    requestResource: "chitin",
     requestAmount: 0,
   });
 
@@ -137,7 +137,7 @@ const Clan = () => {
       if (!res.ok) throw new Error("Failed to fetch your colony info");
       const colonyData = await res.json();
   
-      const resourceAmount = tradeOffer.offerResource === "food" ? colonyData.food : colonyData.sand;
+      const resourceAmount = tradeOffer.offerResource === "food" ? colonyData.food : colonyData.chitin;
   
       if (tradeOffer.offerAmount > resourceAmount) {
         alert(`You do not have enough ${tradeOffer.offerResource} to offer this trade!`);
@@ -163,7 +163,7 @@ const Clan = () => {
       await fetchPendingTrades(userId);
   
       setShowTradeModal(false);
-      setTradeOffer({ offerResource: "food", offerAmount: 0, requestResource: "sand", requestAmount: 0 });
+      setTradeOffer({ offerResource: "food", offerAmount: 0, requestResource: "chitin", requestAmount: 0 });
       setTradeTarget(null);
     } catch (error) {
       console.error("Error sending trade:", error);
@@ -298,14 +298,14 @@ const Clan = () => {
                   <label>Offer Resource:</label>
                   <select value={tradeOffer.offerResource} onChange={(e) => setTradeOffer({ ...tradeOffer, offerResource: e.target.value })}>
                     <option value="food">Food</option>
-                    <option value="sand">Sand</option>
+                    <option value="chitin">Chitin</option>
                   </select>
                   <input type="number" value={tradeOffer.offerAmount} onChange={(e) => setTradeOffer({ ...tradeOffer, offerAmount: parseInt(e.target.value) })} />
 
                   <label>Request Resource:</label>
                   <select value={tradeOffer.requestResource} onChange={(e) => setTradeOffer({ ...tradeOffer, requestResource: e.target.value })}>
                     <option value="food">Food</option>
-                    <option value="sand">Sand</option>
+                    <option value="chitin">Chitin</option>
                   </select>
                   <input type="number" value={tradeOffer.requestAmount} onChange={(e) => setTradeOffer({ ...tradeOffer, requestAmount: parseInt(e.target.value) })} />
 
