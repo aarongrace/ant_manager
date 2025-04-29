@@ -168,16 +168,14 @@ async def update_profile(id: str, request: Request):
     logger.info(f"Profile with ID {id} updated successfully")
     return existing_profile
 
-@profileRouter.delete("/{id}", response_model=dict)
-async def delete_profile(id: str):
-    logger.info(f"Attempting to delete profile with ID: {id}")
-    profile = await Profile.get(id)
+@profileRouter.delete("/delete/{username}", response_model=dict)
+async def delete_profile(username: str):
+    profile = await Profile.find_one(Profile.name == username)
     if not profile:
-        logger.warning(f"Profile deletion failed: Profile with ID {id} not found")
         raise HTTPException(status_code=404, detail="Profile not found")
     await profile.delete()
-    logger.info(f"Profile with ID {id} deleted successfully")
-    return {"message": f"Profile with ID '{id}' has been deleted"}
+    return {"message": f"Profile with username '{username}' has been deleted"}
+
 
 @profileRouter.put("/update-role/{username}", response_model=Profile)
 async def update_role(username: str, role_update: RoleUpdate):
