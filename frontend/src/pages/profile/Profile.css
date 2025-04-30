@@ -64,3 +64,34 @@ input:focus {
 .profile-button:active {
   background-color: #5a2e1b; /* Even darker brown when clicked */
 }
+
+/* Container for additional actions */
+.profile-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* Action buttons styling */
+.profile-action-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #4caf50; /* Green background */
+  color: #fff; /* White text */
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex: 1; /* Make buttons equal width */
+  text-align: center;
+}
+
+.profile-action-button:hover {
+  background-color: #388e3c; /* Darker green on hover */
+}
+
+.profile-action-button:disabled {
+  background-color: #ccc; /* Gray background for disabled button */
+  cursor: not-allowed;
+}

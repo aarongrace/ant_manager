@@ -11,7 +11,7 @@ import Perk, { Cosmetic, initializeDefaultUpgrades, PerkData, reapplyPerks, Upgr
 import { useWarningStore } from "../components/WarningBar";
 import { vars } from "./globalVariables";
 
-type ColonyInfo = {
+type ColonyData = {
   name: string;
   ants: AntData[];
   enemies: EnemyData[];
@@ -42,7 +42,8 @@ type ColonyStore = {
   putColonyInfo: () => Promise<void>;
   updateColony: (updates: Partial<ColonyStore>) => void;
   test: {counter:number};
-  generateColonyInfo: () => ColonyInfo;
+  generateColonyData: () => ColonyData;
+  loadColonyData: (colonyData: ColonyData) => void;
 };
 
 export const useColonyStore = create<ColonyStore>((set, get) => ({
@@ -78,10 +79,43 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
         startOfflineMode();
         return;
     }
-
     const data = await response.json();
     console.log("Colony data:", data);
 
+    const colonyData = validateColonyData(data);
+    if (!colonyData) {
+      console.error("Invalid colony data format:", data);
+      return;
+    }
+    get().loadColonyData(colonyData);
+  },
+
+  generateColonyData: ():ColonyData => {
+    const colonyState = get();
+    console.log("Generating colony info...", colonyState);
+
+    const ants = convertAnts(colonyState.ants);
+    const enemies = colonyState.enemies?.map(Enemy.toData)??[]; // Convert enemies to EnemyData
+    const entityData = convertEntityObjectsToData(colonyState.mapEntities);
+    const perksData = colonyState.perks?.map((perk) => perk.toData())??initializeDefaultUpgrades();
+
+    return {
+      name: colonyState.name,
+      ants:ants,
+      enemies: enemies, // Include enemies in the payload
+      mapEntities: entityData.mapEntityData,
+      fruits: entityData.fruitData,
+      eggs: colonyState.eggs,
+      food: colonyState.food,
+      chitin: colonyState.chitin,
+      age: colonyState.age,
+      map: colonyState.map,
+      perks: perksData,
+      initialized: true,
+    };
+  },
+  loadColonyData: async (data: ColonyData) => {
+    console.log("Restoring colony from JSON...", data);
     if (data.initialized === false) {
       console.warn("Colony not initialized, creating a new one...");
       const newColony = createFreshColony();
@@ -122,30 +156,6 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       });
     }
   },
-  generateColonyInfo: ():ColonyInfo => {
-    const colonyState = get();
-    console.log("Generating colony info...", colonyState);
-
-    const ants = convertAnts(colonyState.ants);
-    const enemies = colonyState.enemies?.map(Enemy.toData)??[]; // Convert enemies to EnemyData
-    const entityData = convertEntityObjectsToData(colonyState.mapEntities);
-    const perksData = colonyState.perks?.map((perk) => perk.toData())??initializeDefaultUpgrades();
-
-    return {
-      name: colonyState.name,
-      ants:ants,
-      enemies: enemies, // Include enemies in the payload
-      mapEntities: entityData.mapEntityData,
-      fruits: entityData.fruitData,
-      eggs: colonyState.eggs,
-      food: colonyState.food,
-      chitin: colonyState.chitin,
-      age: colonyState.age,
-      map: colonyState.map,
-      perks: perksData,
-      initialized: true,
-    };
-  },
 
   // Send colony info to the backend
   putColonyInfo: async () => {
@@ -162,7 +172,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       return;
     }
     
-    const colonyInfo: ColonyInfo = get().generateColonyInfo();
+    const colonyData: ColonyData = get().generateColonyData();
 
     try {
       const response = await fetch(`http://localhost:8000/colonies/${userID}`, {
@@ -170,7 +180,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(colonyInfo),
+        body: JSON.stringify(colonyData),
       });
 
       if (!response.ok) {
@@ -253,3 +263,26 @@ const convertEntityObjectsToData = (mapEntities: MapEntity[]): { mapEntityData: 
     fruitData: fruitData,
   };
 };
+
+  // Validate if the data is in ColonyData format
+ export const validateColonyData = (data: any): ColonyData | null => {
+    if (
+    typeof data.name === "string" &&
+    Array.isArray(data.ants) &&
+    Array.isArray(data.enemies) &&
+    Array.isArray(data.mapEntities) &&
+    Array.isArray(data.fruits) &&
+    typeof data.eggs === "number" &&
+    typeof data.food === "number" &&
+    typeof data.chitin === "number" &&
+    typeof data.age === "number" &&
+    Array.isArray(data.map) &&
+    Array.isArray(data.perks) &&
+    typeof data.initialized === "boolean"
+    ) {
+      return data as ColonyData;
+    } else {
+      console.error("Invalid colony data format:", data);
+      return null;
+    }
+  };

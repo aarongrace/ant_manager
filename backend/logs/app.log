@@ -3656,3 +3656,25 @@ perks.5.is_upgrade
 2025-04-30 16:07:41,065 INFO routers.profile:107 User ADMIN logged in successfully
 2025-04-30 16:07:41,069 INFO routers.profile:140 Fetching profile with ID: 39c7d479-7362-47c8-acc4-200bd3e15b85
 2025-04-30 16:07:41,096 INFO routers.profile:145 Profile with ID 39c7d479-7362-47c8-acc4-200bd3e15b85 fetched successfully
+2025-04-30 16:23:27,030 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 16:23:27,032 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 16:23:27,032 INFO routers.profile:194 Ensuring guest profile exists
+2025-04-30 16:23:27,086 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 16:23:27,157 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 16:23:27,157 INFO database:29 Database initialization completed successfully.
+2025-04-30 16:27:26,189 INFO routers.colony:62 Fetching colony with ID: guest
+2025-04-30 16:27:27,610 INFO routers.profile:140 Fetching profile with ID: guest
+2025-04-30 16:27:27,641 INFO routers.profile:145 Profile with ID guest fetched successfully
+2025-04-30 16:27:27,650 INFO routers.profile:140 Fetching profile with ID: guest
+2025-04-30 16:27:27,680 INFO routers.profile:145 Profile with ID guest fetched successfully
+2025-04-30 16:27:27,689 INFO routers.profile:140 Fetching profile with ID: guest
+2025-04-30 16:27:27,720 INFO routers.profile:145 Profile with ID guest fetched successfully
+2025-04-30 16:27:27,770 INFO routers.clan:130 Fetching clan with ID: Clanity Clan
+2025-04-30 16:27:27,800 WARN routers.clan:133 Clan with ID Clanity Clan not found
+2025-04-30 16:32:30,651 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 16:32:30,652 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 16:32:30,653 INFO routers.profile:194 Ensuring guest profile exists
+2025-04-30 16:32:30,710 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 16:32:30,772 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 16:32:30,772 INFO database:29 Database initialization completed successfully.
+2025-04-30 16:32:37,704 INFO routers.colony:62 Fetching colony with ID: guest

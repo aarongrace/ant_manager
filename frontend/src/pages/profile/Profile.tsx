@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import './Profile.css';
 import { useProfileStore } from '../../contexts/profileStore';
-import { saveProfile } from './profile.services';
+import './Profile.css';
+import { handleDownloadColonyData, handleRestoreColonyData, saveProfile } from './profile.services';
 
 const Profile: React.FC = () => {
   const { id, name, email, clan, role, picture, fetchProfileInfo } = useProfileStore();
@@ -50,7 +50,7 @@ const Profile: React.FC = () => {
 
   const handleSave = async () => {
     console.log('Saving profile data:', formData);
-    await saveProfile( formData );
+    await saveProfile(formData);
   };
 
   return (
@@ -119,6 +119,24 @@ const Profile: React.FC = () => {
           Save
         </button>
       </form>
+
+      {/* New Buttons for Download and Restore Colony Data */}
+      <div className="profile-actions">
+        <button
+          type="button"
+          className="profile-action-button"
+          onClick={handleDownloadColonyData}
+        >
+          Download Colony Data
+        </button>
+        <button
+          type="button"
+          className="profile-action-button"
+          onClick={handleRestoreColonyData}
+        >
+          Restore Colony Data
+        </button>
+      </div>
     </div>
   );
 };
