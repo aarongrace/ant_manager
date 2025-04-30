@@ -20,10 +20,7 @@
   height: 50px;
   transition: transform 0.5s ease;
   margin: 3px;
-}
-
-.App-logo:hover {
-  transform: rotate(360deg);
+  border-radius: 50%;
 }
 
 /* Navigation links container */

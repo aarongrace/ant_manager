@@ -4,7 +4,7 @@ import { useProfileStore } from '../contexts/profileStore';
 import "./navbar.css";
 
 const Navbar = () => {
-  const role = useProfileStore((state) => state.role);
+  const { role, picture } = useProfileStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -26,8 +26,8 @@ const Navbar = () => {
 
   return (
     <header className="App-header">
-      <img src="/ant.png" className="App-logo" alt="logo" />
-      <nav className="nav-links">
+      <img src={picture ? picture : "/ant.png"} className="App-logo" alt="logo" />
+      <nav className="nav-links"> 
         <Link to="/dashboard" className="nav-link">Dashboard</Link>
         <Link to="/profile" className="nav-link">Profile</Link>
         <Link to="/ants" className="nav-link">Ants</Link>

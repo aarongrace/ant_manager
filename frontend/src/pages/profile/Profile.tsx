@@ -40,17 +40,22 @@ const Profile: React.FC = () => {
     });
   }, [fetchProfileInfo, name, email, clan, role, picture]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleSave = async () => {
+    await saveProfile( formData );
   };
 
-  const handleSave = async () => {
-    console.log('Saving profile data:', formData);
-    await saveProfile( formData );
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({
+          ...formData,
+          picture: reader.result as string, // base64 string
+        });
+      };
+      reader.readAsDataURL(file); // Converts to base64
+    }
   };
 
   return (
@@ -65,7 +70,7 @@ const Profile: React.FC = () => {
             name="name"
             className="profile-input"
             value={formData.name}
-            onChange={handleInputChange}
+            onChange={(e) => setFormData({...formData, name: e.target.value})}
           />
         </div>
         <div className="form-group">
@@ -76,7 +81,7 @@ const Profile: React.FC = () => {
             name="email"
             className="profile-input"
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
             placeholder="user@email.com"
           />
         </div>
@@ -88,7 +93,6 @@ const Profile: React.FC = () => {
             name="clan"
             className="profile-input"
             value={clan ? clanName : "No Clan"}
-            onChange={handleInputChange}
             disabled // cant edit clan either must go to /clan to handle that stuff
           />
         </div>
@@ -100,19 +104,22 @@ const Profile: React.FC = () => {
             name="role"
             className="profile-input"
             value={formData.role}
-            onChange={handleInputChange}
             disabled // Role is typically not editable
           />
         </div>
         <div className="form-group">
-          <label htmlFor="picture">Profile Picture URL:</label>
+        <label htmlFor="picture">Profile Picture:</label>
+          {picture && (
+            <img src={formData.picture} alt="Profile" className="profile-picture" style={{width: '100px', height: '100px'}}/>
+          )}
           <input
-            type="text"
+            type="file"
             id="picture"
             name="picture"
             className="profile-input"
-            value={formData.picture}
-            onChange={handleInputChange}
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ color: 'black' }}
           />
         </div>
         <button type="button" className="profile-button" onClick={handleSave}>
