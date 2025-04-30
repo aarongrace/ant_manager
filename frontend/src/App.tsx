@@ -8,6 +8,7 @@ import { usePreloadedImagesStore } from './contexts/preloadImages';
 import './globals.css';
 import Admin from './pages/admin/Admin';
 import AdminCheck from './pages/admin/AdminCheck';
+import StatusCheck from './pages/welcome/StatusCheck';
 import AntsPage from './pages/ants/AntsPage';
 import Clan from './pages/clan/Clan';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -53,13 +54,13 @@ function App() {
       <WarningBar/>
       <main className="App-main">
         <Routes>
-          <Route path="/" element={<Welcome />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/guide" element={<Guide />} />
-          <Route path="/ants" element={<AntsPage />} />
-          <Route path="/clan" element={<Clan />} />
-          <Route path="/shop" element={<Shop />} />
+          <Route path="/" element={<Welcome/>}/>
+          <Route path="/dashboard" element={<StatusCheck><Dashboard/></StatusCheck>}/>
+          <Route path="/profile" element={<StatusCheck><Profile/></StatusCheck>}/>
+          <Route path="/guide" element={<StatusCheck><Guide/></StatusCheck>}/>
+          <Route path="/ants" element={<StatusCheck><AntsPage /></StatusCheck>}/>
+          <Route path="/clan" element={<StatusCheck><Clan/></StatusCheck>}/>
+          <Route path="/store" element={<StatusCheck><Store /></StatusCheck>}/>
           <Route path="/admin" element={<AdminCheck><Admin/></AdminCheck>}/>
         </Routes>
       </main>
