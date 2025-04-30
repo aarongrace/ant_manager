@@ -38,7 +38,6 @@ export const vals = {
         remainingScrollDelay: 100,
     },
 
-    // Food-related settings
     food: {
         foodPerAnt: 20,
         foodWasteBaseline: 200,
@@ -48,6 +47,7 @@ export const vals = {
         entitySpawnFactor: 1.5,
         minDistanceBetweenEntities: 50,
         growFruitRateOfDecrease: 0.2,
+        chitinCollectRate: 0.1,
     },
 
     // Reproduction-related settings

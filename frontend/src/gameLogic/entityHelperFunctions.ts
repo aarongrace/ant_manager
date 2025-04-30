@@ -24,21 +24,24 @@ export const detectAntCollision = (ant: Ant, collisionEntity: MapEntity) => {
     return distance < 50; // Example collision threshold adjusted for absolute coordinates
 };
 
-export const findClosestFoodSource = (coords:{x:number, y:number}) => {
+export const findClosestSource = (coords:{x:number, y:number}, includeChitin = false) => {
     const { mapEntities } = useColonyStore.getState();
-    const foodSources = mapEntities.filter((entity) => entity.type === EntityType.FoodResource); // Use EntityTypeEnum
+    const criteria = includeChitin ? (entity: MapEntity) =>
+        entity.type === EntityType.FoodResource || entity.type === EntityType.ChitinSource
+        : (entity: MapEntity) => entity.type === EntityType.FoodResource;
+    const sources = mapEntities.filter(criteria); 
     const goodEnoughCutoff = 100;
 
     let closest: {entity: MapEntity, distance: number} | undefined= undefined;
-    for (let i = 0; i < foodSources.length; i++) {
-        const foodSource = foodSources[i];
-        const dx = foodSource.coords.x - coords.x;
-        const dy = foodSource.coords.y - coords.y;
+    for (let i = 0; i < sources.length; i++) {
+        const source = sources[i];
+        const dx = source.coords.x - coords.x;
+        const dy = source.coords.y - coords.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < goodEnoughCutoff) {
-            return foodSource;
+            return source;
         } else if (!closest || distance < closest.distance){
-            closest = {entity: foodSource, distance: distance};
+            closest = {entity: source, distance: distance};
         }
     }
     return closest?.entity || undefined;
@@ -54,19 +57,25 @@ export const checkIfObjectiveExists = (ant: Ant) => {
         return false;
     }
     const objectiveEntity = findMapEntity(ant.objective);
-    if (!objectiveEntity) {
+    if (!objectiveEntity || objectiveEntity.amount <= 0) {
         // console.warn("Objective entity not found for ant:", ant);
         return false;
     }
     return true;
 };
 
-export const decayFoodSource = () => {
+export const decaySources = () => {
     const { mapEntities } = useColonyStore.getState();
     const foodSources = mapEntities.filter((entity) => entity.type === EntityType.FoodResource);
     foodSources.forEach((foodSource) => {
         if (foodSource.amount > 0) {
             foodSource.amount -= vals.food.decayFactor; // Updated to use env
+        }
+    });
+    const chitinSources = mapEntities.filter((entity) => entity.type === EntityType.ChitinSource);
+    chitinSources.forEach((chitinSource) => {
+        if (chitinSource.amount > 0) {
+            chitinSource.amount -= vals.food.decayFactor/20; // chitin has smaller numbers for amounts
         }
     });
 };

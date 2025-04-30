@@ -2,6 +2,7 @@ import React from 'react';
 import { Ant, AntType, AntTypeInfo, TaskType } from '../../baseClasses/Ant';
 import { TaskIcon, useIconsStore } from '../../baseClasses/Icon';
 import { GameMap } from '../../baseClasses/Map';
+import { EntityType } from '../../baseClasses/MapEntity';
 import { Bounds } from '../../baseClasses/Models';
 import { useColonyStore } from '../../contexts/colonyStore';
 import { vals } from '../../contexts/globalVars'; // Updated to use env
@@ -10,7 +11,7 @@ import { drawPatrolCircle } from '../../gameLogic/antHelperFunctions';
 import { drawDragRectangle } from '../../gameLogic/handleMouse';
 import { default as CustomCanvas } from "./Canvas";
 
-export const SurfaceCanvas: React.FC = (props) => {
+export const GameCanvas: React.FC = (props) => {
     const [ctx, setCtx] = React.useState<CanvasRenderingContext2D | null>(null);
     const { ants, mapEntities, enemies } = useColonyStore();
     const { images, isLoaded } = usePreloadedImagesStore();
@@ -136,9 +137,12 @@ export const SurfaceCanvas: React.FC = (props) => {
                 );
             }
 
-            if (ant.carrying) {
-                const carriedObject = ant.carrying;
-                const carriedScale = carriedObject.amount / vals.ant.workerCarryingCapacity; // Updated to use env
+            if (ant.carriedEntity) {
+                const carriedObject = ant.carriedEntity;
+                var carriedScale = carriedObject.amount / vals.ant.workerCarryingCapacity; // Updated to use env
+                if (carriedObject.type === EntityType.ChitinSource){
+                    carriedScale *= 8;
+                }
                 const heightOffset = ant.type === AntType.Soldier ? -spriteHeight / 2.2 : -spriteHeight / 2.8;
                 ctx.translate(0, heightOffset);
                 const carriedBounds: Bounds = {
@@ -157,5 +161,5 @@ export const SurfaceCanvas: React.FC = (props) => {
     return <CustomCanvas draw={draw} establishContext={establishContext} />;
 };
 
-export default SurfaceCanvas;
+export default GameCanvas;
 

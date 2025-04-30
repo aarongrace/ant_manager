@@ -3,6 +3,7 @@ import { getUserID } from "./userStore";
 
 import { Ant, AntData, AntType, convertAntData, convertAnts, recreateQueen } from "../baseClasses/Ant";
 import { createEnemy, Enemy, EnemyData } from "../baseClasses/Enemy";
+import { EnemyCorpse, generateEnemyCorpse } from "../baseClasses/EnemyCorpse";
 import { Fruit, FruitData } from "../baseClasses/Fruit";
 import { GameMap, Tile } from "../baseClasses/Map";
 import { MapEntity, MapEntityData } from "../baseClasses/MapEntity"; // Import MapEntity
@@ -29,7 +30,7 @@ type ColonyStore = {
 export const useColonyStore = create<ColonyStore>((set, get) => ({
   name: "",
   ants: [],
-  enemies: [], // Initialize enemies
+  enemies: [],
   mapEntities: [],
   eggs: 5,
   food: 0,
@@ -168,13 +169,19 @@ export const startOfflineMode = ()=>{
 
 export const createFreshColony = () => {
   const nestEntrance = MapEntity.recreateNestEntrance();
-  const mapEntities = [nestEntrance, Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(),];
+  const enemyCorpse = generateEnemyCorpse("mantis", 
+    {x: GameMap.center.x - 100, y: GameMap.center.y - 100}, 10, {width: 50, height: 50});
+  const mapEntities = [nestEntrance, Fruit.createRandomFruit(), 
+    Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), 
+    Fruit.createRandomFruit(), Fruit.createRandomFruit(), Fruit.createRandomFruit(), 
+    Fruit.createRandomFruit(),enemyCorpse];
   const queen = recreateQueen();
   queen.coords = {
     x: nestEntrance.coords.x + nestEntrance.size.width / 2.5,
     y: nestEntrance.coords.y + nestEntrance.size.height / 3,
   };
   const enemy = createEnemy(); // Create an enemy
+
 
   const ants = [queen, Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Worker),
     Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(),Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(),]
@@ -187,7 +194,7 @@ export const createFreshColony = () => {
     map: GameMap.tilesGrid,
     eggs: 10,
     food: 200,
-    chitin: 200,
+    chitin: 0,
     age: 0,
     mapEntities: mapEntities,
     perkPurchased: [],
@@ -202,6 +209,8 @@ const convertEntityObjectsToData = (mapEntities: MapEntity[]): { mapEntityData: 
   mapEntities.forEach((entity) => {
     if (entity instanceof Fruit) {
       fruitData.push(entity.toFruitData());
+    } else if (entity instanceof EnemyCorpse) {
+      return;
     } else {
       mapEntityData.push(entity.toMapEntityData());
     }

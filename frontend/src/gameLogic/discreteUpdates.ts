@@ -10,7 +10,7 @@ import { useColonyStore } from "../contexts/colonyStore";
 import { vals } from "../contexts/globalVars"; // Updated to use env
 import { findAntByCondition } from "./antHelperFunctions";
 import { handleAntLogic } from "./antLogic"; // Import the new combined function
-import { decayFoodSource } from "./entityHelperFunctions";
+import { decaySources } from "./entityHelperFunctions";
 
 export const updateDiscreteGameState = (setCursor:()=>void) => {
     const { ants } = useColonyStore.getState();
@@ -31,7 +31,7 @@ export const updateDiscreteGameState = (setCursor:()=>void) => {
     deleteEmptyMapEntities();
     spawnRandomEnemy();
     consumeFoodAndRestoreHp();
-    decayFoodSource();
+    decaySources();
     layEgg();
 
     incrementAge(setCursor);
@@ -47,7 +47,7 @@ const checkIfAllDead = () => {
     if (allDead) {
         console.log("All ants are dead. Game over.");
         updateColony({ ants: [], enemies: [] });
-        startWarning("All ants are dead. Game over.", 5000);
+        startWarning("All ants are dead. Game over.", 1000);
     }
 }
 

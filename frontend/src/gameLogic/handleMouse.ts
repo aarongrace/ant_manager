@@ -8,7 +8,7 @@ import { GameMap } from "../baseClasses/Map";
 import { vals } from "../contexts/globalVars";
 import { setAntObjective } from "./antHelperFunctions";
 import { findClosestEnemy } from "./enemyHelperFunctions";
-import { findClosestFoodSource } from "./entityHelperFunctions";
+import { findClosestSource } from "./entityHelperFunctions";
 
 var hoveredElement: InteractiveElement | null = null;
 var isDragging = false;
@@ -44,7 +44,7 @@ export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
             ant.isSelected = false;
             switch (ant.task){
                 case TaskType.Forage:
-                    setAntObjective(ant, findClosestFoodSource(coords));
+                    setAntObjective(ant, findClosestSource(coords));
                     break;
                 case TaskType.Attack:
                     ant.setEnemy(findClosestEnemy(coords) ?? null);

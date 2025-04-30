@@ -316,3 +316,14 @@ const drawAarow = (ctx: CanvasRenderingContext2D, from: { x: number, y: number }
 }
 
 
+
+export const checkIfAtCapacity = (ant: Ant) => {
+    if (!ant.carriedEntity) {
+        return false;
+    } else if (ant.carriedEntity.type === EntityType.FoodResource) {
+        return ant.carriedEntity.amount >= ant.carryingCapacity;
+    } else if (ant.carriedEntity.type === EntityType.ChitinSource) {
+        return ant.carriedEntity.amount >= ant.carryingCapacity/5;
+    }
+    return false;
+}

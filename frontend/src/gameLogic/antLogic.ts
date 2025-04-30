@@ -6,9 +6,9 @@ import { GameMap } from "../baseClasses/Map";
 import { EntityType, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vals } from "../contexts/globalVars"; // Updated to use env
-import { findIdleCoords, findNewPatrolCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination, startPatrol } from "./antHelperFunctions";
+import { checkIfAtCapacity, findIdleCoords, findNewPatrolCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination, startPatrol } from "./antHelperFunctions";
 import { findEnemyByCondition } from "./enemyHelperFunctions";
-import { calculateDistance, findClosestFoodSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
+import { calculateDistance, findClosestSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
 
 //todo add capability to draw multiple carried entities
 
@@ -27,7 +27,13 @@ export const initializeAntLogic = () => {
         switch (ant.task) {
             case TaskType.Forage:
                 if (!hasValidObjective(ant)) {
-                    setAntObjective(ant, findClosestFoodSource(ant.coords));
+                    // if they are carrying chitin already, just go home so that they don't collect food on the way home
+                    if (ant.carriedEntity && ant.carriedEntity.type === EntityType.ChitinSource) {
+                        setAntObjective(ant,findGateway());
+                    } else {
+                    // otherwise, set the objective to the closest source
+                        setAntObjective(ant, findClosestSource(ant.coords, true));
+                    }
                 } else {
                     setDestination(ant, findMapEntity(ant.destination)); // this sets the movement too
                 }
@@ -54,7 +60,8 @@ const handleIdling = (ant: Ant) => {
 const handleForage = (ant: Ant) => {
     if (!hasValidObjective(ant)) {
         console.log("Ant has no objective, setting one.");
-        if (!setAntObjective(ant, findClosestFoodSource(ant.coords))){
+        const searchingForChitin = ! ant.carriedEntity || ant.carriedEntity.type === EntityType.ChitinSource;
+        if (!setAntObjective(ant, findClosestSource(ant.coords, searchingForChitin))) {
             // if no food source is found, set the ant to hover around the gateway without setting it to idle
             const gateWayCoords = findGateway()?.coords ?? { x: GameMap.center.x, y: GameMap.center.y };
             ant.movingTo.x = gateWayCoords.x + Math.random() * 20 - 10;
@@ -62,7 +69,7 @@ const handleForage = (ant: Ant) => {
             ant.setAngle();
         };
         // if at carrying capacity, return to deposit the food
-        if (ant.carrying && ant.carrying.amount === ant.carryingCapacity) {
+        if (checkIfAtCapacity(ant)) {
             setDestination(ant, findGateway());
         }
     }
@@ -81,11 +88,15 @@ const handleForage = (ant: Ant) => {
             case EntityType.Gateway:
                 handleAtGateway(ant);
                 break;
+            case EntityType.ChitinSource:
+                handleAtChitinSource(ant, destinationEntity);
+                break;
             default:
                 console.log("Ant reached an unknown entity type");
         }
     }
 }
+
 
 const handleAttack = (ant: Ant) => {
     const enemy = findEnemyByCondition((enemy) => enemy.id === ant.objective);
@@ -119,37 +130,81 @@ const handlePatrol = (ant: Ant) => {
 
 
 const handleAtGateway = (ant: Ant) => {
-    const { food, updateColony } = useColonyStore.getState();
-    if (ant.carrying){
-        updateColony({ food: food + ant.carrying.amount});
-        ant.carrying = null;
+    const { food,chitin, updateColony } = useColonyStore.getState();
+    if (ant.carriedEntity && ant.carriedEntity.type === EntityType.FoodResource) {
+        updateColony({ food: food + ant.carriedEntity.amount});
+        ant.carriedEntity = null;
+    } else if (ant.carriedEntity && ant.carriedEntity.type === EntityType.ChitinSource) {
+        updateColony({ chitin: chitin + ant.carriedEntity.amount });
+        ant.carriedEntity = null;
     }
     if (hasValidObjective(ant)) {
         setDestination(ant, findMapEntity(ant.objective));
     } else {
-        setAntObjective(ant, findClosestFoodSource(ant.coords));
+        setAntObjective(ant, findClosestSource(ant.coords, true));
     }
 };
 
-const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
-    // const isAtCapacity = ant.carrying ?  ant.carrying.amount >= ant.carryingCapacity : false;
 
-    if (ant.carrying) {
-        if (ant.carrying.amount >= ant.carryingCapacity) {
+
+const handleAtChitinSource = (ant: Ant, chitinSource: MapEntity) => {
+    const isChitinSourceEmpty = chitinSource.amount <= 0;
+    const carryingOtherEntity = ant.carriedEntity && ant.carriedEntity.type !== EntityType.ChitinSource;
+
+    if (checkIfAtCapacity(ant) || isChitinSourceEmpty) {
+        ant.isBusy = false;
+        setDestination(ant, findGateway());
+        return;
+    }
+
+    if (carryingOtherEntity) {
+        ant.carriedEntity = null;
+    }
+
+    if (!ant.carriedEntity) {
+        ant.carriedEntity = new MapEntity(
+            v4(),
+            EntityType.ChitinSource,
+            undefined,
+            vals.ui.carriedEntitySize, // Updated to use env
+            vals.food.chitinCollectRate,
+            "chitin",
+        );
+        chitinSource.decreaseAmount(vals.food.chitinCollectRate);
+        ant.isBusy = true; // Set the ant to busy state
+    } else {
+        ant.carriedEntity.amount += vals.food.chitinCollectRate;
+        chitinSource.decreaseAmount(vals.food.chitinCollectRate);
+        ant.isBusy = true; // Set the ant to busy state
+        moveWhileBusy(ant);
+    }
+
+}
+
+const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
+
+    if (ant.carriedEntity) {
+        // this shouldn't happen but it bugs out sometimes
+        if (ant.carriedEntity.type === EntityType.ChitinSource) {
+            setDestination(ant, findGateway());
+            return;
+        }
+        
+        if (checkIfAtCapacity(ant)) { // if the ant is at capacity
             ant.isBusy = false; // Reset the busy state
             setDestination(ant, findGateway());
             return;
         } else if (foodSource.amount <= 0) { // if the food source is empty
             ant.isBusy = false; // Reset the busy state
-            setAntObjective(ant, findClosestFoodSource(ant.coords));
+            setAntObjective(ant, findClosestSource(ant.coords, false));
         } else {
             ant.isBusy = true; // Set the ant to busy state
-            ant.carrying.amount += 1;
+            ant.carriedEntity.amount += 1;
             // handle the case where ant is eating from another source
-            if (ant.carrying instanceof Fruit && foodSource instanceof Fruit) {
-                if (foodSource.col !== ant.carrying.col || foodSource.row !== ant.carrying.row) {
-                    ant.carrying.col = foodSource.col;
-                    ant.carrying.row = foodSource.row;
+            if (ant.carriedEntity instanceof Fruit && foodSource instanceof Fruit) {
+                if (foodSource.col !== ant.carriedEntity.col || foodSource.row !== ant.carriedEntity.row) {
+                    ant.carriedEntity.col = foodSource.col;
+                    ant.carriedEntity.row = foodSource.row;
                 }
             }
             foodSource.decreaseAmount(1)
@@ -157,9 +212,9 @@ const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
         }
     } else {
         if (foodSource instanceof Fruit) {    
-            ant.carrying = new Fruit(undefined, 1, foodSource.col, foodSource.row, 0, vals.ui.carriedEntitySize); // Updated to use env
+            ant.carriedEntity = new Fruit(undefined, 1, foodSource.col, foodSource.row, 0, vals.ui.carriedEntitySize); // Updated to use env
         } else {
-            ant.carrying = new MapEntity(
+            ant.carriedEntity = new MapEntity(
                 v4(),
                 EntityType.FoodResource,
                 undefined,

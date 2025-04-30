@@ -61,7 +61,7 @@ export class Ant implements InteractiveElement{
   destination: string;
   movingTo: { x: number; y: number } = { x: GameMap.center.x, y: GameMap.center.y }; // New field for frontend only
   anchorPoint: { x: number; y: number } = { x: GameMap.center.x, y: GameMap.center.y }; // New field for frontend only
-  carrying: MapEntity | null; // Updated to use MapEntity for frontend
+  carriedEntity: MapEntity | null; // Updated to use MapEntity for frontend
   carryingCapacity: number; // Moved carryingCapacity above amountCarried
   speed: number; // Added speed field
   frame: number = 0; // Moved above spriteFrameTimer
@@ -92,7 +92,7 @@ export class Ant implements InteractiveElement{
     this.destination = antData.destination;
     this.movingTo = { x: GameMap.center.x, y: GameMap.center.y }; // Initialize movingTo field
     this.anchorPoint = { x: GameMap.center.x, y: GameMap.center.y }; // Initialize anchorPoint field
-    this.carrying = this.convertCarryingToData(antData.carrying); // Initialize carrying field
+    this.carriedEntity = this.convertCarryingToData(antData.carrying); // Initialize carrying field
     this.carryingCapacity = antData.carryingCapacity; // Initialize carryingCapacity field
     this.speed = antData.speed; // Initialize speed field
     this.frame = 0; // Default value for frame
@@ -165,17 +165,17 @@ export class Ant implements InteractiveElement{
 
   toAntData(): AntData {
     var carryingData: CarryingData | null = null;
-    if (this.carrying instanceof Fruit) {
+    if (this.carriedEntity instanceof Fruit) {
       carryingData = {
-        imgName: this.carrying.imgName,
-        amount: this.carrying.amount,
-        col: this.carrying.col,
-        row: this.carrying.row,
+        imgName: this.carriedEntity.imgName,
+        amount: this.carriedEntity.amount,
+        col: this.carriedEntity.col,
+        row: this.carriedEntity.row,
       };
-    } else if (this.carrying instanceof MapEntity) {
+    } else if (this.carriedEntity instanceof MapEntity) {
       carryingData = {
-        imgName: this.carrying.imgName,
-        amount: this.carrying.amount,
+        imgName: this.carriedEntity.imgName,
+        amount: this.carriedEntity.amount,
       };
     } else {
       carryingData = null; // Default value for carrying

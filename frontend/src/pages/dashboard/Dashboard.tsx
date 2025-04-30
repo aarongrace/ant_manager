@@ -4,7 +4,7 @@ import { useColonyStore } from '../../contexts/colonyStore';
 import { usePreloadedImagesStore } from '../../contexts/preloadImages';
 import { initializeAntLogic } from '../../gameLogic/antLogic';
 import { handleKeyDown, handleKeyUp } from '../../gameLogic/handleKeyboard';
-import SurfaceCanvas from '../canvas/Surface';
+import GameCanvas from '../canvas/GameCanvas';
 import './dashboard.css';
 import { makeAnt, resetColony, resizeCanvas } from './dashboard.services';
 
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
           <section className="dashboard-section colony-overview">
             <p><strong>Number of Ants:</strong> {ants.length}</p>
             <p><strong>Food:</strong> {Math.floor(food)}</p>
-            <p><strong>Chitin:</strong> {chitin}</p>
+            <p><strong>Chitin:</strong> {Math.ceil(chitin)}</p>
             <button onClick={()=>resetColony()}>Reset Colony</button>
           </section>
 
@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
         </main>
       </div>
       <div className="map-container">
-        <SurfaceCanvas />
+        <GameCanvas />
       </div>
     </div>
   );

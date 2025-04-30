@@ -9,6 +9,7 @@ import { Bounds, InteractiveElement } from "./Models";
 export enum EntityType {
   Gateway = "gateway",
   FoodResource = "foodResource",
+  ChitinSource = "chitinSource",
 }
 
 export type MapEntityData = {

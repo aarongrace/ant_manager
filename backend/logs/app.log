@@ -69,3 +69,119 @@
 2025-04-29 16:10:48,299 INFO routers.colony:106 Reinitializing guest colony...
 2025-04-29 16:10:48,418 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
 2025-04-29 16:10:48,418 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 18:47:29,907 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 18:47:30,058 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 18:47:30,267 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 18:47:30,267 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 18:47:35,963 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:47:36,067 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:49:09,225 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:49:09,463 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:49:24,744 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:49:25,177 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:49:33,209 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 18:49:33,529 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 18:49:33,653 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 18:49:33,653 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 18:49:38,642 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:49:38,712 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:53:04,016 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 18:53:04,303 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 18:53:04,428 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 18:53:04,428 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 18:53:10,114 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:53:10,179 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:56:20,334 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 18:56:20,621 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 18:56:20,751 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 18:56:20,751 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 18:58:14,898 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:58:14,960 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:58:42,426 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 18:58:42,729 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 18:58:42,858 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 18:58:42,858 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 18:59:24,156 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 18:59:24,468 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 18:59:24,587 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 18:59:24,587 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 18:59:38,279 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 18:59:38,506 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:00:52,943 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 19:00:53,198 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 19:00:53,318 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 19:00:53,318 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 19:01:04,156 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:01:04,219 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:02:25,715 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:02:25,966 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:02:50,909 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:02:51,159 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:06:59,547 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:06:59,800 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:07:49,946 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:07:50,793 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:13:20,640 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:13:21,072 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:15:35,248 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:15:35,309 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:33:39,360 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 19:33:39,652 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 19:33:39,778 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 19:33:39,779 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 19:33:47,682 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:33:47,744 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:35:15,979 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:35:16,229 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:35:18,291 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:35:18,556 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:35:53,603 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:35:53,883 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:41:44,684 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 19:41:44,744 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:32:52,674 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 22:32:52,780 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 22:32:52,899 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 22:32:52,899 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 22:32:59,919 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:32:59,980 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:38:39,114 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:38:40,063 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:40:51,027 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:40:51,459 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:43:27,976 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:43:28,340 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:45:14,546 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:45:15,540 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:47:07,628 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:47:08,126 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:48:12,327 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:48:12,758 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:51:01,498 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 22:51:01,800 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 22:51:01,931 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 22:51:01,931 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 22:51:07,592 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:51:07,651 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:52:34,685 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:52:35,148 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:54:35,925 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:54:36,827 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:55:15,497 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:55:15,929 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:59:14,360 INFO routers.profile:192 Ensuring guest profile exists
+2025-04-29 22:59:14,623 INFO routers.colony:106 Reinitializing guest colony...
+2025-04-29 22:59:14,744 INFO routers.colony:110 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perkPurchased=[] initialized=False
+2025-04-29 22:59:14,744 INFO database:28 Database initialized and guest profiles/colonies ensured.
+2025-04-29 22:59:24,983 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 22:59:25,042 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:01:20,627 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:01:21,342 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:02:12,509 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:02:12,893 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:02:41,914 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:02:42,283 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:04:45,250 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:04:46,050 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:07:58,253 INFO routers.colony:61 Fetching colony with ID: guest
+2025-04-29 23:07:58,584 INFO routers.colony:61 Fetching colony with ID: guest

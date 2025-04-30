@@ -5,6 +5,7 @@ import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { findClosestAnt, setOneAntOnEnemy } from "../gameLogic/antHelperFunctions";
 import { calculateDistance } from "../gameLogic/entityHelperFunctions";
 import { Ant } from "./Ant";
+import { generateEnemyCorpse } from "./EnemyCorpse";
 import { GameMap } from "./Map";
 import { InteractiveElement } from "./Models";
 
@@ -113,9 +114,14 @@ export class Enemy implements InteractiveElement {
   }
 
   die() {
-    const { enemies, updateColony } = useColonyStore.getState();
-    updateColony({ enemies: enemies.filter((enemy) => enemy.id !== this.id) });
+    const { enemies, mapEntities, updateColony } = useColonyStore.getState();
     this.isDead = true;
+
+    const enemyCorpse = generateEnemyCorpse("mantis", this.coords, 
+      EnemyTypeInfo[this.type].chitinAmount, EnemyTypeInfo[this.type].defaultSize);
+
+    updateColony({ enemies: enemies.filter((enemy) => enemy.id !== this.id),
+      mapEntities: [...mapEntities, enemyCorpse] }); // Add the corpse to the colony state
   }
 
   setObjective() {
@@ -326,6 +332,7 @@ export const EnemyTypeInfo: {
     attackDelay: number;
     attackDamage: number; // Added attack damage field
     hpBarYOffset: number; // Added hpBarYOffset
+    chitinAmount: number; // Added chitinAmount field
   };
 } = {
   [EnemyType.Maggot]: {
@@ -342,6 +349,7 @@ export const EnemyTypeInfo: {
     attackDelay: 1400,
     attackDamage: 30, // Added attack damage value
     hpBarYOffset: 20, // Added hpBarYOffset
+    chitinAmount: 5, // Added chitinAmount value
   },
   [EnemyType.Mantis]: {
     speed: 7,
@@ -357,6 +365,7 @@ export const EnemyTypeInfo: {
     attackDelay: 300,
     attackDamage: 25, // Added attack damage value
     hpBarYOffset: 29, // Added hpBarYOffset
+    chitinAmount: 10, // Added chitinAmount value
   },
   [EnemyType.Beetle]: {
     speed: 10,
@@ -372,6 +381,6 @@ export const EnemyTypeInfo: {
     attackDelay: 1000,
     attackDamage: 17, // Added attack damage value
     hpBarYOffset: 27, // Added hpBarYOffset
+    chitinAmount: 8, // Added chitinAmount value
   },
 };
-
