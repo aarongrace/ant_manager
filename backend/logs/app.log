@@ -3518,3 +3518,10 @@ perks.5.is_upgrade
 2025-04-30 06:34:42,568 INFO database:29 Database initialization completed successfully.
 2025-04-30 06:34:45,822 INFO routers.colony:62 Fetching colony with ID: guest
 2025-04-30 06:36:23,598 INFO routers.colony:62 Fetching colony with ID: guest
+2025-04-30 06:38:50,802 INFO routers.colony:117 Existing colonies in database: 22
+2025-04-30 06:38:50,805 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 06:38:50,805 INFO routers.profile:190 Ensuring guest profile exists
+2025-04-30 06:38:51,331 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 06:38:51,548 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 06:38:51,548 INFO database:29 Database initialization completed successfully.
+2025-04-30 06:38:56,840 INFO routers.colony:62 Fetching colony with ID: guest
