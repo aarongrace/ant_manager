@@ -112,7 +112,7 @@ async def ensure_guest_colony_exists(reinitialize: bool = False):
     else:
         logger.info(f"Guest colony already exists: {guest_colony}")
     
-async def validate_and_reset_all_colonies():
+async def ensure_all_colonies_valid():
     raw_colonies = await Colony.get_motor_collection().find().to_list(None)
     logger.info(f"Existing colonies in database: {len(raw_colonies)}")
     counter = 0

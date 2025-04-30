@@ -3,7 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from routers.profile import Profile, ensure_guest_profile_exists
-from routers.colony import Colony, ensure_guest_colony_exists, validate_and_reset_all_colonies
+from routers.colony import Colony, ensure_guest_colony_exists, ensure_all_colonies_valid
 from routers.clan import Clan
 from routers.trades import Trade
 from pathlib import Path
@@ -23,7 +23,7 @@ async def initialize_database():
     client = AsyncIOMotorClient(setting.connect_string)
     await init_beanie(database=client["clash_of_colonies"], document_models=[Profile, Colony, Clan, Trade])
 
-    await validate_and_reset_all_colonies()
+    await ensure_all_colonies_valid()
     await ensure_guest_profile_exists()
     await ensure_guest_colony_exists(reinitialize=True)
     logger.info("Database initialization completed successfully.")

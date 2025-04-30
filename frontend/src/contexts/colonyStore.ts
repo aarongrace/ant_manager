@@ -75,21 +75,19 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       await get().putColonyInfo();
     } else {
       const ants = convertAntData(data.ants as AntData[]);
-      const enemies = data.enemies ?  data.enemies.map((enemy: EnemyData) => Enemy.fromData(enemy)) : []; 
-      const mapEntities = data.mapEntities ? data.mapEntities.map((entity: any) => {
-        return MapEntity.fromMapEntityData(entity);
-      }) : [];
-      const perks = data.perks ? data.perks.map((perkData:PerkData) => {
+      const enemies = data.enemies?.
+        map((enemy: EnemyData) => Enemy.fromData(enemy)) ?? []; 
+      const mapEntities = data.mapEntities?.
+        map(MapEntity.fromMapEntityData) ?? [];
+      const perks = data.perks?.map((perkData:PerkData) => {
         if (perkData.isUpgrade){
           return new Upgrade(perkData)
         } else {
           return new Cosmetic(perkData)
         }
-      }) : initializeDefaultUpgrades();
+      }) ?? initializeDefaultUpgrades();
       console.log("mapEntities", mapEntities);
-      const fruits = data.fruits ? data.fruits.map((fruit: any) => {
-        return Fruit.fromFruitData(fruit);
-      }) : [];
+      const fruits = data.fruits?.map(Fruit.fromFruitData) ?? [];
       mapEntities.push(...fruits);
       vars.season = Math.floor(data.age / vars.seasonLength) % 4;
       GameMap.setTilesArray(data.map);
@@ -123,9 +121,9 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     }
 
     const ants = convertAnts(colonyState.ants);
-    const enemies = colonyState.enemies.map((enemy) => Enemy.toData(enemy)); // Convert enemies to EnemyData
+    const enemies = colonyState.enemies?.map(Enemy.toData)??[]; // Convert enemies to EnemyData
     const entityData = convertEntityObjectsToData(colonyState.mapEntities);
-    const perksData = colonyState.perks.map((perk) => perk.toData());
+    const perksData = colonyState.perks?.map((perk) => perk.toData())??initializeDefaultUpgrades();
 
     const colonyInfo = {
       name: colonyState.name,
