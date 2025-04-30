@@ -3678,3 +3678,23 @@ perks.5.is_upgrade
 2025-04-30 16:32:30,772 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
 2025-04-30 16:32:30,772 INFO database:29 Database initialization completed successfully.
 2025-04-30 16:32:37,704 INFO routers.colony:62 Fetching colony with ID: guest
+2025-04-30 16:38:54,395 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 16:38:54,399 WARN routers.colony:124 Validation error for colony guest: 1 validation error for Colony
+perks
+  Field required [type=missing, input_value={'_id': 'guest', 'name': ...], 'initialized': False}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+2025-04-30 16:38:54,460 INFO routers.colony:128 New colony created for guest: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 16:38:54,460 INFO routers.colony:130 Validation complete. 1 colonies have been reset
+2025-04-30 16:38:54,461 INFO routers.profile:200 Ensuring guest profile exists
+2025-04-30 16:38:54,516 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 16:38:54,577 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 16:38:54,577 INFO database:29 Database initialization completed successfully.
+2025-04-30 16:39:01,354 INFO routers.colony:62 Fetching colony with ID: guest
+2025-04-30 16:39:03,142 INFO routers.profile:140 Fetching profile with ID: guest
+2025-04-30 16:39:03,175 INFO routers.profile:145 Profile with ID guest fetched successfully
+2025-04-30 16:39:03,182 INFO routers.profile:140 Fetching profile with ID: guest
+2025-04-30 16:39:03,214 INFO routers.profile:145 Profile with ID guest fetched successfully
+2025-04-30 16:39:03,230 INFO routers.profile:140 Fetching profile with ID: guest
+2025-04-30 16:39:03,261 INFO routers.profile:145 Profile with ID guest fetched successfully
+2025-04-30 16:39:03,318 INFO routers.clan:130 Fetching clan with ID: Clanity Clan
+2025-04-30 16:39:03,351 WARN routers.clan:133 Clan with ID Clanity Clan not found
