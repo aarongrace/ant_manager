@@ -241,7 +241,10 @@ const Clan = () => {
 
     return (
       <div key={member._id} className="member-card">
-        <strong>{member.name}</strong>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <img src={member.picture ? member.picture : '/ant.png'} alt="Profile" className="member-avatar" />
+          <strong>{member.name}</strong>
+        </div>
         <p>{member._id === userClan.leader ? "Leader" : "Member"}</p>
 
         <div style={{ display: "flex", gap: "5px" }}>
