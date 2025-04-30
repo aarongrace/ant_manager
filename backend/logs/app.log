@@ -3585,3 +3585,88 @@ perks.5.is_upgrade
 2025-04-30 15:38:53,393 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
 2025-04-30 15:38:53,422 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
 2025-04-30 15:38:53,444 INFO routers.colony:62 Fetching colony with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:39:55,595 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 15:39:55,595 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 15:39:55,595 INFO routers.profile:194 Ensuring guest profile exists
+2025-04-30 15:39:55,652 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 15:39:55,713 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 15:39:55,713 INFO database:29 Database initialization completed successfully.
+2025-04-30 15:40:00,718 INFO routers.profile:91 Attempting login for username: liaotest
+2025-04-30 15:40:00,753 WARN passlib.handlers.bcrypt:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/Users/liaozhu/school/s25/topics/ant_manager/backend/virt/lib/python3.13/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-04-30 15:40:01,170 INFO routers.profile:107 User liaotest logged in successfully
+2025-04-30 15:40:01,180 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:40:01,210 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:40:01,245 INFO routers.colony:62 Fetching colony with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:40:07,485 INFO routers.profile:133 Logging out user
+2025-04-30 15:40:07,485 INFO routers.profile:135 User logged out successfully
+2025-04-30 15:40:11,669 INFO routers.profile:91 Attempting login for username: BANNED
+2025-04-30 15:40:11,937 WARN routers.profile:102 Login failed: Attempted login by banned user: BANNED
+2025-04-30 15:40:21,689 INFO routers.profile:91 Attempting login for username: liaotest2
+2025-04-30 15:40:22,034 INFO routers.profile:107 User liaotest2 logged in successfully
+2025-04-30 15:40:22,040 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:22,069 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 15:40:24,156 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:24,190 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 15:40:24,192 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:24,221 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 15:40:24,414 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:40:24,486 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:40:26,383 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:26,423 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 15:40:26,432 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:26,466 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 15:40:26,467 INFO routers.trades:54 Fetching pending trades for user ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:26,496 INFO routers.trades:58 Found 0 pending trades for user ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:26,528 INFO routers.trades:54 Fetching pending trades for user ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:26,531 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:40:26,557 INFO routers.trades:58 Found 0 pending trades for user ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:26,594 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:40:26,599 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:40:26,625 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 15:40:26,626 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 15:40:26,653 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:40:26,680 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 15:40:26,684 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 15:40:26,708 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:40:26,712 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 15:40:26,736 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 15:40:26,742 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:40:26,764 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 15:40:26,771 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 15:40:26,787 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 15:40:26,797 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:26,816 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 15:40:26,828 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 15:40:26,848 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 15:40:26,864 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:40:26,865 INFO routers.clan:119 Fetching all clans
+2025-04-30 15:40:26,887 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 15:40:26,894 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 15:40:26,895 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 15:40:26,932 INFO routers.clan:119 Fetching all clans
+2025-04-30 15:40:26,963 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 15:40:42,649 INFO routers.profile:133 Logging out user
+2025-04-30 15:40:42,649 INFO routers.profile:135 User logged out successfully
+2025-04-30 15:40:45,338 INFO routers.profile:91 Attempting login for username: test
+2025-04-30 15:40:45,683 INFO routers.profile:107 User test logged in successfully
+2025-04-30 15:40:45,689 INFO routers.profile:140 Fetching profile with ID: 04d10f56-44a3-4872-8bac-80bb530058d4
+2025-04-30 15:40:45,721 INFO routers.profile:145 Profile with ID 04d10f56-44a3-4872-8bac-80bb530058d4 fetched successfully
+2025-04-30 15:40:48,157 INFO routers.profile:140 Fetching profile with ID: 04d10f56-44a3-4872-8bac-80bb530058d4
+2025-04-30 15:40:48,202 INFO routers.profile:145 Profile with ID 04d10f56-44a3-4872-8bac-80bb530058d4 fetched successfully
+2025-04-30 15:40:48,204 INFO routers.profile:140 Fetching profile with ID: 04d10f56-44a3-4872-8bac-80bb530058d4
+2025-04-30 15:40:48,235 INFO routers.profile:145 Profile with ID 04d10f56-44a3-4872-8bac-80bb530058d4 fetched successfully
+2025-04-30 15:40:48,236 INFO routers.trades:54 Fetching pending trades for user ID: 04d10f56-44a3-4872-8bac-80bb530058d4
+2025-04-30 15:40:48,267 INFO routers.trades:58 Found 0 pending trades for user ID: 04d10f56-44a3-4872-8bac-80bb530058d4
+2025-04-30 15:40:48,300 INFO routers.trades:54 Fetching pending trades for user ID: 04d10f56-44a3-4872-8bac-80bb530058d4
+2025-04-30 15:40:48,300 INFO routers.clan:119 Fetching all clans
+2025-04-30 15:40:48,332 INFO routers.trades:58 Found 0 pending trades for user ID: 04d10f56-44a3-4872-8bac-80bb530058d4
+2025-04-30 15:40:48,332 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 15:40:48,369 INFO routers.clan:119 Fetching all clans
+2025-04-30 15:40:48,401 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 15:40:52,430 INFO routers.profile:133 Logging out user
+2025-04-30 15:40:52,431 INFO routers.profile:135 User logged out successfully

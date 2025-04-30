@@ -6,6 +6,7 @@ import uuid
 from passlib.context import CryptContext
 from pydantic import BaseModel
 import logging
+from routers.clan import Clan
 
 logger = logging.getLogger(__name__)
 
@@ -177,6 +178,11 @@ async def delete_profile(username: str):
     profile = await Profile.find_one(Profile.name == username)
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
+    user_id = profile['_id']
+    clan = await Clan.find_one(Clan.members == user_id)
+    if clan:
+        clan.members.remove(user_id)
+        await clan.save()
     await profile.delete()
     return {"message": f"Profile with username '{username}' has been deleted"}
 
