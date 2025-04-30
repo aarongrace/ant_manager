@@ -5,7 +5,7 @@ import { GameMap } from '../../baseClasses/Map';
 import { EntityType } from '../../baseClasses/MapEntity';
 import { Bounds } from '../../baseClasses/Models';
 import { useColonyStore } from '../../contexts/colonyStore';
-import { vals } from '../../contexts/globalVars'; // Updated to use env
+import { vars } from '../../contexts/globalVariables'; // Updated to use env
 import { usePreloadedImagesStore } from '../../contexts/preloadImages';
 import { drawPatrolCircle } from '../../gameLogic/antHelperFunctions';
 import { drawDragRectangle } from '../../gameLogic/handleMouse';
@@ -13,9 +13,9 @@ import { default as CustomCanvas } from "./Canvas";
 
 export const GameCanvas: React.FC = (props) => {
     const [ctx, setCtx] = React.useState<CanvasRenderingContext2D | null>(null);
-    const { ants, mapEntities, enemies } = useColonyStore();
-    const { images, isLoaded } = usePreloadedImagesStore();
-    const { taskIcons: icons } = useIconsStore();
+    const { ants, mapEntities, enemies } = useColonyStore.getState();
+    const { isLoaded, getImage } = usePreloadedImagesStore.getState();
+    const { taskIcons: icons } = useIconsStore.getState();
 
     const establishContext = (context: CanvasRenderingContext2D) => {
         console.log("Establishing context");
@@ -70,7 +70,7 @@ export const GameCanvas: React.FC = (props) => {
     }
 
     function drawAnts(ctx: CanvasRenderingContext2D, ants: Ant[]) {
-        const antSprites = images["ant_sprites"];
+        const antSprites = getImage("ant_sprites");
         const spriteWidth = 39;
         const spriteWidthIncludingPadding = 66;
         const spriteHeight = 47;
@@ -109,9 +109,9 @@ export const GameCanvas: React.FC = (props) => {
                 ant.drawHpBar(ctx);
             };
 
-            if (ant.task === TaskType.Patrol && (vals.highlightedTasks.includes(TaskType.Patrol) || vals.managingPatrol)) {
+            if (ant.task === TaskType.Patrol && (vars.highlightedTasks.includes(TaskType.Patrol) || vars.managingPatrol)) {
                 drawPatrolCircle(ctx, ant);
-            } else if (ant.task === TaskType.Attack && vals.highlightedTasks.includes(TaskType.Attack)) {
+            } else if (ant.task === TaskType.Attack && vars.highlightedTasks.includes(TaskType.Attack)) {
                 // drawAttackArrow(ctx, ant);
             }
 
@@ -139,7 +139,7 @@ export const GameCanvas: React.FC = (props) => {
 
             if (ant.carriedEntity) {
                 const carriedObject = ant.carriedEntity;
-                var carriedScale = carriedObject.amount / vals.ant.workerCarryingCapacity; // Updated to use env
+                var carriedScale = carriedObject.amount / vars.ant.workerCarryingCapacity; // Updated to use env
                 if (carriedObject.type === EntityType.ChitinSource){
                     carriedScale *= 8;
                 }

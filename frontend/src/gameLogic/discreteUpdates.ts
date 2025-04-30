@@ -7,7 +7,7 @@ import { GameMap } from "../baseClasses/Map";
 import { MapEntity } from "../baseClasses/MapEntity";
 import { useWarningStore } from "../components/WarningBar";
 import { useColonyStore } from "../contexts/colonyStore";
-import { vals } from "../contexts/globalVars"; // Updated to use env
+import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { findAntByCondition } from "./antHelperFunctions";
 import { handleAntLogic } from "./antLogic"; // Import the new combined function
 import { decaySources } from "./entityHelperFunctions";
@@ -56,34 +56,34 @@ const incrementAge = (setCursor:()=>void) =>{
     const newAge = age + 1;
     updateColony({ age: newAge });
     GameMap.incrementUpdateCounter();
-    if (newAge % vals.seasonLength === 0) {
-        vals.season = (vals.season + 1) % 4;
+    if (newAge % vars.seasonLength === 0) {
+        vars.season = (vars.season + 1) % 4;
         setCursor();
     }
 }
 
 const layEgg = () => {
     const { eggs, updateColony } = useColonyStore.getState();
-    if (eggs < vals.reproduction.maxEggs && findAntByCondition((ant) => ant.type === AntType.Queen) && Math.random() < vals.reproduction.eggChance) { // Updated to use env
+    if (eggs < vars.reproduction.maxEggs && findAntByCondition((ant) => ant.type === AntType.Queen) && Math.random() < vars.reproduction.eggChance) { // Updated to use env
         updateColony({ eggs: eggs + 1 });
     }
 };
 
 const consumeFoodAndRestoreHp = () => {
     const { ants, food, updateColony } = useColonyStore.getState();
-    const { workerFoodConsumption, soldierFoodConsumption, queenFoodConsumption, foodConsumptionScaleFactor } = vals.ant;
-    const { foodWasteBaseline } = vals.food;
+    const { workerFoodConsumption, soldierFoodConsumption, queenFoodConsumption, foodConsumptionScaleFactor } = vars.ant;
+    const { foodWasteBaseline } = vars.food;
 
     const wasteFactor = Math.max(0.6, 1 + (food - foodWasteBaseline) / foodWasteBaseline);
     const foodConsumed = (ants.reduce((total, ant) => {
         if (ant.type === AntType.Worker) {
-            ant.hp += 0.4;
+            ant.hp += vars.ant.workerHpRecoveryRate;
             return total + workerFoodConsumption;
         } else if (ant.type === AntType.Soldier) {
-            ant.hp += 0.8;
+            ant.hp += vars.ant.soldierHpRecoveryRate;
             return total + soldierFoodConsumption;
         } else if (ant.type === AntType.Queen) {
-            ant.hp += 0.9;
+            ant.hp += vars.ant.queenHpRecoveryRate;
             return total + queenFoodConsumption;
         }
         return total;
@@ -120,7 +120,7 @@ const deleteEmptyMapEntities = () => {
 
 const spawnRandomEnemy = () => {
     const { enemies, updateColony } = useColonyStore.getState();
-    const spawnChance = vals.enemy.baseEnemySpawnChance / (Math.log(enemies.length + 2) ** 2); // Updated to use env
+    const spawnChance = vars.enemy.baseEnemySpawnChance / (Math.log(enemies.length + 2) ** 2); // Updated to use env
     if (Math.random() < spawnChance) {
         updateColony({
             enemies: [...enemies, createEnemy()],
@@ -130,7 +130,7 @@ const spawnRandomEnemy = () => {
 
 //unused, food sources are now spawned based on tile
 const addRandomMapEntity = () => {
-    const { entitySpawnFactor } = vals.food; // Updated to use env
+    const { entitySpawnFactor } = vars.food; // Updated to use env
     const { mapEntities, updateColony } = useColonyStore.getState();
 
     const numberOfMapEntities = mapEntities.length;

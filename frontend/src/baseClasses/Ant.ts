@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { useColonyStore } from "../contexts/colonyStore";
-import { vals } from "../contexts/globalVars"; // Updated to use env
+import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { getRandomAntType, startPatrol } from "../gameLogic/antHelperFunctions";
 import { findEnemyByCondition } from "../gameLogic/enemyHelperFunctions";
@@ -112,14 +112,14 @@ export class Ant implements InteractiveElement{
           carryingData.row,
           1
         );
-        fruit.size = vals.ui.carriedEntitySize; // Updated to use env
+        fruit.size = vars.ui.carriedEntitySize; // Updated to use env
         return fruit;
       } else {
         return new MapEntity(
           v4(),
           EntityType.FoodResource,
           { x: 0, y: 0 },
-          vals.ui.carriedEntitySize, // Updated to use env
+          vars.ui.carriedEntitySize, // Updated to use env
           carryingData.amount,
           carryingData.imgName
         );
@@ -247,7 +247,7 @@ export class Ant implements InteractiveElement{
     ctx.beginPath();
     ctx.arc(
       0,0,
-      vals.ui.selectedCircleRadius*this.sizeFactor, // Updated to use env
+      vars.ui.selectedCircleRadius*this.sizeFactor, // Updated to use env
       0,
       Math.PI * 2
     );
@@ -300,7 +300,9 @@ export class Ant implements InteractiveElement{
     const enemy = findEnemyByCondition((enemy) => enemy.id === this.objective);
     if (enemy) {
       this.isAttacking = false; // Reset the attacking state
-      enemy.receiveAttack(AntTypeInfo[this.type].defaultAttack);
+      const damage = this.type === AntType.Soldier ? vars.ant.soldierAttack
+        : this.type === AntType.Worker ? vars.ant.workerAttack : 0
+      enemy.receiveAttack(damage);
     }
   }
 
@@ -328,13 +330,13 @@ export class Ant implements InteractiveElement{
     const sizeFactor = Math.random() * 0.15 + 0.925; // Random sizeFactor between 0.95 and 1.05
     const speed =
       (type === AntType.Soldier
-        ? vals.ant.soldierSpeed
-        : vals.ant.workerSpeed) *
+        ? vars.ant.soldierBaseSpeed
+        : vars.ant.workerBaseSpeed) *
       (sizeFactor * sizeFactor);
     const carryingCapacity = Math.floor(
       (type === AntType.Soldier
-        ? vals.ant.soldierCarryingCapacity
-        : vals.ant.workerCarryingCapacity) *
+        ? vars.ant.soldierCarryingCapacity
+        : vars.ant.workerCarryingCapacity) *
         (Math.random() / 3 + 0.833)
     );
     const hp = AntTypeInfo[type].defaultHp;
@@ -375,7 +377,7 @@ export const recreateQueen = (): Ant => {
     destination: "", // No destination initially
     carrying: null, // Default value for carrying
     carryingCapacity: 0, // Queens do not carry resources
-    speed: vals.ant.queenSpeed, // Updated to use env
+    speed: vars.ant.queenBaseSpeed, // Updated to use env
     sizeFactor: 1.0, // Default sizeFactor for the queen
     hp: AntTypeInfo[AntType.Queen].defaultHp, // Default hp for the queen
   };
@@ -387,6 +389,9 @@ export const convertAnts = (ants: Ant[]): AntData[] => {
 };
 
 export const convertAntData = (antData: AntData[]): Ant[] => {
+  if (!antData) {
+    return [];
+  }
   return antData.map((data) => new Ant(data));
 };
 
@@ -397,7 +402,6 @@ export const AntTypeInfo: {
     defaultHp: number;
     hpBarYOffset: number;
     cost: number;
-    defaultAttack: number;
     attackRange: number;
     size: number; // Added size field
     numOfFrames: number; // Added numOfFrames field
@@ -406,12 +410,11 @@ export const AntTypeInfo: {
   };
 } = {
   [AntType.Queen]: {
-    speed: vals.ant.queenSpeed, // Updated to use env
+    speed: vars.ant.queenBaseSpeed, // Updated to use env
     carryingCapacity: 0,
     defaultHp: 200,
     hpBarYOffset: 30,
     cost: 1000,
-    defaultAttack: 0,
     attackRange: 0,
     size: 40, // Added size value for Queen
     numOfFrames: 3, // Added numOfFrames value for Queen
@@ -419,12 +422,11 @@ export const AntTypeInfo: {
     numOfSpriteFrames: 3, // Added numOfSpriteFrames value for Queen
   },
   [AntType.Worker]: {
-    speed: vals.ant.workerSpeed, // Updated to use env
-    carryingCapacity: vals.ant.workerCarryingCapacity, // Updated to use env
+    speed: vars.ant.workerBaseSpeed, // Updated to use env
+    carryingCapacity: vars.ant.workerCarryingCapacity, // Updated to use env
     defaultHp: 40,
     hpBarYOffset: 17,
     cost: 20,
-    defaultAttack: 2,
     attackRange: 25,
     size: 25, // Added size value for Worker
     numOfFrames: 5, // Added numOfFrames value for Worker
@@ -432,12 +434,11 @@ export const AntTypeInfo: {
     numOfSpriteFrames: 5, // Added numOfSpriteFrames value for Worker
   },
   [AntType.Soldier]: {
-    speed: vals.ant.soldierSpeed, // Updated to use env
-    carryingCapacity: vals.ant.soldierCarryingCapacity, // Updated to use env
+    speed: vars.ant.soldierBaseSpeed, // Updated to use env
+    carryingCapacity: vars.ant.soldierCarryingCapacity, // Updated to use env
     defaultHp: 160,
     hpBarYOffset: 21,
     cost: 40,
-    defaultAttack: 10,
     attackRange: 80,
     size: 60, // Added size value for Soldier
     numOfFrames: 5, // Added numOfFrames value for Soldier

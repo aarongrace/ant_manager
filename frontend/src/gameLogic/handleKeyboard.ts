@@ -1,9 +1,9 @@
-import { vals } from "../contexts/globalVars";
+import { vars } from "../contexts/globalVariables";
 
 export const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Control"){
         console.log("Control key pressed");
-        vals.managingPatrol = true;
+        vars.managingPatrol = true;
         
 
     }
@@ -11,6 +11,6 @@ export const handleKeyDown = (event: KeyboardEvent) => {
 
 export const handleKeyUp = (event: KeyboardEvent) => {
     if (event.key === "Control"){
-        vals.managingPatrol = false;
+        vars.managingPatrol = false;
     }
 }

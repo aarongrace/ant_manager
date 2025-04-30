@@ -4,7 +4,7 @@ import { GameMap } from "../baseClasses/Map";
 import { EntityType, foodSources, MapEntity } from "../baseClasses/MapEntity";
 import { Bounds } from "../baseClasses/Models";
 import { useColonyStore } from "../contexts/colonyStore";
-import { vals } from "../contexts/globalVars"; // Updated to use env
+import { vars } from "../contexts/globalVariables"; // Updated to use env
 
 export const findMapEntity = (id: string) => {
     const mapEntities = useColonyStore.getState().mapEntities;
@@ -69,26 +69,26 @@ export const decaySources = () => {
     const foodSources = mapEntities.filter((entity) => entity.type === EntityType.FoodResource);
     foodSources.forEach((foodSource) => {
         if (foodSource.amount > 0) {
-            foodSource.amount -= vals.food.decayFactor; // Updated to use env
+            foodSource.amount -= vars.food.decayFactor; // Updated to use env
         }
     });
     const chitinSources = mapEntities.filter((entity) => entity.type === EntityType.ChitinSource);
     chitinSources.forEach((chitinSource) => {
         if (chitinSource.amount > 0) {
-            chitinSource.amount -= vals.food.decayFactor/20; // chitin has smaller numbers for amounts
+            chitinSource.amount -= vars.food.decayFactor/20; // chitin has smaller numbers for amounts
         }
     });
 };
 
 // Helper function to find a random valid position on the map
 export const findValidEntityCoords = (
-    minDistance: number = vals.food.minDistanceBetweenEntities, // Updated to use env
+    minDistance: number = vars.food.minDistanceBetweenEntities, // Updated to use env
     maxAttempts: number = 100
 ): { x: number; y: number } | null => {
     const { mapEntities } = useColonyStore.getState();
-    const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
-    const validWidth = canvasWidth - vals.ui.edgeMargin * 3; // Updated to use env
-    const validHeight = canvasHeight - vals.ui.edgeMargin * 3; // Updated to use env
+    const { canvasWidth, canvasHeight } = vars.ui; // Updated to use env
+    const validWidth = canvasWidth - vars.ui.edgeMargin * 3; // Updated to use env
+    const validHeight = canvasHeight - vars.ui.edgeMargin * 3; // Updated to use env
     const viewportTopLeft = GameMap.getViewportTopLeft();
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -120,7 +120,7 @@ export const getEntityBounds = (entity: MapEntity): Bounds => {
     const viewportTopLeft = GameMap.getViewportTopLeft();
 
     if (entity.type === EntityType.FoodResource) {
-        const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || vals.food.defaultFruitAmount; // Updated to use env
+        const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || vars.food.defaultFruitAmount; // Updated to use env
         sizeFactor = entity.amount / defaultAmount + 0.5;
     }
 
@@ -139,11 +139,11 @@ export const getEntityBounds = (entity: MapEntity): Bounds => {
 };
 
 export const getRandomCoordsInViewport = () => {
-    const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
+    const { canvasWidth, canvasHeight } = vars.ui; // Updated to use env
     const viewportTopLeft = GameMap.getViewportTopLeft();
     return {
-        x: Math.random() * (canvasWidth - vals.ui.edgeMargin * 2) + (viewportTopLeft.x),
-        y: Math.random() * (canvasHeight - vals.ui.edgeMargin * 2) + (viewportTopLeft.y)
+        x: Math.random() * (canvasWidth - vars.ui.edgeMargin * 2) + (viewportTopLeft.x),
+        y: Math.random() * (canvasHeight - vars.ui.edgeMargin * 2) + (viewportTopLeft.y)
     };
 };
 
@@ -166,7 +166,7 @@ export const maybeGrowFruit = (coords: { x: number; y: number }) => {
     const { mapEntities } = useColonyStore.getState();
     const { updateColony } = useColonyStore.getState();
     const foodCount = mapEntities.filter((entity) => entity.type === EntityType.FoodResource).length;
-    const k = vals.food.growFruitRateOfDecrease;
+    const k = vars.food.growFruitRateOfDecrease;
     const fruitFactor = Math.exp(-k * (foodCount - 1));
     if (fruitFactor > Math.random()) {
         const fruit = Fruit.createRandomFruit(coords);

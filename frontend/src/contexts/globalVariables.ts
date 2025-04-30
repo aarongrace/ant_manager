@@ -1,14 +1,21 @@
 import { TaskType } from "../baseClasses/Ant";
 
-export const vals = {
+export const defaultVars = {
     // Ant-related stats
     ant: {
-        workerSpeed: 0.06,
-        soldierSpeed: 0.04,
-        queenSpeed: 0.03,
+        workerBaseSpeed: 0.06,
+        soldierBaseSpeed: 0.04,
+        queenBaseSpeed: 0.03,
+        workerSpeedMult: 1.0,
+        soldierSpeedMult: 1.0,
+        workerAttack: 2,
+        soldierAttack: 10,
         workerFoodConsumption: 0.17, // per half second
         soldierFoodConsumption: 0.4,
         queenFoodConsumption: 3,
+        workerHpRecoveryRate: 0.4,
+        soldierHpRecoveryRate: 0.8,
+        queenHpRecoveryRate: 0.9,
         foodConsumptionScaleFactor: 0.13,
         workerCarryingCapacity: 5,
         soldierCarryingCapacity: 7,
@@ -71,4 +78,7 @@ export const vals = {
     seasonLength: 30,
     season: 0,
     offline_mode: false,
+    dashBoardInitialized: false,
 };
+
+export let vars = structuredClone(defaultVars);

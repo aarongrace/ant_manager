@@ -5,7 +5,7 @@ import { useColonyStore } from "../contexts/colonyStore";
 import { debounce } from 'lodash';
 import { TaskType } from "../baseClasses/Ant";
 import { GameMap } from "../baseClasses/Map";
-import { vals } from "../contexts/globalVars";
+import { vars } from "../contexts/globalVariables";
 import { setAntObjective } from "./antHelperFunctions";
 import { findClosestEnemy } from "./enemyHelperFunctions";
 import { findClosestSource } from "./entityHelperFunctions";
@@ -20,7 +20,7 @@ export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const viewportTopLeft = GameMap.getViewportTopLeft();
     const  coords  = {x: viewportX + viewportTopLeft.x, y: viewportY + viewportTopLeft.y};
 
-    if (vals.managingPatrol && !isDragging){
+    if (vars.managingPatrol && !isDragging){
         isDragging = true;
         dragStart.x = viewportX;
         dragStart.y = viewportY;
@@ -92,35 +92,35 @@ const getViewportCoords = (e: React.MouseEvent<HTMLCanvasElement>, canvas: HTMLC
 
 const handleEdgeMove = (viewportCoords: { x: number; y: number }) =>{
     const { x, y } = viewportCoords;
-    const { canvasWidth, canvasHeight } = vals.ui;
+    const { canvasWidth, canvasHeight } = vars.ui;
     const edgeOffset = 40; // pixels from the edge to start scrolling
 
     if (isWithinBounds(viewportCoords, TaskIcon.getTaskIconAreaBounds())){
-        vals.ui.scrollDirection.x = 0;
-        vals.ui.scrollDirection.y = 0;
-        vals.ui.remainingScrollDelay = vals.ui.scrollDelay;
+        vars.ui.scrollDirection.x = 0;
+        vars.ui.scrollDirection.y = 0;
+        vars.ui.remainingScrollDelay = vars.ui.scrollDelay;
         return;
     }
 
     if (x < edgeOffset) {
-        vals.ui.scrollDirection.x = (x - edgeOffset) / edgeOffset;
+        vars.ui.scrollDirection.x = (x - edgeOffset) / edgeOffset;
     } else if (x > canvasWidth - edgeOffset) {
-        vals.ui.scrollDirection.x = (x - (canvasWidth - edgeOffset)) / edgeOffset;
+        vars.ui.scrollDirection.x = (x - (canvasWidth - edgeOffset)) / edgeOffset;
     } else {
-        vals.ui.scrollDirection.x = 0;
+        vars.ui.scrollDirection.x = 0;
     }
 
     if (y < edgeOffset) {
-        vals.ui.scrollDirection.y = (y - edgeOffset) / edgeOffset;
+        vars.ui.scrollDirection.y = (y - edgeOffset) / edgeOffset;
     }
     else if (y > canvasHeight - edgeOffset) {
-        vals.ui.scrollDirection.y = (y - (canvasHeight - edgeOffset)) / edgeOffset;
+        vars.ui.scrollDirection.y = (y - (canvasHeight - edgeOffset)) / edgeOffset;
     } else {
-        vals.ui.scrollDirection.y = 0;
+        vars.ui.scrollDirection.y = 0;
     }
 
-    if (vals.ui.scrollDirection.x == 0 && vals.ui.scrollDirection.y == 0) {
-        vals.ui.remainingScrollDelay = vals.ui.scrollDelay;
+    if (vars.ui.scrollDirection.x == 0 && vars.ui.scrollDirection.y == 0) {
+        vars.ui.remainingScrollDelay = vars.ui.scrollDelay;
     }
 }
 
@@ -146,7 +146,7 @@ export const handleMouseMove = debounce((e: React.MouseEvent<HTMLCanvasElement>,
             hoveredElement.isHovered = false;
             if (hoveredElement && hoveredElement instanceof TaskIcon) {
                 const hoveredTask = hoveredElement.type;
-                vals.highlightedTasks = vals.highlightedTasks.filter((task) => task !== hoveredTask);
+                vars.highlightedTasks = vars.highlightedTasks.filter((task: TaskType) => task !== hoveredTask);
             }
             hoveredElement = null;
         }
@@ -156,7 +156,7 @@ export const handleMouseMove = debounce((e: React.MouseEvent<HTMLCanvasElement>,
                 hoveredElement = element;
                 if (element instanceof TaskIcon) {
                     const hoveredTask = element.type;
-                    vals.highlightedTasks.push(hoveredTask);
+                    vars.highlightedTasks.push(hoveredTask);
                 }
                 element.isHovered = true;
                 return;

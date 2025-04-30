@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { AntType, AntTypeInfo } from '../../baseClasses/Ant';
 import { useColonyStore } from '../../contexts/colonyStore';
+import { vars } from '../../contexts/globalVariables';
 import { usePreloadedImagesStore } from '../../contexts/preloadImages';
 import { initializeAntLogic } from '../../gameLogic/antLogic';
 import { handleKeyDown, handleKeyUp } from '../../gameLogic/handleKeyboard';
@@ -10,10 +11,11 @@ import { makeAnt, resetColony, resizeCanvas } from './dashboard.services';
 
 
 const Dashboard: React.FC = () => {
-  const { name: colonyName, ants, eggs, food, chitin, age, perkPurchased, fetchColonyInfo } = useColonyStore();
+  const { name: colonyName, ants, eggs, food, chitin, age, perks: perkPurchased, fetchColonyInfo } = useColonyStore();
   const { isLoaded, preloadImages } = usePreloadedImagesStore();
 
   useEffect(() => {
+    if (vars.dashBoardInitialized) { return; }
     resizeCanvas();
     const initialize = async () =>{
       if (!isLoaded) {
@@ -27,6 +29,7 @@ const Dashboard: React.FC = () => {
     window.addEventListener('resize', resizeCanvas);
     window.addEventListener('keydown',handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+    vars.dashBoardInitialized = true;
   }, []);
 
 

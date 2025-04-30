@@ -1,7 +1,7 @@
-import { Ant, AntTypeInfo, TaskType } from "../baseClasses/Ant";
+import { Ant, AntType, AntTypeInfo, TaskType } from "../baseClasses/Ant";
 import { GameMap } from "../baseClasses/Map";
 import { useColonyStore } from "../contexts/colonyStore";
-import { vals } from "../contexts/globalVars"; // Updated to use env
+import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { reignInCoords } from "./antHelperFunctions";
 import { initializeAntLogic } from "./antLogic";
 
@@ -12,48 +12,48 @@ export const updateContinuousGameState = (delta: number) => {
 
 
 const handleScrolling = (delta: number)=>{
-    if (vals.ui.scrollDirection.x === 0 && vals.ui.scrollDirection.y === 0) {
+    if (vars.ui.scrollDirection.x === 0 && vars.ui.scrollDirection.y === 0) {
         return;
-    } else if (vals.ui.remainingScrollDelay > 0){
-        vals.ui.remainingScrollDelay-= delta;
+    } else if (vars.ui.remainingScrollDelay > 0){
+        vars.ui.remainingScrollDelay-= delta;
         return;
     }
 
     const epsilon = 30;
 
-    if (vals.ui.scrollDirection.x < 0) {
+    if (vars.ui.scrollDirection.x < 0) {
         GameMap.focalPoint.x = Math.max(
-            vals.ui.canvasWidth / 2,
-            GameMap.focalPoint.x + vals.ui.scrollSpeed * vals.ui.scrollDirection.x * delta
+            vars.ui.canvasWidth / 2,
+            GameMap.focalPoint.x + vars.ui.scrollSpeed * vars.ui.scrollDirection.x * delta
         );
-        if (GameMap.focalPoint.x <= vals.ui.canvasWidth / 2 + epsilon) {
-            GameMap.focalPoint.x = vals.ui.canvasWidth / 2;
+        if (GameMap.focalPoint.x <= vars.ui.canvasWidth / 2 + epsilon) {
+            GameMap.focalPoint.x = vars.ui.canvasWidth / 2;
         }
-    } else if (vals.ui.scrollDirection.x > 0) {
+    } else if (vars.ui.scrollDirection.x > 0) {
         GameMap.focalPoint.x = Math.min(
-            GameMap.mapWidth - vals.ui.canvasWidth / 2,
-            GameMap.focalPoint.x + vals.ui.scrollSpeed * vals.ui.scrollDirection.x * delta
+            GameMap.mapWidth - vars.ui.canvasWidth / 2,
+            GameMap.focalPoint.x + vars.ui.scrollSpeed * vars.ui.scrollDirection.x * delta
         );
-        if (GameMap.focalPoint.x >= GameMap.mapWidth - vals.ui.canvasWidth / 2 - epsilon) {
-            GameMap.focalPoint.x = GameMap.mapWidth - vals.ui.canvasWidth / 2;
+        if (GameMap.focalPoint.x >= GameMap.mapWidth - vars.ui.canvasWidth / 2 - epsilon) {
+            GameMap.focalPoint.x = GameMap.mapWidth - vars.ui.canvasWidth / 2;
         }
     }
 
-    if (vals.ui.scrollDirection.y < 0) {
+    if (vars.ui.scrollDirection.y < 0) {
         GameMap.focalPoint.y = Math.max(
-            vals.ui.canvasHeight / 2,
-            GameMap.focalPoint.y + vals.ui.scrollSpeed * vals.ui.scrollDirection.y * delta
+            vars.ui.canvasHeight / 2,
+            GameMap.focalPoint.y + vars.ui.scrollSpeed * vars.ui.scrollDirection.y * delta
         );
-        if (GameMap.focalPoint.y <= vals.ui.canvasHeight / 2 + epsilon) {
-            GameMap.focalPoint.y = vals.ui.canvasHeight / 2;
+        if (GameMap.focalPoint.y <= vars.ui.canvasHeight / 2 + epsilon) {
+            GameMap.focalPoint.y = vars.ui.canvasHeight / 2;
         }
-    } else if (vals.ui.scrollDirection.y > 0) {
+    } else if (vars.ui.scrollDirection.y > 0) {
         GameMap.focalPoint.y = Math.min(
-            GameMap.mapHeight - vals.ui.canvasHeight / 2,
-            GameMap.focalPoint.y + vals.ui.scrollSpeed * vals.ui.scrollDirection.y * delta
+            GameMap.mapHeight - vars.ui.canvasHeight / 2,
+            GameMap.focalPoint.y + vars.ui.scrollSpeed * vars.ui.scrollDirection.y * delta
         );
-        if (GameMap.focalPoint.y >= GameMap.mapHeight - vals.ui.canvasHeight / 2 - epsilon) {
-            GameMap.focalPoint.y = GameMap.mapHeight - vals.ui.canvasHeight / 2;
+        if (GameMap.focalPoint.y >= GameMap.mapHeight - vars.ui.canvasHeight / 2 - epsilon) {
+            GameMap.focalPoint.y = GameMap.mapHeight - vars.ui.canvasHeight / 2;
         }
     }
 
@@ -79,7 +79,7 @@ const moveAnt = (ant: Ant, delta: number) => {
     }
     reignInCoords(ant.movingTo);
 
-    const speedFactor = ant.task === TaskType.Idle ? vals.ant.idleSpeedFactor : 1; // Updated to use env
+    const speedFactor = ant.task === TaskType.Idle ? vars.ant.idleSpeedFactor : 1; // Updated to use env
 
     const dx = ant.movingTo.x - ant.coords.x;
     const dy = ant.movingTo.y - ant.coords.y;
@@ -97,9 +97,14 @@ const moveAnt = (ant: Ant, delta: number) => {
         return;
     }
 
+    const speedMultiplier = ant.type === AntType.Soldier ? vars.ant.soldierSpeedMult: 
+        ant.type === AntType.Worker ? vars.ant.workerSpeedMult : 1.0;
+
+    const actualSpeed = ant.speed * delta * speedFactor * speedMultiplier;
+
     if (distance > 0) {
-        ant.coords.x += (dx / distance) * ant.speed * delta * speedFactor;
-        ant.coords.y += (dy / distance) * ant.speed * delta * speedFactor;
+        ant.coords.x += (dx / distance) * actualSpeed;
+        ant.coords.y += (dy / distance) * actualSpeed;
         reignInCoords(ant.coords);
     }
 };

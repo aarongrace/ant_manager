@@ -3,7 +3,7 @@ import { Enemy } from "../baseClasses/Enemy";
 import { GameMap } from "../baseClasses/Map";
 import { EntityType, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { vals } from "../contexts/globalVars"; // Use env for constants
+import { vars } from "../contexts/globalVariables"; // Use env for constants
 import { findEnemyByCondition } from "./enemyHelperFunctions";
 import { findMapEntity, getNestEntranceCoords, getRandomCoordsInViewport } from "./entityHelperFunctions";
 
@@ -126,8 +126,8 @@ export const setDestination = (ant: Ant, destination: MapEntity | undefined) => 
         const bias = isX ? Math.cos(angle) : Math.sin(angle);
         const biasedOffset = (randomOffset - bias * 1.1) * offsetFactor;
         return Math.min(
-            GameMap.mapWidth - vals.ui.edgeMargin,
-            Math.max(vals.ui.edgeMargin, coord + biasedOffset)
+            GameMap.mapWidth - vars.ui.edgeMargin,
+            Math.max(vars.ui.edgeMargin, coord + biasedOffset)
         );
     };
 
@@ -153,18 +153,18 @@ export const setAntToIdle = (ant: Ant) => {
 
     if (ant.type === AntType.Queen) {
         const nestCoords = getNestEntranceCoords();
-        ant.anchorPoint.x = nestCoords.x + (Math.random() - 1) * vals.ant.idleRange;
-        ant.anchorPoint.y = nestCoords.y + (Math.random() - 1) * vals.ant.idleRange;
+        ant.anchorPoint.x = nestCoords.x + (Math.random() - 1) * vars.ant.idleRange;
+        ant.anchorPoint.y = nestCoords.y + (Math.random() - 1) * vars.ant.idleRange;
     } else {
-        ant.anchorPoint.x = ant.coords.x + (Math.random() - 1) * vals.ant.idleRange;
-        ant.anchorPoint.y = ant.coords.y + (Math.random() - 1) * vals.ant.idleRange;
+        ant.anchorPoint.x = ant.coords.x + (Math.random() - 1) * vars.ant.idleRange;
+        ant.anchorPoint.y = ant.coords.y + (Math.random() - 1) * vars.ant.idleRange;
     }
     findIdleCoords(ant);
 };
 
 export const findIdleCoords = (ant: Ant) => {
-    ant.movingTo.x = ant.anchorPoint.x + (Math.random() - 1) * 0.1 * vals.ui.canvasWidth;
-    ant.movingTo.y = ant.anchorPoint.y + (Math.random() - 1) * 0.1 * vals.ui.canvasHeight;
+    ant.movingTo.x = ant.anchorPoint.x + (Math.random() - 1) * 0.1 * vars.ui.canvasWidth;
+    ant.movingTo.y = ant.anchorPoint.y + (Math.random() - 1) * 0.1 * vars.ui.canvasHeight;
 };
 
 export const hasArrived = (ant: Ant) => {
@@ -184,8 +184,8 @@ export const startPatrol = (ant: Ant) => {
 
 export const findNewPatrolCoords = (ant: Ant) => {
     if (ant.patrolAnchorPointSet){
-        ant.movingTo.x = ant.anchorPoint.x + (Math.random()-1) * vals.ant.patrolRange/2;
-        ant.movingTo.y = ant.anchorPoint.y + (Math.random()-1) * vals.ant.patrolRange/2;
+        ant.movingTo.x = ant.anchorPoint.x + (Math.random()-1) * vars.ant.patrolRange/2;
+        ant.movingTo.y = ant.anchorPoint.y + (Math.random()-1) * vars.ant.patrolRange/2;
     } else {
         ant.movingTo = getRandomCoordsInViewport();
     }
@@ -212,13 +212,13 @@ export const moveWhileBusy = (ant: Ant) => {
 
 export const reignInCoords = (coords: { x: number, y: number }) => {
     coords.x = Math.max(
-        vals.ui.edgeMargin,
-        Math.min(GameMap.mapWidth - vals.ui.edgeMargin, coords.x)
+        vars.ui.edgeMargin,
+        Math.min(GameMap.mapWidth - vars.ui.edgeMargin, coords.x)
     );
     coords.y = Math.max(
-        vals.ui.edgeMargin,
+        vars.ui.edgeMargin,
         Math.min(
-            GameMap.mapHeight - vals.ui.edgeMargin,
+            GameMap.mapHeight - vars.ui.edgeMargin,
             coords.y
         )
     );
@@ -276,7 +276,7 @@ export const setAntToOptimalTask = (ant: Ant) => {
 export const drawPatrolCircle = (ctx: CanvasRenderingContext2D, ant: Ant) => {
     ctx.save();
     ctx.beginPath();
-    ctx.arc(0, 0, vals.ant.patrolRange, 0, Math.PI * 2);
+    ctx.arc(0, 0, vars.ant.patrolRange, 0, Math.PI * 2);
     ctx.strokeStyle = "rgba(222, 161, 47, 0.7)";
     ctx.lineWidth = 3;
     ctx.stroke();

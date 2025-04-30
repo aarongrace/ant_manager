@@ -14,7 +14,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import { resizeCanvas } from './pages/dashboard/dashboard.services';
 import Guide from './pages/guide/guide';
 import Profile from './pages/profile/Profile';
-import Store from './pages/store/Store';
+import Shop from './pages/store/Shop';
 import Welcome from './pages/welcome/Welcome';
 
 function App() {
@@ -59,7 +59,7 @@ function App() {
           <Route path="/guide" element={<Guide />} />
           <Route path="/ants" element={<AntsPage />} />
           <Route path="/clan" element={<Clan />} />
-          <Route path="/store" element={<Store />} />
+          <Route path="/shop" element={<Shop />} />
           <Route path="/admin" element={<AdminCheck><Admin/></AdminCheck>}/>
         </Routes>
       </main>

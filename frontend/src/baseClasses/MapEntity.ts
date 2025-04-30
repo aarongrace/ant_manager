@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { vals } from "../contexts/globalVars"; // Updated to use env
+import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { findOrRemoveAntForFoodSource } from "../gameLogic/antHelperFunctions";
 import { findValidEntityCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
@@ -145,9 +145,9 @@ export const foodSources: foodSourceType[] = [
   { name: "ham", default_amount: 50, default_width: 48, default_height: 36 },
   {
     name: "fruits",
-    default_amount: vals.food.defaultFruitAmount, // Updated to use env
-    default_width: vals.food.fruitSize, // Updated to use env
-    default_height: vals.food.fruitSize, // Updated to use env
+    default_amount: vars.food.defaultFruitAmount, // Updated to use env
+    default_width: vars.food.fruitSize, // Updated to use env
+    default_height: vars.food.fruitSize, // Updated to use env
   },
 ];
 

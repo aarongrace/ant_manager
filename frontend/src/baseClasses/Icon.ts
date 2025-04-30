@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { useColonyStore } from "../contexts/colonyStore";
-import { vals } from "../contexts/globalVars"; // Updated to use env
+import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { setOneAntToTask } from "../gameLogic/antHelperFunctions";
 import { AntType, TaskType } from "./Ant";
@@ -24,7 +24,7 @@ export class TaskIcon implements InteractiveElement {
         const height = TaskIcon.defaultSize.height + TaskIcon.bottomMargin * 2;
         return {
             left: 0,
-            top: vals.ui.canvasHeight - height, // Updated to use env
+            top: vars.ui.canvasHeight - height, // Updated to use env
             width:
                 (TaskIcon.defaultSize.width +
                     TaskIcon.betweenMargin +
@@ -98,7 +98,7 @@ export const useIconsStore = create<IconsStore>((set, get) => ({
         const icons: TaskIcon[] = [];
         const iconTypes = Object.values(TaskType);
         const iconY =
-            vals.ui.canvasHeight - // Updated to use env
+            vars.ui.canvasHeight - // Updated to use env
             TaskIcon.defaultSize.height / 2 -
             TaskIcon.bottomMargin;
         iconTypes.forEach((type, index) => {

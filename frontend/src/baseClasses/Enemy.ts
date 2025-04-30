@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { useColonyStore } from "../contexts/colonyStore";
-import { vals } from "../contexts/globalVars"; // Updated to use env
+import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { findClosestAnt, setOneAntOnEnemy } from "../gameLogic/antHelperFunctions";
 import { calculateDistance } from "../gameLogic/entityHelperFunctions";
@@ -285,7 +285,7 @@ const getRandomType = (): EnemyType => {
 };
 
 export const createEnemy = (type: EnemyType = getRandomType()): Enemy => {
-  const { canvasWidth, canvasHeight } = vals.ui; // Updated to use env
+  const { canvasWidth, canvasHeight } = vars.ui; // Updated to use env
   const viewportTopLeft = GameMap.getViewportTopLeft();
   const edge = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
   let x = 0,

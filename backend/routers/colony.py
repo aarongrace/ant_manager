@@ -3,6 +3,7 @@ from typing import List
 from beanie import Document
 from pydantic import ValidationError
 
+from game_logic.perk import Perk
 from game_logic.enemy import Enemy
 from game_logic.fruit import Fruit
 from game_logic.ant import Ant
@@ -28,7 +29,7 @@ class Colony(Document):
     chitin: float  # Amount of chitin available
     age: int  # Age of the colony
     map: List[List[List]]  # Map associated with the colony
-    perkPurchased: List[str]  # List of perks purchased by the colony
+    perks: List[Perk]  # List of perks purchased by the colony
     initialized: bool  # Indicates if the colony has been initialized
 
     class Settings:
@@ -48,7 +49,7 @@ class Colony(Document):
             chitin=0,
             age=0,
             map=[[]],
-            perkPurchased=[],
+            perks=[],
             initialized = False,
         )
     
@@ -63,7 +64,7 @@ async def get_colony(id: str):
         colony = await Colony.get(id)
     except ValidationError as e:
         logger.warning(f"Validation error while fetching colony: {e}")
-        colony = await Colony.initialize_default(id)
+        colony = Colony.initialize_default(id)
         return colony
 
     if not colony:
@@ -110,3 +111,20 @@ async def ensure_guest_colony_exists(reinitialize: bool = False):
         logger.info(f"Guest colony initialized: {guest_colony}")
     else:
         logger.info(f"Guest colony already exists: {guest_colony}")
+    
+async def validate_and_reset_all_colonies():
+    raw_colonies = await Colony.get_motor_collection().find().to_list(None)
+    logger.info(f"Existing colonies in database: {len(raw_colonies)}")
+    counter = 0
+    for raw in raw_colonies:
+        try:
+            Colony.model_validate(raw)
+        except ValidationError as e:
+            colony_id = raw.get("_id")
+            logger.warning(f"Validation error for colony {colony_id}: {e}")
+            await Colony.get_motor_collection().delete_one({"_id": colony_id})
+            new_colony = Colony.initialize_default(colony_id)
+            await new_colony.insert()
+            logger.info(f"New colony created for {colony_id}: {new_colony}")
+            counter += 1
+    logger.info(f"Validation complete. {counter} colonies have been reset")

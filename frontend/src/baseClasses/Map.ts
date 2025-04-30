@@ -1,6 +1,6 @@
 import { random } from "lodash";
 import { tileData } from "../assets/tileData";
-import { vals } from "../contexts/globalVars";
+import { vars } from "../contexts/globalVariables";
 import { maybeGrowFruit } from "../gameLogic/entityHelperFunctions";
 export type Tile = [number, number]; // row, col
 type Pixel = [number, number, number]; // r, g, b
@@ -16,7 +16,8 @@ export class GameMap {
     static focalPoint: { x: number; y: number } = { x: GameMap.mapWidth / 2, y: GameMap.mapHeight / 2 };
     static tilesGrid: Tile[][] = [[]];
     static imageData: ImageData = new ImageData(GameMap.mapWidth, GameMap.mapHeight);
-    static partialImageData: ImageData = new ImageData(vals.ui.canvasWidth, vals.ui.canvasHeight);
+    static partialImageData: ImageData = new ImageData(vars.ui.canvasWidth, vars.ui.canvasHeight);
+    static initialized = false;
 
     static rowsPerSeason: number = 3;
 
@@ -37,6 +38,7 @@ export class GameMap {
         GameMap.initializeTiles();
         GameMap.createFullImageData();
         GameMap.cropImageData();
+        GameMap.initialized = true;
     }
 
     static incrementUpdateCounter() {
@@ -55,9 +57,9 @@ export class GameMap {
                     const tile = GameMap.tilesGrid[i][j];
                     const randomFactor = Math.random();
                     if (tile === GameMap.normalTile) {
-                        const seasonFactor = vals.season === 0 ? 4 :
-                        vals.season === 1 ? 2:
-                        vals.season === 2 ? 1: 0.2
+                        const seasonFactor = vars.season === 0 ? 4 :
+                        vars.season === 1 ? 2:
+                        vars.season === 2 ? 1: 0.2
 
                         if (randomFactor < 0.003 * seasonFactor) {
                             GameMap.tilesGrid[i][j] = GameMap.grassOneTile;
@@ -165,8 +167,8 @@ export class GameMap {
 
     // not in use due to edge scroll
     static createPartialImageData() {
-        const viewportWidth = Math.ceil(vals.ui.canvasWidth);
-        const viewportHeight = Math.ceil(vals.ui.canvasHeight);
+        const viewportWidth = Math.ceil(vars.ui.canvasWidth);
+        const viewportHeight = Math.ceil(vars.ui.canvasHeight);
         GameMap.partialImageData= new ImageData(viewportWidth, viewportHeight);
         const viewportLeft = Math.ceil(GameMap.focalPoint.x - viewportWidth / 2);
         const viewportTop = Math.ceil(GameMap.focalPoint.y - viewportHeight / 2);
@@ -187,7 +189,7 @@ export class GameMap {
                     pixelX >= 0 && pixelX < tileSize &&
                     pixelY >= 0 && pixelY < tileSize) {
                     const tile = GameMap.tilesGrid[tileRow][tileCol];
-                    const pixel = tileData[tile[0] + vals.season * GameMap.rowsPerSeason][tile[1]][pixelY][pixelX];
+                    const pixel = tileData[tile[0] + vars.season * GameMap.rowsPerSeason][tile[1]][pixelY][pixelX];
                     const index = (y * viewportWidth + x) * 4;
                     GameMap.partialImageData.data[index] = pixel[0];     // R
                     GameMap.partialImageData.data[index + 1] = pixel[1]; // G
@@ -199,10 +201,14 @@ export class GameMap {
     }
 
     static createFullImageData() {
+        if (!GameMap.initialized) {
+            console.error("GameMap not initialized");
+            return;
+        }
         for (let tileRow = 0; tileRow < GameMap.mapTileHeight; tileRow++) {
             for (let tileCol = 0; tileCol < GameMap.mapTileWidth; tileCol++) {
                 const tileIndex = GameMap.tilesGrid[tileRow][tileCol];
-                const tile = tileData[tileIndex[0] + vals.season * GameMap.rowsPerSeason][tileIndex[1]];
+                const tile = tileData[tileIndex[0] + vars.season * GameMap.rowsPerSeason][tileIndex[1]];
                 for (let pixelY = 0; pixelY < GameMap.mapTileSize; pixelY++) {
                     for (let pixelX = 0; pixelX < GameMap.mapTileSize; pixelX++) {
                         const pixel = tile[pixelY][pixelX];
@@ -218,8 +224,8 @@ export class GameMap {
     }
 
     static cropImageData() {
-        const viewportWidth = Math.ceil(vals.ui.canvasWidth);
-        const viewportHeight = Math.ceil(vals.ui.canvasHeight);
+        const viewportWidth = Math.ceil(vars.ui.canvasWidth);
+        const viewportHeight = Math.ceil(vars.ui.canvasHeight);
         const viewportTopLeft = GameMap.getViewportTopLeft();
         GameMap.partialImageData = new ImageData(viewportWidth, viewportHeight);
 
@@ -262,8 +268,8 @@ export class GameMap {
     }
 
     static getViewportTopLeft(): { x: number; y: number } {
-        const viewportWidth = Math.ceil(vals.ui.canvasWidth);
-        const viewportHeight = Math.ceil(vals.ui.canvasHeight);
+        const viewportWidth = Math.ceil(vars.ui.canvasWidth);
+        const viewportHeight = Math.ceil(vars.ui.canvasHeight);
         const viewportLeft = Math.ceil(GameMap.focalPoint.x - viewportWidth / 2);
         const viewportTop = Math.ceil(GameMap.focalPoint.y - viewportHeight / 2);
         return { x: viewportLeft, y: viewportTop };

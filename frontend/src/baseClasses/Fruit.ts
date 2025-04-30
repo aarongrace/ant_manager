@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { vals } from "../contexts/globalVars"; // Updated to use env
+import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { usePreloadedImagesStore } from "../contexts/preloadImages";
 import { findValidEntityCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
 import { GameMap } from "./Map";
@@ -28,7 +28,7 @@ export class Fruit extends MapEntity {
     col: number,
     row: number,
     stage: number,
-    size: { width: number; height: number } = { width: vals.food.fruitSize, height: vals.food.fruitSize } // Updated to use env
+    size: { width: number; height: number } = { width: vars.food.fruitSize, height: vars.food.fruitSize } // Updated to use env
   ) {
     super(v4(), EntityType.FoodResource, coords, size, amount);
     this.col = col;
@@ -83,20 +83,20 @@ export class Fruit extends MapEntity {
     const row = this.fruitStagesChart[col][0][Math.floor(Math.random() * this.fruitStagesChart[col][0].length)];
     return new Fruit(
       coords,
-      Math.random() * vals.food.defaultFruitAmount / 2 + vals.food.defaultFruitAmount / 2, // Updated to use env
+      Math.random() * vars.food.defaultFruitAmount / 2 + vars.food.defaultFruitAmount / 2, // Updated to use env
       col,
       row,
       1, // Default stage
-      { width: vals.food.fruitSize, height: vals.food.fruitSize } // Updated to use env
+      { width: vars.food.fruitSize, height: vars.food.fruitSize } // Updated to use env
     );
   }
 
   decreaseAmount(decrease: number): void {
     this.amount -= decrease;
-    if (this.amount <= vals.food.defaultFruitAmount / 2 && this.stage == 1) { // Updated to use env
+    if (this.amount <= vars.food.defaultFruitAmount / 2 && this.stage == 1) { // Updated to use env
       this.stage++;
       this.row = this.setRow(this.stage);
-    } else if (this.amount <= vals.food.defaultFruitAmount * 0.75 && this.stage == 0) { // Updated to use env
+    } else if (this.amount <= vars.food.defaultFruitAmount * 0.75 && this.stage == 0) { // Updated to use env
       this.stage++;
       this.row = this.setRow(this.stage);
     }

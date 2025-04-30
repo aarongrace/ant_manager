@@ -7,8 +7,9 @@ import { EnemyCorpse, generateEnemyCorpse } from "../baseClasses/EnemyCorpse";
 import { Fruit, FruitData } from "../baseClasses/Fruit";
 import { GameMap, Tile } from "../baseClasses/Map";
 import { MapEntity, MapEntityData } from "../baseClasses/MapEntity"; // Import MapEntity
+import Perk, { Cosmetic, initializeDefaultUpgrades, PerkData, reapplyPerks, Upgrade } from "../baseClasses/Perk";
 import { useWarningStore } from "../components/WarningBar";
-import { vals } from "./globalVars";
+import { vars } from "./globalVariables";
 
 // Define the ColonyStore type
 type ColonyStore = {
@@ -21,13 +22,15 @@ type ColonyStore = {
   chitin: number;
   age: number;
   map: Tile[][];
-  perkPurchased: string[];
+  perks: Perk[];
   fetchColonyInfo: () => Promise<void>;
   putColonyInfo: () => Promise<void>;
   updateColony: (updates: Partial<ColonyStore>) => void;
+  test: {counter:number};
 };
 
 export const useColonyStore = create<ColonyStore>((set, get) => ({
+  test: {counter: 0},
   name: "",
   ants: [],
   enemies: [],
@@ -37,11 +40,11 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
   chitin: 0,
   age: 0,
   map: [[]],
-  perkPurchased: [],
+  perks: [],
 
   // Fetch a colony from the backend
   fetchColonyInfo: async () => {
-    if (vals.offline_mode) {
+    if (vars.offline_mode) {
       console.warn("Offline mode is enabled. Colony info will not be fetched from the backend.");
       return;
     }
@@ -72,20 +75,29 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       await get().putColonyInfo();
     } else {
       const ants = convertAntData(data.ants as AntData[]);
-      const enemies = data.enemies.map((enemy: EnemyData) => Enemy.fromData(enemy)); // Convert enemies
-      const mapEntities = data.mapEntities.map((entity: any) => {
+      const enemies = data.enemies ?  data.enemies.map((enemy: EnemyData) => Enemy.fromData(enemy)) : []; 
+      const mapEntities = data.mapEntities ? data.mapEntities.map((entity: any) => {
         return MapEntity.fromMapEntityData(entity);
-      });
+      }) : [];
+      const perks = data.perks ? data.perks.map((perkData:PerkData) => {
+        if (perkData.isUpgrade){
+          return new Upgrade(perkData)
+        } else {
+          return new Cosmetic(perkData)
+        }
+      }) : initializeDefaultUpgrades();
       console.log("mapEntities", mapEntities);
-      const fruits = data.fruits.map((fruit: any) => {
+      const fruits = data.fruits ? data.fruits.map((fruit: any) => {
         return Fruit.fromFruitData(fruit);
-      });
+      }) : [];
       mapEntities.push(...fruits);
-      vals.season = Math.floor(data.age / vals.seasonLength) % 4;
+      vars.season = Math.floor(data.age / vars.seasonLength) % 4;
       GameMap.setTilesArray(data.map);
+      reapplyPerks(perks);
 
       set({
         ...data,
+        perks,
         ants, // Replace ants with the converted Ant objects
         enemies, // Replace enemies with the converted Enemy objects
         mapEntities, // Replace mapEntities with the converted MapEntity objects
@@ -95,7 +107,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
 
   // Send colony info to the backend
   putColonyInfo: async () => {
-    if (vals.offline_mode) {
+    if (vars.offline_mode) {
       console.warn("Offline mode is enabled. Colony info will not be sent to the backend.");
       return;
     }
@@ -113,6 +125,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     const ants = convertAnts(colonyState.ants);
     const enemies = colonyState.enemies.map((enemy) => Enemy.toData(enemy)); // Convert enemies to EnemyData
     const entityData = convertEntityObjectsToData(colonyState.mapEntities);
+    const perksData = colonyState.perks.map((perk) => perk.toData());
 
     const colonyInfo = {
       name: colonyState.name,
@@ -125,7 +138,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       chitin: colonyState.chitin,
       age: colonyState.age,
       map: colonyState.map,
-      perkPurchased: colonyState.perkPurchased,
+      perks: perksData,
       initialized: true,
     };
 
@@ -162,7 +175,7 @@ export const startOfflineMode = ()=>{
   console.warn("starting offline mode");
   const {updateColony} = useColonyStore.getState();
   const {startWarning} = useWarningStore.getState();
-  vals.offline_mode = true;
+  vars.offline_mode = true;
   updateColony(createFreshColony());
   startWarning("Connection with backend failed. Starting online mode", 3000);
 }
@@ -180,24 +193,23 @@ export const createFreshColony = () => {
     x: nestEntrance.coords.x + nestEntrance.size.width / 2.5,
     y: nestEntrance.coords.y + nestEntrance.size.height / 3,
   };
-  const enemy = createEnemy(); // Create an enemy
-
-
+  const enemies = [createEnemy(), createEnemy()]; // Create an enemy
   const ants = [queen, Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Worker),
     Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(),Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(),]
-
+  const perks = initializeDefaultUpgrades();
   GameMap.initializeMap();
+
   return {
     ants: ants,
-    enemies: [enemy], // Initialize enemies
+    enemies: enemies, // Initialize enemies
     name: "New Colony",
     map: GameMap.tilesGrid,
     eggs: 10,
     food: 200,
-    chitin: 0,
+    chitin: 200,
     age: 0,
     mapEntities: mapEntities,
-    perkPurchased: [],
+    perks: perks,
     initialized: true,
   };
 };

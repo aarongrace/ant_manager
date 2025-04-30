@@ -32,7 +32,7 @@ const Navbar = () => {
         <Link to="/profile" className="nav-link">Profile</Link>
         <Link to="/ants" className="nav-link">Ants</Link>
         <Link to="/clan" className="nav-link">Clan</Link>
-        <Link to="/store" className="nav-link">Store</Link>
+        <Link to="/shop" className="nav-link">Shop</Link>
         {role === "admin" && (<Link to="/admin" className="nav-link">Admin</Link>)}
         <Link to="/guide" className="nav-link">
           <CircleHelp size={20} />

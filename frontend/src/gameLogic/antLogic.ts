@@ -5,7 +5,7 @@ import { Fruit } from "../baseClasses/Fruit";
 import { GameMap } from "../baseClasses/Map";
 import { EntityType, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
-import { vals } from "../contexts/globalVars"; // Updated to use env
+import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { checkIfAtCapacity, findIdleCoords, findNewPatrolCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination, startPatrol } from "./antHelperFunctions";
 import { findEnemyByCondition } from "./enemyHelperFunctions";
 import { calculateDistance, findClosestSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
@@ -114,7 +114,7 @@ const handleAttack = (ant: Ant) => {
 const handlePatrol = (ant: Ant) => {
     ant.isAttacking = false;
     const isInRange = (enemy: Enemy) => {
-        return calculateDistance(ant.coords, enemy.coords) < vals.ant.patrolRange;
+        return calculateDistance(ant.coords, enemy.coords) < vars.ant.patrolRange;
     }
     const enemy = findEnemyByCondition(isInRange);
     if (enemy) {
@@ -166,15 +166,15 @@ const handleAtChitinSource = (ant: Ant, chitinSource: MapEntity) => {
             v4(),
             EntityType.ChitinSource,
             undefined,
-            vals.ui.carriedEntitySize, // Updated to use env
-            vals.food.chitinCollectRate,
+            vars.ui.carriedEntitySize, // Updated to use env
+            vars.food.chitinCollectRate,
             "chitin",
         );
-        chitinSource.decreaseAmount(vals.food.chitinCollectRate);
+        chitinSource.decreaseAmount(vars.food.chitinCollectRate);
         ant.isBusy = true; // Set the ant to busy state
     } else {
-        ant.carriedEntity.amount += vals.food.chitinCollectRate;
-        chitinSource.decreaseAmount(vals.food.chitinCollectRate);
+        ant.carriedEntity.amount += vars.food.chitinCollectRate;
+        chitinSource.decreaseAmount(vars.food.chitinCollectRate);
         ant.isBusy = true; // Set the ant to busy state
         moveWhileBusy(ant);
     }
@@ -212,13 +212,13 @@ const handleAtFoodSource = (ant: Ant, foodSource: MapEntity) => {
         }
     } else {
         if (foodSource instanceof Fruit) {    
-            ant.carriedEntity = new Fruit(undefined, 1, foodSource.col, foodSource.row, 0, vals.ui.carriedEntitySize); // Updated to use env
+            ant.carriedEntity = new Fruit(undefined, 1, foodSource.col, foodSource.row, 0, vars.ui.carriedEntitySize); // Updated to use env
         } else {
             ant.carriedEntity = new MapEntity(
                 v4(),
                 EntityType.FoodResource,
                 undefined,
-                vals.ui.carriedEntitySize, // Updated to use env
+                vars.ui.carriedEntitySize, // Updated to use env
                 1,
                 foodSource.imgName
             );
