@@ -26,24 +26,28 @@ This project seeks to simulate a colony of ants in terms of reproduction, resour
 
 ---
 
-## Deliverables
+# Descriptions and Implementations of Major Systems
 
-### Game Logic
+## Core Game
 
-- The game logic is implemented through Python objects such as `Colony`, `User`, and `Ant`.
-- Players start with a few ants and some resources, gradually expanding by making new ants and expanding the colony space.
-- **Resources**:
-  - **Food**: Maintains the colony and is used to make new ants.
-  - **Sand**: Used to build nests.
-- **Nests**:
-  - Expanded by clearing obstacles on the map and spending sand.
-- **Tasks**:
-  - Food gathering, sand gathering, egg making, or fighting.
-- **Map**:
-  - Made of squares denoted as nest or unclaimed land.
-  - Objects might also appear on the map.
 
----
+## Users/Profile
+
+
+## Clans
+
+## Trades
+
+## Admin Functions
+
+## Navigation
+
+## Shop
+
+
+
+
+
 
 ### React UI
 

@@ -205,6 +205,8 @@ export class GameMap {
             console.error("GameMap not initialized");
             return;
         }
+        try {
+
         for (let tileRow = 0; tileRow < GameMap.mapTileHeight; tileRow++) {
             for (let tileCol = 0; tileCol < GameMap.mapTileWidth; tileCol++) {
                 const tileIndex = GameMap.tilesGrid[tileRow][tileCol];
@@ -221,6 +223,11 @@ export class GameMap {
                 }
             }
         }
+        } catch (error) {
+            console.error("Error creating full image data: ", error);
+            GameMap.initializeTiles();
+        }
+
     }
 
     static cropImageData() {
