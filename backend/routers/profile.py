@@ -97,6 +97,10 @@ async def login(data: ProfileBase, response: Response):
     if not pwd_context.verify(data.password, user.password):
         logger.warning(f"Login failed: Incorrect password for username {data.username}")
         raise HTTPException(status_code=400, detail="Incorrect password")
+        
+    if user.role == "banned":
+        logger.warning(f"Login failed: Attempted login by banned user: {data.username}")
+        raise HTTPException(status_code=400, detail="User is banned")
 
     user.lastLoggedIn = datetime.now()
     await user.save()
