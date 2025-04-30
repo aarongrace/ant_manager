@@ -3670,3 +3670,385 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-04-30 15:40:48,401 INFO routers.clan:121 Fetched 1 clans
 2025-04-30 15:40:52,430 INFO routers.profile:133 Logging out user
 2025-04-30 15:40:52,431 INFO routers.profile:135 User logged out successfully
+2025-04-30 15:48:23,794 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 15:48:23,798 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 15:48:23,798 INFO routers.profile:200 Ensuring guest profile exists
+2025-04-30 15:48:23,870 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 15:48:23,945 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 15:48:23,946 INFO database:29 Database initialization completed successfully.
+2025-04-30 15:48:26,493 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 15:48:26,494 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 15:48:26,494 INFO routers.profile:200 Ensuring guest profile exists
+2025-04-30 15:48:26,553 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 15:48:26,617 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 15:48:26,617 INFO database:29 Database initialization completed successfully.
+2025-04-30 15:48:31,333 INFO routers.profile:91 Attempting login for username: liaotest
+2025-04-30 15:48:31,375 WARN passlib.handlers.bcrypt:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/Users/liaozhu/school/s25/topics/ant_manager/backend/virt/lib/python3.13/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-04-30 15:48:31,697 INFO routers.profile:107 User liaotest logged in successfully
+2025-04-30 15:48:31,702 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:48:31,733 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:48:31,777 INFO routers.colony:62 Fetching colony with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:48:36,216 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:48:36,251 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:48:36,255 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:48:36,284 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:48:36,498 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:48:36,574 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:49:26,852 INFO routers.profile:133 Logging out user
+2025-04-30 15:49:26,853 INFO routers.profile:135 User logged out successfully
+2025-04-30 15:49:30,371 INFO routers.profile:91 Attempting login for username: liaotest
+2025-04-30 15:49:30,720 INFO routers.profile:107 User liaotest logged in successfully
+2025-04-30 15:49:30,727 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:49:30,757 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:52:50,289 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:52:50,341 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:52:50,349 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:52:50,381 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:52:50,385 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:52:50,454 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:55:25,474 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:55:25,515 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:55:25,517 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:55:25,552 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:55:25,554 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:55:25,622 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:58:40,205 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:40,246 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:58:40,249 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:40,286 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:58:40,288 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:40,327 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:40,360 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:40,362 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:58:40,391 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:40,426 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:40,427 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 15:58:40,428 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:58:40,454 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:58:40,455 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:58:40,456 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 15:58:40,483 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 15:58:40,516 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:40,520 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 15:58:40,520 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 15:58:40,545 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:58:40,549 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 15:58:40,551 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 15:58:40,641 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 15:58:40,643 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 15:58:40,670 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 15:58:40,674 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 15:58:40,707 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 15:58:40,715 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 15:58:40,716 INFO routers.clan:119 Fetching all clans
+2025-04-30 15:58:40,746 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 15:58:40,746 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 15:58:40,752 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 15:58:40,784 INFO routers.clan:119 Fetching all clans
+2025-04-30 15:58:40,813 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 15:58:59,383 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:59,420 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:58:59,423 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:58:59,466 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:58:59,467 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 15:58:59,531 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:02:33,361 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:02:33,403 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:02:33,411 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:02:33,454 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:02:33,455 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:02:33,486 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:02:33,520 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:02:33,520 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:02:33,550 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:02:33,584 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:02:33,585 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:02:33,585 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:02:33,586 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:02:33,586 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:02:33,613 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:02:33,616 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:02:33,617 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:02:33,619 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:02:33,660 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:02:33,660 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:02:33,661 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:02:33,661 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:02:33,691 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:02:33,691 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:02:33,693 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:02:33,694 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:02:33,803 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:02:33,834 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:02:33,867 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:02:33,869 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:02:33,899 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:02:33,899 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:02:33,937 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:02:33,968 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:03:13,577 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:03:13,616 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:03:13,618 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:03:13,652 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:03:13,653 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:03:13,787 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:03:59,822 INFO routers.profile:161 Attempting to update profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:03:59,918 INFO routers.profile:172 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af updated successfully
+2025-04-30 16:04:03,252 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:04:03,284 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:04:03,287 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:04:03,322 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:04:03,328 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:04:03,361 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:04:03,504 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:04:30,692 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:04:30,726 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:04:30,731 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:04:30,765 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:04:30,766 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:04:30,846 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:04:31,301 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:04:31,335 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:04:31,340 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:04:31,372 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:04:31,378 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:04:31,411 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:04:31,547 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:21:00,787 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 16:21:00,790 WARN routers.colony:124 Validation error for colony guest: 1 validation error for Colony
+perks
+  Field required [type=missing, input_value={'_id': 'guest', 'name': ...], 'initialized': False}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.10/v/missing
+2025-04-30 16:21:00,865 INFO routers.colony:128 New colony created for guest: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 16:21:00,865 INFO routers.colony:130 Validation complete. 1 colonies have been reset
+2025-04-30 16:21:00,865 INFO routers.profile:200 Ensuring guest profile exists
+2025-04-30 16:21:00,924 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 16:21:00,991 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 16:21:00,991 INFO database:29 Database initialization completed successfully.
+2025-04-30 16:22:38,213 INFO routers.profile:161 Attempting to update profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:22:38,286 INFO routers.profile:172 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af updated successfully
+2025-04-30 16:27:54,467 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:27:54,531 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:27:54,536 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:27:54,567 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:27:54,574 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:27:54,606 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:27:54,744 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:28:02,798 INFO routers.profile:161 Attempting to update profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:28:03,127 INFO routers.profile:172 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af updated successfully
+2025-04-30 16:28:04,631 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:28:04,750 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:28:04,753 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:28:04,789 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:28:04,806 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:28:04,842 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:28:04,899 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:28:19,630 INFO routers.profile:161 Attempting to update profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:28:20,095 INFO routers.profile:172 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af updated successfully
+2025-04-30 16:29:21,354 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:29:21,633 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:29:21,646 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:29:21,732 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:29:21,741 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:29:21,836 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:29:21,945 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:30:36,907 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:30:37,182 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:30:37,201 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:30:37,296 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:30:37,868 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:30:37,897 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:30:37,997 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:30:38,027 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:30:38,049 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:30:38,180 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:30:38,292 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:30:38,302 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:30:38,380 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:30:38,380 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:30:38,409 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:30:38,490 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:30:38,540 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:30:38,569 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:30:38,601 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:30:38,766 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:30:38,786 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:30:38,798 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:30:38,818 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:30:38,941 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:30:39,029 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:30:39,043 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:30:39,090 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:30:39,096 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:30:39,096 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:30:39,131 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:30:39,160 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:30:39,253 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:30:39,396 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:30:39,429 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:31:42,771 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 16:31:42,772 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 16:31:42,772 INFO routers.profile:200 Ensuring guest profile exists
+2025-04-30 16:31:42,845 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 16:31:42,919 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 16:31:42,920 INFO database:29 Database initialization completed successfully.
+2025-04-30 16:31:44,653 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:31:44,939 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:31:44,953 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:31:45,086 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:31:45,463 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:31:45,495 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:31:45,703 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:31:45,746 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:31:45,902 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:31:45,935 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:31:45,975 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:31:46,027 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:31:46,069 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:31:46,128 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:31:46,304 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:31:46,320 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:31:46,344 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:31:46,381 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:31:46,412 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:31:46,565 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:31:46,602 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:31:46,602 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:31:46,844 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:31:46,885 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:31:46,899 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:31:46,982 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:31:47,039 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:31:47,061 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:31:47,077 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:31:47,094 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:31:47,173 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:31:47,209 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:31:47,431 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:31:47,464 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:32:01,546 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:01,891 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:32:01,902 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:02,195 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:32:02,268 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:02,299 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:02,457 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:02,490 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:02,558 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:32:02,739 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:02,906 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:32:02,921 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:32:03,060 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:32:03,099 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:32:03,142 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:32:03,203 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:32:03,203 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:32:03,204 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:32:03,268 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:32:03,274 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:32:03,275 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:32:03,298 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:32:03,306 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:03,561 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:32:03,575 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:32:03,583 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:32:03,595 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:32:03,610 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:32:03,611 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:32:03,614 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:32:03,643 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:32:03,655 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:32:03,861 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:32:03,894 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:32:31,577 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:31,885 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:32:31,902 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:32:32,095 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:32:32,282 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:32:32,563 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:34:20,377 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:20,741 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:34:20,754 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:21,073 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:34:21,163 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:21,194 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:21,378 INFO routers.trades:54 Fetching pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:21,411 INFO routers.trades:58 Found 1 pending trades for user ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:21,465 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:34:21,840 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:21,921 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:34:21,959 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:34:21,993 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:34:22,014 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:34:22,046 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:34:22,071 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:34:22,207 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:34:22,257 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:34:22,259 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:34:22,284 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:22,295 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:34:22,326 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:22,326 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:34:22,482 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:34:22,527 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:34:22,569 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:34:22,575 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:22,604 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:34:22,607 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:34:22,651 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:34:22,681 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:34:22,696 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:34:22,981 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:34:23,013 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:34:27,623 INFO routers.profile:133 Logging out user
+2025-04-30 16:34:27,623 INFO routers.profile:135 User logged out successfully
+2025-04-30 16:34:31,590 INFO routers.profile:91 Attempting login for username: liaotest2
+2025-04-30 16:34:31,630 WARN passlib.handlers.bcrypt:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/Users/liaozhu/school/s25/topics/ant_manager/backend/virt/lib/python3.13/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-04-30 16:34:31,968 INFO routers.profile:107 User liaotest2 logged in successfully
+2025-04-30 16:34:31,974 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:32,005 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:34:32,028 INFO routers.colony:62 Fetching colony with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:39,381 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:39,422 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:34:39,425 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:39,456 INFO routers.trades:54 Fetching pending trades for user ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:39,456 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:34:39,490 INFO routers.trades:58 Found 0 pending trades for user ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:39,523 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:34:39,523 INFO routers.trades:54 Fetching pending trades for user ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:39,553 INFO routers.trades:58 Found 0 pending trades for user ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:39,590 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:34:39,590 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:39,590 INFO routers.clan:130 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-04-30 16:34:39,592 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:34:39,593 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:34:39,593 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:39,619 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:34:39,623 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:34:39,624 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:34:39,624 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:34:39,656 INFO routers.profile:140 Fetching profile with ID: 4a034347-ea68-4e02-abe7-a091ec96da62
+2025-04-30 16:34:39,657 INFO routers.profile:140 Fetching profile with ID: d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7
+2025-04-30 16:34:39,657 INFO routers.profile:140 Fetching profile with ID: 2bee8a8b-9ffb-4533-b4c7-a628449cf00b
+2025-04-30 16:34:39,659 INFO routers.profile:140 Fetching profile with ID: b7b5b477-dd0d-4d2d-8ae6-898b484842d3
+2025-04-30 16:34:39,690 INFO routers.profile:145 Profile with ID d67dc7c6-d6fe-499a-bb11-0e291cd1e3d7 fetched successfully
+2025-04-30 16:34:39,691 INFO routers.profile:145 Profile with ID b7b5b477-dd0d-4d2d-8ae6-898b484842d3 fetched successfully
+2025-04-30 16:34:39,691 INFO routers.profile:145 Profile with ID 2bee8a8b-9ffb-4533-b4c7-a628449cf00b fetched successfully
+2025-04-30 16:34:39,692 INFO routers.profile:145 Profile with ID 4a034347-ea68-4e02-abe7-a091ec96da62 fetched successfully
+2025-04-30 16:34:39,993 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:34:40,043 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 16:34:40,061 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:34:40,092 INFO routers.clan:121 Fetched 1 clans
+2025-04-30 16:34:40,329 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 16:34:40,397 INFO routers.clan:119 Fetching all clans
+2025-04-30 16:34:40,429 INFO routers.clan:121 Fetched 1 clans
