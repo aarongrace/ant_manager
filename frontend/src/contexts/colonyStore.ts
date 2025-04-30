@@ -11,6 +11,21 @@ import Perk, { Cosmetic, initializeDefaultUpgrades, PerkData, reapplyPerks, Upgr
 import { useWarningStore } from "../components/WarningBar";
 import { vars } from "./globalVariables";
 
+type ColonyInfo = {
+  name: string;
+  ants: AntData[];
+  enemies: EnemyData[];
+  mapEntities: MapEntityData[];
+  fruits: FruitData[];
+  eggs: number;
+  food: number;
+  chitin: number;
+  age: number;
+  map: Tile[][];
+  perks: PerkData[];
+  initialized: boolean;
+};
+
 // Define the ColonyStore type
 type ColonyStore = {
   name: string;
@@ -27,6 +42,7 @@ type ColonyStore = {
   putColonyInfo: () => Promise<void>;
   updateColony: (updates: Partial<ColonyStore>) => void;
   test: {counter:number};
+  generateColonyInfo: () => ColonyInfo;
 };
 
 export const useColonyStore = create<ColonyStore>((set, get) => ({
@@ -106,30 +122,16 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       });
     }
   },
-
-  // Send colony info to the backend
-  putColonyInfo: async () => {
-    if (vars.offline_mode) {
-      console.warn("Offline mode is enabled. Colony info will not be sent to the backend.");
-      return;
-    }
-
+  generateColonyInfo: ():ColonyInfo => {
     const colonyState = get();
-    console.log("Putting colony info...", colonyState);
-
-    const userID = getUserID();
-    if (!userID) {
-      console.error("User ID is not set for putColonyInfo");
-      await get().fetchColonyInfo();
-      return;
-    }
+    console.log("Generating colony info...", colonyState);
 
     const ants = convertAnts(colonyState.ants);
     const enemies = colonyState.enemies?.map(Enemy.toData)??[]; // Convert enemies to EnemyData
     const entityData = convertEntityObjectsToData(colonyState.mapEntities);
     const perksData = colonyState.perks?.map((perk) => perk.toData())??initializeDefaultUpgrades();
 
-    const colonyInfo = {
+    return {
       name: colonyState.name,
       ants:ants,
       enemies: enemies, // Include enemies in the payload
@@ -143,6 +145,24 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       perks: perksData,
       initialized: true,
     };
+  },
+
+  // Send colony info to the backend
+  putColonyInfo: async () => {
+    if (vars.offline_mode) {
+      console.warn("Offline mode is enabled. Colony info will not be sent to the backend.");
+      return;
+    }
+
+    console.log("Putting colony info...");
+    const userID = getUserID();
+    if (!userID) {
+      console.error("User ID is not set for putColonyInfo");
+      await get().fetchColonyInfo();
+      return;
+    }
+    
+    const colonyInfo: ColonyInfo = get().generateColonyInfo();
 
     try {
       const response = await fetch(`http://localhost:8000/colonies/${userID}`, {
@@ -156,7 +176,6 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-
       const data = await response.json();
       console.log("Colony updated successfully:", data);
     } catch (error) {

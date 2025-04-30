@@ -60,7 +60,7 @@ function App() {
           <Route path="/guide" element={<StatusCheck><Guide/></StatusCheck>}/>
           <Route path="/ants" element={<StatusCheck><AntsPage /></StatusCheck>}/>
           <Route path="/clan" element={<StatusCheck><Clan/></StatusCheck>}/>
-          <Route path="/store" element={<StatusCheck><Shop/></StatusCheck>}/>
+          <Route path="/shop" element={<StatusCheck><Shop/></StatusCheck>}/>
           <Route path="/admin" element={<AdminCheck><Admin/></AdminCheck>}/>
         </Routes>
       </main>
