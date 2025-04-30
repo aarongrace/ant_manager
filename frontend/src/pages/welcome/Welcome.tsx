@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { startOfflineMode } from "../../contexts/colonyStore";
 import { useProfileStore } from "../../contexts/profileStore";
-import { getUserID, setUserID } from "../../contexts/userStore";
+import { setUserID } from "../../contexts/userStore";
 import "./welcome.css";
 
 const Welcome = () => {
@@ -57,7 +57,7 @@ const Welcome = () => {
     const data = await res.json();
     if (res.ok) {
       setUserID(data.userId);
-      fetchProfileInfo();
+      await fetchProfileInfo();
       navigate("/dashboard");
     } else {
       console.error("Error logging in", data);

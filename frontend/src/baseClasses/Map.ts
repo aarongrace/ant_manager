@@ -243,6 +243,11 @@ export class GameMap {
 
 
     static setTilesArray(tiles: Tile[][]) {
+        if (!GameMap.initialized || tiles === undefined) {
+            GameMap.initializeMap();
+        };
+
+
         if (tiles.length !== GameMap.mapTileHeight || tiles[0].length !== GameMap.mapTileWidth) {
             console.error("Invalid tile array dimensions");
             GameMap.initializeMap();

@@ -90,7 +90,11 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       const fruits = data.fruits?.map(Fruit.fromFruitData) ?? [];
       mapEntities.push(...fruits);
       vars.season = Math.floor(data.age / vars.seasonLength) % 4;
-      GameMap.setTilesArray(data.map);
+      if (data.map === undefined) {
+        GameMap.initializeMap();
+      } else {
+        GameMap.setTilesArray(data.map);
+      }
       reapplyPerks(perks);
 
       set({

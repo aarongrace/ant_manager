@@ -8,7 +8,6 @@ import { usePreloadedImagesStore } from './contexts/preloadImages';
 import './globals.css';
 import Admin from './pages/admin/Admin';
 import AdminCheck from './pages/admin/AdminCheck';
-import StatusCheck from './pages/welcome/StatusCheck';
 import AntsPage from './pages/ants/AntsPage';
 import Clan from './pages/clan/Clan';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -16,6 +15,7 @@ import { resizeCanvas } from './pages/dashboard/dashboard.services';
 import Guide from './pages/guide/guide';
 import Profile from './pages/profile/Profile';
 import Shop from './pages/shop/Shop';
+import StatusCheck from './pages/welcome/StatusCheck';
 import Welcome from './pages/welcome/Welcome';
 
 function App() {
@@ -60,7 +60,7 @@ function App() {
           <Route path="/guide" element={<StatusCheck><Guide/></StatusCheck>}/>
           <Route path="/ants" element={<StatusCheck><AntsPage /></StatusCheck>}/>
           <Route path="/clan" element={<StatusCheck><Clan/></StatusCheck>}/>
-          <Route path="/store" element={<StatusCheck><Store /></StatusCheck>}/>
+          <Route path="/store" element={<StatusCheck><Shop/></StatusCheck>}/>
           <Route path="/admin" element={<AdminCheck><Admin/></AdminCheck>}/>
         </Routes>
       </main>

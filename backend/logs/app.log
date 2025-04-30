@@ -3539,3 +3539,49 @@ perks.5.is_upgrade
 2025-04-30 07:46:59,751 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
 2025-04-30 07:46:59,751 INFO database:29 Database initialization completed successfully.
 2025-04-30 07:48:43,750 INFO routers.colony:62 Fetching colony with ID: guest
+2025-04-30 15:25:45,958 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 15:25:45,960 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 15:25:45,960 INFO routers.profile:194 Ensuring guest profile exists
+2025-04-30 15:25:46,011 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 15:25:46,078 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 15:25:46,078 INFO database:29 Database initialization completed successfully.
+2025-04-30 15:26:06,167 INFO routers.profile:91 Attempting login for username: 1234
+2025-04-30 15:26:06,434 INFO routers.profile:107 User 1234 logged in successfully
+2025-04-30 15:26:06,444 INFO routers.profile:140 Fetching profile with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:26:06,453 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:26:06,470 INFO routers.profile:145 Profile with ID d3f8c81f-56e0-4886-be4d-e4c35f85951c fetched successfully
+2025-04-30 15:26:26,128 INFO routers.colony:62 Fetching colony with ID: guest
+2025-04-30 15:26:37,775 INFO routers.profile:91 Attempting login for username: 1234
+2025-04-30 15:26:38,016 INFO routers.profile:107 User 1234 logged in successfully
+2025-04-30 15:26:38,027 INFO routers.profile:140 Fetching profile with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:26:38,035 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:26:38,054 INFO routers.profile:145 Profile with ID d3f8c81f-56e0-4886-be4d-e4c35f85951c fetched successfully
+2025-04-30 15:27:28,804 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:27:36,785 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:27:59,568 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:28:12,570 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:28:30,660 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:29:55,794 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:30:12,255 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:37:34,751 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 15:37:34,753 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 15:37:34,753 INFO routers.profile:194 Ensuring guest profile exists
+2025-04-30 15:37:34,811 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 15:37:34,875 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 15:37:34,875 INFO database:29 Database initialization completed successfully.
+2025-04-30 15:37:43,239 INFO routers.profile:91 Attempting login for username: 1234
+2025-04-30 15:37:43,501 INFO routers.profile:107 User 1234 logged in successfully
+2025-04-30 15:37:43,505 INFO routers.profile:140 Fetching profile with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:37:43,534 INFO routers.profile:145 Profile with ID d3f8c81f-56e0-4886-be4d-e4c35f85951c fetched successfully
+2025-04-30 15:37:43,563 INFO routers.colony:62 Fetching colony with ID: d3f8c81f-56e0-4886-be4d-e4c35f85951c
+2025-04-30 15:38:39,172 INFO routers.colony:117 Existing colonies in database: 24
+2025-04-30 15:38:39,174 INFO routers.colony:130 Validation complete. 0 colonies have been reset
+2025-04-30 15:38:39,174 INFO routers.profile:194 Ensuring guest profile exists
+2025-04-30 15:38:39,233 INFO routers.colony:107 Reinitializing guest colony...
+2025-04-30 15:38:39,300 INFO routers.colony:111 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[]] perks=[] initialized=False
+2025-04-30 15:38:39,300 INFO database:29 Database initialization completed successfully.
+2025-04-30 15:38:53,128 INFO routers.profile:91 Attempting login for username: liaotest
+2025-04-30 15:38:53,389 INFO routers.profile:107 User liaotest logged in successfully
+2025-04-30 15:38:53,393 INFO routers.profile:140 Fetching profile with ID: 0d69588c-246d-445a-a038-d18d1e7539af
+2025-04-30 15:38:53,422 INFO routers.profile:145 Profile with ID 0d69588c-246d-445a-a038-d18d1e7539af fetched successfully
+2025-04-30 15:38:53,444 INFO routers.colony:62 Fetching colony with ID: 0d69588c-246d-445a-a038-d18d1e7539af
