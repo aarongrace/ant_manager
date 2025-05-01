@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { updateUserRole, deleteUserProfile, getData, getColony } from "./admin.services";
+import { updateUserRole, deleteUserProfile, getData, getColony, getTrades } from "./admin.services";
 import "./admin.css";
 
 const Admin: React.FC = () => {
@@ -81,6 +81,20 @@ const Admin: React.FC = () => {
     }
   };
 
+  const handleGetTrades = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!username.trim()) {
+      alert("Please enter a username");
+      return;
+    }
+    try {
+      const Info = await getTrades(username);
+      alert(JSON.stringify(Info, null, 2));
+    } catch (error: any) {
+      console.error("Error displaying pending trades:", error);
+    }
+  };
+
   const roleButtons = [
     { label: "Promote", role: "admin" },
     { label: "Set as User", role: "user" },
@@ -123,6 +137,9 @@ const Admin: React.FC = () => {
             <button onClick={handleGetColony} className="admin-submit" type="button">
               Colony Data
             </button>
+            <button onClick={handleGetTrades} className="admin-submit" type="button">
+              Pending trades
+            </button>
           </div>
         </div>
       </form>
@@ -132,5 +149,6 @@ const Admin: React.FC = () => {
     </div>
   );
 };
+
 
 export default Admin;
