@@ -172,13 +172,14 @@ async def update_profile(id: str, request: Request):
     logger.info(f"Profile with ID {id} updated successfully")
     return existing_profile
 
-@profileRouter.delete("/delete/{username}", response_model=dict)
+profileRouter.delete("/delete/{username}", response_model=dict)
 async def delete_profile(username: str):
     profile = await Profile.find_one(Profile.name == username)
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
-    user_id = profile['_id']
+    user_id = profile["_id"]
     from routers.clan import Clan
+
     clan = await Clan.find_one(Clan.members == user_id)
     if clan:
         clan.members.remove(user_id)
@@ -195,6 +196,23 @@ async def update_role(username: str, role_update: RoleUpdate):
     user.role = role_update.role
     await user.save()
     return user
+
+
+@profileRouter.get("/get-data/{username}", response_model=Profile)
+async def get_profile(username: str):
+    user = await Profile.find_one(Profile.name == username)
+    if not user:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return user
+
+
+@profileRouter.get("/get-id/{username}", response_model=ProfileIdResponse)
+async def get_id(username: str):
+    user = await Profile.find_one(Profile.name == username)
+    if not user:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return {"id": str(user.id)}
+
     
 async def ensure_guest_profile_exists(reinitialize: bool = False):
     logger.info("Ensuring guest profile exists")
