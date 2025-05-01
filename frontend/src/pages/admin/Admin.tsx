@@ -89,7 +89,7 @@ const Admin: React.FC = () => {
     }
     try {
       const Info = await getTrades(username);
-      alert(JSON.stringify(Info, null, 2));
+      alert(Info);
     } catch (error: any) {
       console.error("Error displaying pending trades:", error);
     }
