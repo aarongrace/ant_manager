@@ -14,6 +14,11 @@ const Profile: React.FC = () => {
     picture: '',
   });
 
+  const backupInputJSONRef = React.useRef<HTMLInputElement>(null);
+
+
+
+
   useEffect(() => {
     fetchProfileInfo().then(async () => {
       setFormData({
@@ -140,10 +145,11 @@ const Profile: React.FC = () => {
         <button
           type="button"
           className="profile-action-button"
-          onClick={handleRestoreColonyData}
+          onClick={() => {backupInputJSONRef.current?.click();}}
         >
           Restore Colony Data
         </button>
+        <input type="file" ref={backupInputJSONRef} style = {{ display: 'none' }} onChange={handleRestoreColonyData} />
       </div>
     </div>
   );

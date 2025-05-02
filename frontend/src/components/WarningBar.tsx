@@ -39,7 +39,7 @@ export const WarningBar = ()=>{
             padding: "10px", 
             border: "1px solid red", 
             position: "fixed", 
-            top: "50%", 
+            top: "30%", 
             left: "50%", 
             transform: "translate(-50%, -50%)",
             fontSize: "1.5rem",

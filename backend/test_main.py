@@ -2,7 +2,6 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 
 from main import app
-# from ..routers.colony import colonyRouter, get_colony
 
 
 # sign up 

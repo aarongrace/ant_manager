@@ -2,7 +2,8 @@ import json
 from PIL import Image
 import numpy as np
 
-img_path = "frontend/src/utils/tiles.png"
+img_path = "/home/grace/Downloads/tiles.png"
+# img_path = "frontend/src/utils/tiles.png"
 image = Image.open(img_path)
 width, height = image.size
 
@@ -24,7 +25,7 @@ for row in range(height // tile_size):
     tiles.append(tile_row)
 print(tiles)
 
-output_path = "frontend/src/utils/tileData.ts"
+output_path = "frontend/src/assets/tileData.ts"
 with open(output_path, "w") as f:
     f.write("export const tileData = ")
     json.dump(tiles, f)

@@ -1,4 +1,4 @@
-import { useColonyStore } from "../../contexts/colonyStore";
+import { useColonyStore, validateColonyData } from "../../contexts/colonyStore";
 import { useProfileStore } from "../../contexts/profileStore";
 
 export const saveProfile = async (formData: {
@@ -29,6 +29,29 @@ export const handleDownloadColonyData = async () => {
 
 }
 
-export const handleRestoreColonyData = async () => {
+export const handleRestoreColonyData = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { loadColonyData } = useColonyStore.getState();
+    const file = event.target.files?.[0];
+    if (file?.type === "application/json") {
+        const text = await file.text();
+        let jsonData;
+        try {
+            jsonData = JSON.parse(text);
+        } catch (error) {
+            throw new Error("Invalid JSON file");
+        }
 
+        const colonyData = validateColonyData(jsonData);
+        if (!colonyData) {
+            alert("Invalid colony data format.");
+            return;
+        } else {
+            loadColonyData(colonyData);
+            return;
+        }
+
+    } else {
+        alert("Please upload a valid JSON file.");
+        return;
+    }
 }

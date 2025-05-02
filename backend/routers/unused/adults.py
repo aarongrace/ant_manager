@@ -1,7 +1,7 @@
 from enum import Enum
 import random
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, field_validator, ValidationError
 from base_classes import Unit
 from backend.game_logic.ant_names import ant_names
@@ -133,3 +133,12 @@ async def delete_adult_unit(unit_id: int) -> dict:
             del adults_list[i]
             return {"msg": "unit deleted"}
     raise HTTPException(status_code=404, detail="Unit not found")
+
+
+adults = ["Queen", "Worker", "Soldier", "Brood"]
+async def properties(x: int, y: int) -> dict:
+    return {"from": x, "to": y}
+
+@app.get("/adults")
+async def get_adults(params: dict = Depends(properties)) -> List[AdultUnit]:
+    return adults[params["from"]:params["to"]]

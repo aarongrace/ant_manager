@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, Request
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException, Request
+from typing import Annotated, List
 from beanie import Document
 from pydantic import ValidationError
 
@@ -57,19 +57,37 @@ class Colony(Document):
 colonyRouter = APIRouter()
 
 
-@colonyRouter.get("/{id}", response_model=Colony)
-async def get_colony(id: str):
-    logger.info(f"Fetching colony with ID: {id}")
+async def get_colony_by_id(colony_id: str) -> Colony:
     try:
-        colony = await Colony.get(id)
+        colony = await Colony.get(colony_id)
+        if not colony:
+            raise HTTPException(status_code=404, detail="Colony not found")
     except ValidationError as e:
         logger.warning(f"Validation error while fetching colony: {e}")
-        colony = Colony.initialize_default(id)
+        colony = Colony.initialize_default(colony_id)
         return colony
-
-    if not colony:
-        raise HTTPException(status_code=404, detail="Colony not found")
     return colony
+
+
+
+@colonyRouter.get("/{id}", response_model=Colony)   
+async def get_colony(colony: Annotated[Colony, Depends(get_colony_by_id)]):
+    logger.info(f"Fetching colony with ID: {colony.id}")
+    return colony
+
+# @colonyRouter.get("/{id}", response_model=Colony)
+# async def get_colony(id: str):
+#     logger.info(f"Fetching colony with ID: {id}")
+#     try:
+#         colony = await Colony.get(id)
+#     except ValidationError as e:
+#         logger.warning(f"Validation error while fetching colony: {e}")
+#         colony = Colony.initialize_default(id)
+#         return colony
+
+#     if not colony:
+#         raise HTTPException(status_code=404, detail="Colony not found")
+#     return colony
 
 
 @colonyRouter.put("/{id}", response_model=dict)
@@ -128,3 +146,5 @@ async def ensure_all_colonies_valid():
             logger.info(f"New colony created for {colony_id}: {new_colony}")
             counter += 1
     logger.info(f"Validation complete. {counter} colonies have been reset")
+
+    

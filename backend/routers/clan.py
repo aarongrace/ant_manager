@@ -1,3 +1,4 @@
+from typing import Annotated, Optional
 from fastapi import APIRouter, HTTPException, Request, Depends
 from beanie import Document
 from pydantic import BaseModel
@@ -209,3 +210,41 @@ async def kick_member(clan_id: str, member_id: str, request: Request):
         logger.info(f"User {member_id}'s profile updated to remove clan association")
 
     return {"status": "success", "message": "Member kicked successfully"}
+
+
+async def member_filter(start: Optional[int] = None, end: Optional[int] = None, role: Optional[str] = None) -> dict:
+    return { "start": start, "end": end, "role": role }
+
+async def get_clan_members(clan_id: str) -> list[str]:
+    clan = await Clan.get(clan_id)
+    if not clan:
+        logger.warning(f"Get clan members failed: Clan with ID {clan_id} not found")
+        raise HTTPException(status_code=404, detail="Clan not found")
+    return clan.members
+
+@clanRouter.get("/{clan_id}/members")
+async def get_members(
+    clan_id: str,
+    members: Annotated[list[str], Depends(get_clan_members)],
+    params: Annotated[dict, Depends(member_filter)]):
+    if params["role"] == "leader":
+        clan = await Clan.get(clan_id)
+        return [clan.leader]
+    elif params["role"] == "member":
+        clan = await Clan.get(clan_id)
+        return [member for member in clan.members if member != clan.leader]
+    
+    if params["start"] is not None and params["end"] is not None:
+        start = params["start"]
+        end = params["end"]
+        if start < 0 or end < 0:
+            raise HTTPException(status_code=400, detail="Invalid range")
+        if start > end:
+            raise HTTPException(status_code=400, detail="Start cannot be greater than end")
+        if start >= len(members) or end >= len(members):
+            raise HTTPException(status_code=400, detail="Range exceeds member list length")
+        members = members[start:end]
+    
+    return members
+
+    
