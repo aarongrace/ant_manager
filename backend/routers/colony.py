@@ -48,7 +48,7 @@ class Colony(Document):
             food=0,
             chitin=0,
             age=0,
-            map=[[]],
+            map=[[[]]],
             perks=[],
             initialized = False,
         )
@@ -57,51 +57,34 @@ class Colony(Document):
 colonyRouter = APIRouter()
 
 
-async def get_colony_by_id(colony_id: str) -> Colony:
+async def get_colony_from_db(id: str) -> Colony:
+    logger.info(f"Dependency called to get colony with ID: {id}")
     try:
-        colony = await Colony.get(colony_id)
+        colony = await Colony.get(id)
         if not colony:
             raise HTTPException(status_code=404, detail="Colony not found")
     except ValidationError as e:
         logger.warning(f"Validation error while fetching colony: {e}")
-        colony = Colony.initialize_default(colony_id)
+        colony = Colony.initialize_default(id)
         return colony
     return colony
 
+async def update_colony_in_db(request: Request, colony: Annotated[Colony, Depends(get_colony_from_db)])->Colony:
+    data = await request.json()
+    for field, value in data.items():
+        if hasattr(colony, field):
+            setattr(colony, field, value)
+    await colony.save()
+    return colony
 
 
 @colonyRouter.get("/{id}", response_model=Colony)   
-async def get_colony(colony: Annotated[Colony, Depends(get_colony_by_id)]):
-    logger.info(f"Fetching colony with ID: {colony.id}")
+async def get_colony(colony: Annotated[Colony, Depends(get_colony_from_db)]):
     return colony
 
-# @colonyRouter.get("/{id}", response_model=Colony)
-# async def get_colony(id: str):
-#     logger.info(f"Fetching colony with ID: {id}")
-#     try:
-#         colony = await Colony.get(id)
-#     except ValidationError as e:
-#         logger.warning(f"Validation error while fetching colony: {e}")
-#         colony = Colony.initialize_default(id)
-#         return colony
-
-#     if not colony:
-#         raise HTTPException(status_code=404, detail="Colony not found")
-#     return colony
-
-
 @colonyRouter.put("/{id}", response_model=dict)
-async def update_colony(id: str, request: Request):
-    existing_colony = await Colony.get(id)
-    if not existing_colony:
-        raise HTTPException(status_code=404, detail="Colony not found")
-    
-    data = await request.json()
-    for field, value in data.items():
-        if hasattr(existing_colony, field):
-            setattr(existing_colony, field, value)
-    await existing_colony.save()
-    return {"message": f"Colony with ID '{id}' has been updated"}
+async def update_colony(updated_colony: Annotated[Colony, Depends(update_colony_in_db)]):
+    return {"message": f"Colony with ID '{updated_colony.id}' has been updated"}
     
 
 async def ensure_guest_colony_exists(reinitialize: bool = False):

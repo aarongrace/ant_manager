@@ -82,6 +82,12 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     const data = await response.json();
     console.log("Colony data:", data);
 
+    if (data.initialized === false) {
+      get().updateColony(createFreshColony());
+      get().putColonyInfo();
+      return;
+    }
+
     const colonyData = validateColonyData(data);
     if (!colonyData) {
       console.error("Invalid colony data format:", data);
@@ -115,7 +121,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
     };
   },
   loadColonyData: async (data: ColonyData) => {
-    console.log("Restoring colony from JSON...", data);
+    console.log("Loading colony from JSON...", data);
     if (data.initialized === false) {
       console.warn("Colony not initialized, creating a new one...");
       const newColony = createFreshColony();
@@ -192,6 +198,7 @@ export const useColonyStore = create<ColonyStore>((set, get) => ({
       console.error("Error updating colony:", error);
     }
   },
+
 
   // Update colony state
   updateColony: (updates: Partial<ColonyStore>) => {

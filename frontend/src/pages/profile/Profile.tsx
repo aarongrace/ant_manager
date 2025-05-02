@@ -12,12 +12,10 @@ const Profile: React.FC = () => {
     clan: '',
     role: '',
     picture: '',
+    password: '', // Add password to formData
   });
 
   const backupInputJSONRef = React.useRef<HTMLInputElement>(null);
-
-
-
 
   useEffect(() => {
     fetchProfileInfo().then(async () => {
@@ -27,6 +25,7 @@ const Profile: React.FC = () => {
         clan: clan,
         role: role,
         picture: picture,
+        password: '', // Initialize password
       });
   
       if (clan) {
@@ -91,6 +90,7 @@ const Profile: React.FC = () => {
             placeholder="user@email.com"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="clan">Clan:</label>
           <input
@@ -126,6 +126,18 @@ const Profile: React.FC = () => {
             accept="image/*"
             onChange={handleImageChange}
             style={{ color: 'black' }}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            className="profile-input"
+            value={formData.password}
+            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            placeholder="Enter your password"
           />
         </div>
         <button type="button" className="profile-button" onClick={handleSave}>

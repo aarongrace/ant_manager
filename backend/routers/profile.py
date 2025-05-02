@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Request, Response
+from typing import Annotated
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from beanie import Document
 from datetime import datetime
 from enum import Enum
@@ -56,12 +57,46 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-@profileRouter.post('/register')
-async def register(data: ProfileBase):
-    logger.info(f"Attempting to register user with username: {data.username}")
+
+async def authenticate_user(data: ProfileBase) -> Profile:
+    user = await Profile.find_one(Profile.name == data.username)
+    if not user:
+        logger.warning(f"Authentication failed: User with username {data.username} not found")
+        raise HTTPException(status_code=400, detail="User not found")
+
+    if not pwd_context.verify(data.password, user.password):
+        logger.warning(f"Authentication failed: Incorrect password for username {data.username}")
+        raise HTTPException(status_code=400, detail="Incorrect password")
+        
+    if user.role == "banned":
+        logger.warning(f"Authentication failed: Attempted login by banned user: {data.username}")
+        raise HTTPException(status_code=400, detail="User is banned")
+    return user
+
+async def get_profile_by_id(id: str) -> Profile:
+    try:
+        profile = await Profile.get(id)
+        if not profile:
+            raise HTTPException(status_code=404, detail="Profile not found")
+    except Exception as e:
+        logger.warning(f"Error while fetching profile: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    return profile
+
+async def get_profile_by_username(username: str) -> Profile:
+    try:
+        profile = await Profile.find_one(Profile.name == username)
+        if not profile:
+            raise HTTPException(status_code=404, detail="Profile not found")
+    except Exception as e:
+        logger.warning(f"Error while fetching profile: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    return profile
+
+async def create_new_user(data: ProfileBase) -> Profile:
     existing = await Profile.find_one(Profile.name == data.username)
     if existing:
-        logger.warning(f"Registration failed: User with username {data.username} already exists")
+        logger.warning(f"User with username {data.username} already exists")
         raise HTTPException(status_code=400, detail="User already exists")
 
     user = Profile(
@@ -78,34 +113,23 @@ async def register(data: ProfileBase):
 
     await user.insert()
     logger.info(f"User {user.name} registered successfully with ID: {user.id}")
+    return user
 
+
+
+@profileRouter.post('/register')
+async def register(user: Annotated[Profile, Depends(create_new_user)]):
     from .colony import Colony
     newColony = Colony.initialize_default(user.id)
     await newColony.insert()
     logger.info(f"Default colony initialized for user ID: {user.id}")
-
     return {"status": "success", "message": "User registered successfully", "userId": str(user.id)}
 
+
+
 @profileRouter.post('/login')
-async def login(data: ProfileBase, response: Response):
-    logger.info(f"Attempting login for username: {data.username}")
-    user = await Profile.find_one(Profile.name == data.username)
-    if not user:
-        logger.warning(f"Login failed: User with username {data.username} not found")
-        raise HTTPException(status_code=400, detail="User not found")
-
-    if not pwd_context.verify(data.password, user.password):
-        logger.warning(f"Login failed: Incorrect password for username {data.username}")
-        raise HTTPException(status_code=400, detail="Incorrect password")
-        
-    if user.role == "banned":
-        logger.warning(f"Login failed: Attempted login by banned user: {data.username}")
-        raise HTTPException(status_code=400, detail="User is banned")
-
-    user.lastLoggedIn = datetime.now()
-    await user.save()
+async def login(user: Annotated[Profile, Depends(authenticate_user)], response: Response):
     logger.info(f"User {user.name} logged in successfully")
-
     response.set_cookie(
         key="userId",
         value=str(user.id),
@@ -113,7 +137,6 @@ async def login(data: ProfileBase, response: Response):
         samesite="lax",
         secure=False 
     )
-
     return {
         "status": "success",
         "message": "Login successful",
@@ -128,6 +151,7 @@ async def login(data: ProfileBase, response: Response):
         "userId": str(user.id),
     }
 
+
 @profileRouter.post('/logout')
 async def logout(response: Response):
     logger.info("Logging out user")
@@ -135,102 +159,60 @@ async def logout(response: Response):
     logger.info("User logged out successfully")
     return {"status": "success", "message": "Logged out successfully"}
 
-@profileRouter.get("/{id}", response_model=Profile)
-async def get_profile(id: str):
-    logger.info(f"Fetching profile with ID: {id}")
-    profile = await Profile.get(id)
-    if not profile:
-        logger.warning(f"Profile with ID {id} not found")
-        raise HTTPException(status_code=404, detail="Profile not found")
-    logger.info(f"Profile with ID {id} fetched successfully")
-    return profile
 
-@profileRouter.post("/{id}", response_model=Profile)
-async def create_profile(profile: Profile):
-    logger.info(f"Attempting to create profile with ID: {profile.id}")
-    existing_profile = await Profile.get(profile.id)
-    if existing_profile:
-        logger.warning(f"Profile creation failed: Profile with ID {profile.id} already exists")
-        raise HTTPException(status_code=400, detail="Profile already exists")
-    await profile.insert()
-    logger.info(f"Profile with ID {profile.id} created successfully")
+
+@profileRouter.get("/{id}", response_model=Profile)
+async def get_profile(profile: Annotated[Profile, Depends(get_profile_by_id)]):
     return profile
 
 @profileRouter.put("/{id}", response_model=Profile)
-async def update_profile(id: str, request: Request):
+async def update_profile(id: str, request: Request, profile: Annotated[Profile, Depends(get_profile_by_id)]):
     logger.info(f"Attempting to update profile with ID: {id}")
-    existing_profile = await Profile.get(id)
-    if not existing_profile:
-        logger.warning(f"Profile update failed: Profile with ID {id} not found")
-        raise HTTPException(status_code=404, detail="Profile not found")
     data = await request.json()
 
     for field, value in data.items():
-        if hasattr(existing_profile, field):
-            setattr(existing_profile, field, value)
-    await existing_profile.save()
+        if hasattr(profile, field):
+            if field == "password":
+                value = hash_password(value)
+            setattr(profile, field, value)
+    await profile.save()
     logger.info(f"Profile with ID {id} updated successfully")
-    return existing_profile
+    return profile
 
-@profileRouter.delete("/delete/{username}", response_model=dict)
-async def delete_profile(username: str):
-    logger.info(f"Attempting to delete profile with username: {username}")
-    profile = await Profile.find_one(Profile.name == username)
-    if not profile:
-        logger.warning(
-            f"Profile delete failed: Profile with username {username} not found"
-        )
-        raise HTTPException(status_code=404, detail="Profile not found")
-    user_id = profile["_id"]
+
+@profileRouter.delete("/delete/{username}")
+async def delete_profile(user: Annotated[Profile, Depends(get_profile_by_username)]):
+    logger.info(f"Attempting to delete profile with username: {user.name}")
     from routers.clan import Clan
 
-    clan = await Clan.find_one(Clan.members == user_id)
+    clan = await Clan.find_one(Clan.members == user.id)
     if clan:
-        clan.members.remove(user_id)
+        logger.info(f"Removing user {user.name} from clan {clan.name}")
+        clan.members.remove(user.id)
         await clan.save()
-    await profile.delete()
-    logger.info(f"Profile with username {username} deleted successfully")
-    return {"message": f"Profile with username '{username}' has been deleted"}
+    await user.delete()
+    logger.info(f"Profile with username {user.name} deleted successfully")
+    return {"message": f"Profile with username '{user.name}' has been deleted"}
 
 
 @profileRouter.put("/update-role/{username}", response_model=Profile)
-async def update_role(username: str, role_update: RoleUpdate):
-    logger.info(
-        f"Attempting to change the role of profile with username: {username} to {role_update}"
-    )
-    user = await Profile.find_one(Profile.name == username)
-    if not user:
-        logger.warning(
-            f"Role change failed: Profile with username {username} not found"
-        )
-        raise HTTPException(status_code=404, detail="Profile not found")
+async def update_role(role_update: RoleUpdate, user: Annotated[Profile, Depends(get_profile_by_username)]):
+    logger.info( f"Attempting to change the role of profile with username: {user.name} to {role_update}")
     user.role = role_update.role
     await user.save()
-    logger.info(f"Profile with username {username} is now {role_update}")
+    logger.info(f"Profile with username {user.name} is now {role_update}")
     return user
 
 
 @profileRouter.get("/get-data/{username}", response_model=Profile)
-async def get_profile(username: str):
-    logger.info(f"Attempting to get profile data of profile with username: {username}")
-    user = await Profile.find_one(Profile.name == username)
-    if not user:
-        logger.warning(
-            f"Get profile data failed: Profile with username {username} not found"
-        )
-        raise HTTPException(status_code=404, detail="Profile not found")
-    logger.info(f"Profile data found for profile with username {username}")
+async def get_profile(user: Annotated[Profile, Depends(get_profile_by_username)]):
+    logger.info(f"Fetching profile data for username: {user.name}")
     return user
 
 
-@profileRouter.get("/get-id/{username}", response_model=ProfileIdResponse)
-async def get_id(username: str):
-    logger.info(f"Attempting to get ID of profile with username: {username}")
-    user = await Profile.find_one(Profile.name == username)
-    if not user:
-        logger.warning(f"Profile with username {username} not found")
-        raise HTTPException(status_code=404, detail="Profile not found")
-    logger.info(f"Profile ID for profile with username {username} found")
+@profileRouter.get("/get-id/{username}")
+async def get_id(user: Annotated[Profile, Depends(get_profile_by_username)]):
+    logger.info(f"Fetching ID for username: {user.name}")
     return {"id": str(user.id)}
 
     
