@@ -73,7 +73,7 @@ async def authenticate_user(data: ProfileBase) -> Profile:
         raise HTTPException(status_code=400, detail="User is banned")
     return user
 
-async def get_profile_by_id(id: str) -> Profile:
+async def fetch_profile_by_id(id: str) -> Profile:
     try:
         profile = await Profile.get(id)
         if not profile:
@@ -83,7 +83,7 @@ async def get_profile_by_id(id: str) -> Profile:
         raise HTTPException(status_code=500, detail="Internal Server Error")
     return profile
 
-async def get_profile_by_username(username: str) -> Profile:
+async def fetch_profile_by_username(username: str) -> Profile:
     try:
         profile = await Profile.find_one(Profile.name == username)
         if not profile:
@@ -162,11 +162,11 @@ async def logout(response: Response):
 
 
 @profileRouter.get("/{id}", response_model=Profile)
-async def get_profile(profile: Annotated[Profile, Depends(get_profile_by_id)]):
+async def get_profile(profile: Annotated[Profile, Depends(fetch_profile_by_id)]):
     return profile
 
 @profileRouter.put("/{id}", response_model=Profile)
-async def update_profile(id: str, request: Request, profile: Annotated[Profile, Depends(get_profile_by_id)]):
+async def update_profile(id: str, request: Request, profile: Annotated[Profile, Depends(fetch_profile_by_id)]):
     logger.info(f"Attempting to update profile with ID: {id}")
     data = await request.json()
 
@@ -181,7 +181,7 @@ async def update_profile(id: str, request: Request, profile: Annotated[Profile, 
 
 
 @profileRouter.delete("/delete/{username}")
-async def delete_profile(user: Annotated[Profile, Depends(get_profile_by_username)]):
+async def delete_profile(user: Annotated[Profile, Depends(fetch_profile_by_username)]):
     logger.info(f"Attempting to delete profile with username: {user.name}")
     from routers.clan import Clan
 
@@ -196,7 +196,7 @@ async def delete_profile(user: Annotated[Profile, Depends(get_profile_by_usernam
 
 
 @profileRouter.put("/update-role/{username}", response_model=Profile)
-async def update_role(role_update: RoleUpdate, user: Annotated[Profile, Depends(get_profile_by_username)]):
+async def update_role(role_update: RoleUpdate, user: Annotated[Profile, Depends(fetch_profile_by_username)]):
     logger.info( f"Attempting to change the role of profile with username: {user.name} to {role_update}")
     user.role = role_update.role
     await user.save()
@@ -205,13 +205,13 @@ async def update_role(role_update: RoleUpdate, user: Annotated[Profile, Depends(
 
 
 @profileRouter.get("/get-data/{username}", response_model=Profile)
-async def get_profile(user: Annotated[Profile, Depends(get_profile_by_username)]):
+async def get_profile(user: Annotated[Profile, Depends(fetch_profile_by_username)]):
     logger.info(f"Fetching profile data for username: {user.name}")
     return user
 
 
 @profileRouter.get("/get-id/{username}")
-async def get_id(user: Annotated[Profile, Depends(get_profile_by_username)]):
+async def get_id(user: Annotated[Profile, Depends(fetch_profile_by_username)]):
     logger.info(f"Fetching ID for username: {user.name}")
     return {"id": str(user.id)}
 

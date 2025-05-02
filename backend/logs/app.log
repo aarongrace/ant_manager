@@ -463,3 +463,33 @@
 2025-05-01 23:42:39,747 INFO routers.profile:157 Logging out user
 2025-05-01 23:42:39,747 INFO routers.profile:159 User logged out successfully
 2025-05-01 23:42:45,201 INFO routers.profile:132 User 1122 logged in successfully
+2025-05-01 23:43:43,656 INFO routers.colony:118 Existing colonies in database: 28
+2025-05-01 23:43:43,672 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-01 23:43:43,672 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-01 23:43:43,776 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-01 23:43:43,893 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-01 23:43:43,894 INFO database:29 Database initialization completed successfully.
+2025-05-01 23:44:20,607 INFO routers.colony:118 Existing colonies in database: 28
+2025-05-01 23:44:20,620 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-01 23:44:20,620 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-01 23:44:20,737 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-01 23:44:20,862 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-01 23:44:20,863 INFO database:29 Database initialization completed successfully.
+2025-05-01 23:46:06,450 INFO routers.colony:118 Existing colonies in database: 28
+2025-05-01 23:46:06,458 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-01 23:46:06,459 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-01 23:46:06,567 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-01 23:46:06,692 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-01 23:46:06,692 INFO database:29 Database initialization completed successfully.
+2025-05-01 23:46:18,179 INFO routers.colony:118 Existing colonies in database: 28
+2025-05-01 23:46:18,188 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-01 23:46:18,189 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-01 23:46:18,298 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-01 23:46:18,413 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-01 23:46:18,413 INFO database:29 Database initialization completed successfully.
+2025-05-01 23:46:30,082 INFO routers.colony:118 Existing colonies in database: 28
+2025-05-01 23:46:30,087 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-01 23:46:30,087 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-01 23:46:30,194 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-01 23:46:30,302 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-01 23:46:30,303 INFO database:29 Database initialization completed successfully.

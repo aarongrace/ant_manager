@@ -215,7 +215,7 @@ async def kick_member(clan_id: str, member_id: str, request: Request):
 async def member_filter(start: Optional[int] = None, end: Optional[int] = None, role: Optional[str] = None) -> dict:
     return { "start": start, "end": end, "role": role }
 
-async def get_clan_members(clan_id: str) -> list[str]:
+async def fetch_clan_members(clan_id: str) -> list[str]:
     clan = await Clan.get(clan_id)
     if not clan:
         logger.warning(f"Get clan members failed: Clan with ID {clan_id} not found")
@@ -225,7 +225,7 @@ async def get_clan_members(clan_id: str) -> list[str]:
 @clanRouter.get("/{clan_id}/members")
 async def get_members(
     clan_id: str,
-    members: Annotated[list[str], Depends(get_clan_members)],
+    members: Annotated[list[str], Depends(fetch_clan_members)],
     params: Annotated[dict, Depends(member_filter)]):
     if params["role"] == "leader":
         clan = await Clan.get(clan_id)
