@@ -174,27 +174,65 @@ async def update_profile(id: str, request: Request):
 
 @profileRouter.delete("/delete/{username}", response_model=dict)
 async def delete_profile(username: str):
+    logger.info(f"Attempting to delete profile with username: {username}")
     profile = await Profile.find_one(Profile.name == username)
     if not profile:
+        logger.warning(
+            f"Profile delete failed: Profile with username {username} not found"
+        )
         raise HTTPException(status_code=404, detail="Profile not found")
-    user_id = profile['_id']
+    user_id = profile["_id"]
     from routers.clan import Clan
+
     clan = await Clan.find_one(Clan.members == user_id)
     if clan:
         clan.members.remove(user_id)
         await clan.save()
     await profile.delete()
+    logger.info(f"Profile with username {username} deleted successfully")
     return {"message": f"Profile with username '{username}' has been deleted"}
 
 
 @profileRouter.put("/update-role/{username}", response_model=Profile)
 async def update_role(username: str, role_update: RoleUpdate):
+    logger.info(
+        f"Attempting to change the role of profile with username: {username} to {role_update}"
+    )
     user = await Profile.find_one(Profile.name == username)
     if not user:
+        logger.warning(
+            f"Role change failed: Profile with username {username} not found"
+        )
         raise HTTPException(status_code=404, detail="Profile not found")
     user.role = role_update.role
     await user.save()
+    logger.info(f"Profile with username {username} is now {role_update}")
     return user
+
+
+@profileRouter.get("/get-data/{username}", response_model=Profile)
+async def get_profile(username: str):
+    logger.info(f"Attempting to get profile data of profile with username: {username}")
+    user = await Profile.find_one(Profile.name == username)
+    if not user:
+        logger.warning(
+            f"Get profile data failed: Profile with username {username} not found"
+        )
+        raise HTTPException(status_code=404, detail="Profile not found")
+    logger.info(f"Profile data found for profile with username {username}")
+    return user
+
+
+@profileRouter.get("/get-id/{username}", response_model=ProfileIdResponse)
+async def get_id(username: str):
+    logger.info(f"Attempting to get ID of profile with username: {username}")
+    user = await Profile.find_one(Profile.name == username)
+    if not user:
+        logger.warning(f"Profile with username {username} not found")
+        raise HTTPException(status_code=404, detail="Profile not found")
+    logger.info(f"Profile ID for profile with username {username} found")
+    return {"id": str(user.id)}
+
     
 async def ensure_guest_profile_exists(reinitialize: bool = False):
     logger.info("Ensuring guest profile exists")

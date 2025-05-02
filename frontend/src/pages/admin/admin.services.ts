@@ -70,3 +70,119 @@ export const deleteUserProfile = async (
   const result = await response.json();
   return result;
 };
+
+
+export const getData = async (
+  username: string
+): Promise<{ message: string }> => {
+  const response = await fetch(`${API_BASE_URL}/profiles/get-data/${username}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    let errorMsg = "Error getting profile";
+    try {
+      const errorData = await response.json();
+      errorMsg = errorData.detail || errorMsg;
+    } catch (err) {
+      console.error("Failed to parse error response", err);
+    }
+    throw new Error(errorMsg);
+  }
+
+  const result = await response.json();
+  return result;
+};
+
+
+export const getColony = async (username: string): Promise<any> => {
+
+  const idResponse = await fetch(`${API_BASE_URL}/profiles/get-id/${username}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const idData = await idResponse.json();
+  const userId = idData.id;
+
+  const colonyResponse = await fetch(`${API_BASE_URL}/colonies/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  
+  if (!colonyResponse.ok) {
+    let errorMsg = "Error getting colony";
+    try {
+      const errorData = await colonyResponse.json();
+      errorMsg = errorData.detail || errorMsg;
+    } catch (err) {
+      console.error("Failed to parse error response", err);
+    }
+    throw new Error(errorMsg);
+  }
+  
+  const result = await colonyResponse.json();
+  return result;
+};
+
+export const getTrades = async (username: string): Promise<any> => {
+
+  const idResponse = await fetch(`${API_BASE_URL}/profiles/get-id/${username}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const idData = await idResponse.json();
+  const userId = idData.id;
+
+  const colonyResponse = await fetch(`${API_BASE_URL}/trades/sentPending/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  
+  if (!colonyResponse.ok) {
+    let errorMsg = "Error getting trades";
+    try {
+      const errorData = await colonyResponse.json();
+      errorMsg = errorData.detail || errorMsg;
+    } catch (err) {
+      console.error("Failed to parse error response", err);
+    }
+    throw new Error(errorMsg);
+  }
+  
+  const result = await colonyResponse.json();
+
+  const colonyResponse2 = await fetch(`${API_BASE_URL}/trades/pending/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  
+  if (!colonyResponse2.ok) {
+    let errorMsg = "Error getting trades";
+    try {
+      const errorData = await colonyResponse2.json();
+      errorMsg = errorData.detail || errorMsg;
+    } catch (err) {
+      console.error("Failed to parse error response", err);
+    }
+    throw new Error(errorMsg);
+  }
+  
+  const result2 = await colonyResponse2.json();
+
+  return "to: " + JSON.stringify(result, null, 2) + " from: " + JSON.stringify(result2, null, 2);
+};

@@ -58,6 +58,15 @@ async def get_pending_trades(user_id: str):
     logger.info(f"Found {len(trades)} pending trades for user ID: {user_id}")
     return trades
 
+@tradesRouter.get("/sentPending/{user_id}")
+async def get_pending_trades(user_id: str):
+    logger.info(f"Fetching pending trades sent by user ID: {user_id}")
+    trades = await Trade.find(
+        {"from_user_id": user_id, "status": "pending"}
+    ).to_list()
+    logger.info(f"Found {len(trades)} pending trades from user ID: {user_id}")
+    return trades
+
 @tradesRouter.post("/accept/{trade_id}")
 async def accept_trade(trade_id: str):
     logger.info(f"Attempting to accept trade with ID: {trade_id}")

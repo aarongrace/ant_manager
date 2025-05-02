@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { updateUserRole, deleteUserProfile } from "./admin.services";
+import { updateUserRole, deleteUserProfile, getData, getColony, getTrades } from "./admin.services";
 import "./admin.css";
 
 const Admin: React.FC = () => {
@@ -11,7 +11,7 @@ const Admin: React.FC = () => {
   ) => {
     e.preventDefault();
     if (!username.trim()) {
-      alert("Please enter a username");
+      alert("Enter a username");
       return;
     }
     try {
@@ -19,16 +19,25 @@ const Admin: React.FC = () => {
       alert(`User "${updatedUser.name}" updated to role "${updatedUser.role}"`);
     } catch (error: any) {
       console.error("Error updating role:", error);
+      if (error.message.includes("Profile not found")) {
+        alert("User with the entered name was not found.");
+      } else {
+        alert("Error updating role: " + error.message);
+      }
     }
   };
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!username.trim()) {
-      alert("Please enter a username");
+      alert("Enter a username");
       return;
     }
-    if (!window.confirm("Are you sure you want to delete this profile? This action cannot be undone.")) {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this profile? This action cannot be undone."
+      )
+    ) {
       return;
     }
     try {
@@ -36,6 +45,53 @@ const Admin: React.FC = () => {
       alert(result.message);
     } catch (error: any) {
       console.error("Error deleting profile:", error);
+      if (error.message.includes("Profile not found")) {
+        alert("User with the entered name was not found.");
+      } else {
+        alert("Error deleting profile: " + error.message);
+      }
+    }
+  };
+
+  const handleGetData = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!username.trim()) {
+      alert("Please enter a username");
+      return;
+    }
+    try {
+      const Info = await getData(username);
+      alert(JSON.stringify(Info, null, 2));
+    } catch (error: any) {
+      console.error("Error displaying user info:", error);
+    }
+  };
+
+  const handleGetColony = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!username.trim()) {
+      alert("Please enter a username");
+      return;
+    }
+    try {
+      const Info = await getColony(username);
+      alert(JSON.stringify(Info, null, 2));
+    } catch (error: any) {
+      console.error("Error displaying user info:", error);
+    }
+  };
+
+  const handleGetTrades = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!username.trim()) {
+      alert("Please enter a username");
+      return;
+    }
+    try {
+      const Info = await getTrades(username);
+      alert(Info);
+    } catch (error: any) {
+      console.error("Error displaying pending trades:", error);
     }
   };
 
@@ -71,13 +127,20 @@ const Admin: React.FC = () => {
               {label}
             </button>
           ))}
-          <button
-            onClick={handleDelete}
-            className="admin-submit"
-            type="button"
-          >
-            Delete Profile
+          <button onClick={handleDelete} className="admin-submit" type="button">
+            Delete User
           </button>
+          <div>
+            <button onClick={handleGetData} className="admin-submit" type="button">
+              Profile Data
+            </button>
+            <button onClick={handleGetColony} className="admin-submit" type="button">
+              Colony Data
+            </button>
+            <button onClick={handleGetTrades} className="admin-submit" type="button">
+              Pending trades
+            </button>
+          </div>
         </div>
       </form>
       <Link to="/dashboard" className="admin-back-button">
@@ -86,5 +149,6 @@ const Admin: React.FC = () => {
     </div>
   );
 };
+
 
 export default Admin;
