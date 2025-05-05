@@ -57,7 +57,7 @@ class Colony(Document):
 colonyRouter = APIRouter()
 
 
-async def get_colony_from_db(id: str) -> Colony:
+async def fetch_colony_data(id: str) -> Colony:
     logger.info(f"Dependency called to get colony with ID: {id}")
     try:
         colony = await Colony.get(id)
@@ -69,7 +69,7 @@ async def get_colony_from_db(id: str) -> Colony:
         return colony
     return colony
 
-async def update_colony_in_db(request: Request, colony: Annotated[Colony, Depends(get_colony_from_db)])->Colony:
+async def modify_colony_record(request: Request, colony: Annotated[Colony, Depends(fetch_colony_data)])->Colony:
     data = await request.json()
     for field, value in data.items():
         if hasattr(colony, field):
@@ -79,11 +79,11 @@ async def update_colony_in_db(request: Request, colony: Annotated[Colony, Depend
 
 
 @colonyRouter.get("/{id}", response_model=Colony)   
-async def get_colony(colony: Annotated[Colony, Depends(get_colony_from_db)]):
+async def get_colony(colony: Annotated[Colony, Depends(fetch_colony_data)]):
     return colony
 
 @colonyRouter.put("/{id}", response_model=dict)
-async def update_colony(updated_colony: Annotated[Colony, Depends(update_colony_in_db)]):
+async def update_colony(updated_colony: Annotated[Colony, Depends(modify_colony_record)]):
     return {"message": f"Colony with ID '{updated_colony.id}' has been updated"}
     
 
