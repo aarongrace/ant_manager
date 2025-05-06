@@ -3,11 +3,11 @@ from typing import Annotated, List
 from beanie import Document
 from pydantic import ValidationError
 
-from game_logic.perk import Perk
-from game_logic.enemy import Enemy
-from game_logic.fruit import Fruit
-from game_logic.ant import Ant
-from game_logic.map_entity import MapEntity
+from base_classes.perk import Perk
+from base_classes.enemy import Enemy
+from base_classes.fruit import Fruit
+from base_classes.ant import Ant
+from base_classes.map_entity import MapEntity
 
 import logging
 

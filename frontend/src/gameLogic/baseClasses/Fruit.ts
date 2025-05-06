@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
-import { vars } from "../contexts/globalVariables"; // Updated to use env
-import { usePreloadedImagesStore } from "../contexts/preloadImages";
-import { findValidEntityCoords, getEntityBounds } from "../gameLogic/entityHelperFunctions";
+import { vars } from "../../contexts/globalVariables"; // Updated to use env
+import { usePreloadedImagesStore } from "../../contexts/preloadImages";
+import { findValidEntityCoords, getEntityBounds } from "../entityHelperFunctions";
 import { GameMap } from "./Map";
 import { EntityType, MapEntity } from "./MapEntity";
 import { Bounds } from "./Models";

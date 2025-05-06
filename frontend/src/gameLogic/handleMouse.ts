@@ -1,12 +1,12 @@
-import { TaskIcon, useIconsStore } from "../baseClasses/Icon";
-import { InteractiveElement, isWithinBounds } from "../baseClasses/Models";
 import { useColonyStore } from "../contexts/colonyStore";
+import { TaskIcon, useIconsStore } from "./baseClasses/Icon";
+import { InteractiveElement, isWithinBounds } from "./baseClasses/Models";
 
 import { debounce } from 'lodash';
-import { TaskType } from "../baseClasses/Ant";
-import { GameMap } from "../baseClasses/Map";
 import { vars } from "../contexts/globalVariables";
 import { setAntObjective } from "./antHelperFunctions";
+import { TaskType } from "./baseClasses/Ant";
+import { GameMap } from "./baseClasses/Map";
 import { findClosestEnemy } from "./enemyHelperFunctions";
 import { findClosestSource } from "./entityHelperFunctions";
 
@@ -20,7 +20,7 @@ export const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const viewportTopLeft = GameMap.getViewportTopLeft();
     const  coords  = {x: viewportX + viewportTopLeft.x, y: viewportY + viewportTopLeft.y};
 
-    if (vars.managingPatrol && !isDragging){
+    if (vars.showPatrolCircle && !isDragging){
         isDragging = true;
         dragStart.x = viewportX;
         dragStart.y = viewportY;
@@ -134,19 +134,23 @@ export const handleMouseMove = debounce((e: React.MouseEvent<HTMLCanvasElement>,
 
     handleEdgeMove(viewportCoords);
 
-    const { mapEntities } = useColonyStore.getState();
+    const { mapEntities, ants, enemies } = useColonyStore.getState();
     const { taskIcons } = useIconsStore.getState();
 
     const hoverableElements: InteractiveElement[] = [
         ...mapEntities.filter((entity) => entity.hoverable),
         ...taskIcons.filter((icon) => icon.hoverable),
+        ...ants.filter((ant) => ant.hoverable),
+        ...enemies.filter((enemy) => enemy.hoverable),
     ]
+
     if (hoveredElement) {
         if (!isWithinBounds(viewportCoords, hoveredElement.getBounds())) {
-            hoveredElement.isHovered = false;
+            hoverableElements.forEach((element) => {
+                element.isHovered = false;
+            });
             if (hoveredElement && hoveredElement instanceof TaskIcon) {
-                const hoveredTask = hoveredElement.type;
-                vars.highlightedTasks = vars.highlightedTasks.filter((task: TaskType) => task !== hoveredTask);
+                vars.highlightedTask = null;
             }
             hoveredElement = null;
         }
@@ -155,8 +159,7 @@ export const handleMouseMove = debounce((e: React.MouseEvent<HTMLCanvasElement>,
             if (isWithinBounds(viewportCoords, element.getBounds())) {
                 hoveredElement = element;
                 if (element instanceof TaskIcon) {
-                    const hoveredTask = element.type;
-                    vars.highlightedTasks.push(hoveredTask);
+                    vars.highlightedTask = element.type;
                 }
                 element.isHovered = true;
                 return;

@@ -1,15 +1,15 @@
 
-import { AntType } from "../baseClasses/Ant";
-import { createEnemy } from "../baseClasses/Enemy";
-import { Fruit } from "../baseClasses/Fruit";
-import { useIconsStore } from "../baseClasses/Icon";
-import { GameMap } from "../baseClasses/Map";
-import { MapEntity } from "../baseClasses/MapEntity";
 import { useWarningStore } from "../components/WarningBar";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { findAntByCondition } from "./antHelperFunctions";
 import { handleAntLogic } from "./antLogic"; // Import the new combined function
+import { AntType } from "./baseClasses/Ant";
+import { createEnemy } from "./baseClasses/Enemy";
+import { Fruit } from "./baseClasses/Fruit";
+import { useIconsStore } from "./baseClasses/Icon";
+import { GameMap } from "./baseClasses/Map";
+import { MapEntity } from "./baseClasses/MapEntity";
 import { decaySources } from "./entityHelperFunctions";
 
 export const updateDiscreteGameState = (setCursor:()=>void) => {

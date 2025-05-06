@@ -30,6 +30,37 @@ This project seeks to simulate a colony of ants in terms of reproduction, resour
 
 ## Core Game
 
+### Canvas
+
+The entire visual output of Clash of Colonies is rendered onto a HTML5 `<canvas>` element. To ensure a clean and maintainable architecture, we've implemented a separation of concerns:
+
+* **`GameCanvas` (Conceptual Parent):** displays the game elements
+
+* **Base `Canvas` Component (React):** manages the underlying HTML `<canvas>` element and the fundamental rendering and update loop
+
+**Time Management and Animation Loop:**
+
+The `Canvas` component meticulously tracks the passage of time using React refs (`lastFrameTime`). This reference is updated in each frame of the animation.
+
+* **Efficient Animation:** `requestAnimationFrame` is used for the animation loop. This browser API synchronizes rendering with the browser's refresh rate (typically 60fps), leading to fluid visuals. Critically, it **pauses automatically** when the browser tab or window is not active, significantly reducing CPU and battery consumption.
+
+
+**Browser Background Optimization:**
+
+A key benefit of `requestAnimationFrame` is its inherent efficiency. Modern browsers are designed to automatically pause or significantly throttle the execution of `requestAnimationFrame` callbacks when the tab or window is not in focus. This dramatically reduces CPU and battery usage when the game is running in the background.
+
+**`animate` Function:**
+
+1.  **Time Tracking:** It calculates the elapsed time (`delta`) since the last frame
+2.  **Drawing Game Elements:** calls draw provided by `GameCanvas`
+3.  **Updating Game State:** calls `updateContinuousGameState`, `updateDiscreteGameState` to advance the game's internal state based on the `delta`
+
+4.  **Colony State Synchronization:** For efficiency, the game state is synchronized with the MongoDB database at a set interval (set to 3 secs)
+
+### Update functions
+**`continuousUpdate`**
+* **`handleScrolling(delta)`:** Adjusts the visible map area based on user scroll input and speed, respecting map boundaries.
+* **`updateAnt(delta)`:** Changes ant positions and animations over time; updates enemy behaviors.
 
 ## Users/Profile
 

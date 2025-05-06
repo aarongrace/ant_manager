@@ -1,6 +1,6 @@
 import React from 'react';
-import { Ant } from '../../baseClasses/Ant';
 import { useColonyStore } from '../../contexts/colonyStore';
+import { Ant } from '../../gameLogic/baseClasses/Ant';
 import './antsPage.css';
 import deleteIcon from './delete_icon.png'; // Import the delete icon
 

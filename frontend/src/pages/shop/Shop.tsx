@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import chitin_icon from "../../assets/imgs/chitin.png"; // Import chitin icon
-import { Cosmetic, reapplyPerks, Upgrade } from "../../baseClasses/Perk";
 import { useColonyStore } from "../../contexts/colonyStore";
 import { vars } from "../../contexts/globalVariables";
+import { Cosmetic, reapplyPerks, Upgrade } from "../../gameLogic/baseClasses/Perk";
 import "./shop.css"; // Import the CSS file for styling
 
 const Shop = () => {
   // Initialize default upgrades and cosmetics
-  const { perks, updateColony, chitin, putColonyInfo}  = useColonyStore();
+  const { perks, updateColony, chitin}  = useColonyStore();
 
   const upgrades: Upgrade[] = perks.filter((perk) => perk instanceof Upgrade) as Upgrade[];
   const cosmetics: Cosmetic[] = perks.filter((perk) => perk instanceof Cosmetic) as Cosmetic[];

@@ -1,5 +1,5 @@
-import { Enemy } from "../baseClasses/Enemy";
 import { useColonyStore } from "../contexts/colonyStore";
+import { Enemy } from "./baseClasses/Enemy";
 
 export const findEnemyByCondition = (condition: (enemy: Enemy) => boolean): Enemy | null => {
     const { enemies } = useColonyStore.getState();

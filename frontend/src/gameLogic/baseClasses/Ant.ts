@@ -1,11 +1,9 @@
 import { v4 } from "uuid";
-import { useColonyStore } from "../contexts/colonyStore";
-import { vars } from "../contexts/globalVariables"; // Updated to use env
-import { usePreloadedImagesStore } from "../contexts/preloadImages";
-import { getRandomAntType, startPatrol } from "../gameLogic/antHelperFunctions";
-import { findEnemyByCondition } from "../gameLogic/enemyHelperFunctions";
-import { getNestEntranceCoords } from "../gameLogic/entityHelperFunctions";
-import { antNames } from "./antNames";
+import { useColonyStore } from "../../contexts/colonyStore";
+import { vars } from "../../contexts/globalVariables"; // Updated to use env
+import { usePreloadedImagesStore } from "../../contexts/preloadImages";
+import { drawAttackArrow, drawForageArrow, drawPatrolCircle, startPatrol } from "../antHelperFunctions";
+import { findEnemyByCondition } from "../enemyHelperFunctions";
 import { Enemy } from "./Enemy";
 import { Fruit } from "./Fruit";
 import { GameMap } from "./Map";
@@ -76,7 +74,7 @@ export class Ant implements InteractiveElement{
   patrolAnchorPointSet: boolean = false; // New field: Indicates if the patrol anchor point is set
   isSelected: boolean = false; // New field: Indicates if the ant is selected
 
-  hoverable: boolean =false;
+  hoverable: boolean =true;
   isHovered: boolean = false;
   clickable: boolean = true; // New field: Indicates if the ant is clickable
 
@@ -197,26 +195,6 @@ export class Ant implements InteractiveElement{
     };
   }
 
-  drawSprite(ctx: CanvasRenderingContext2D) {
-    const imgName = this.type + "_sprites";
-    const { getImage } = usePreloadedImagesStore.getState();
-    const img = getImage(imgName);
-    if (!img) {
-      console.error("Image not found:", imgName);
-      return;
-    }
-    const useAttackSprite = this.isAttacking && this.type === AntType.Soldier;
-    const bounds = this.getBounds();
-    const width = bounds.width;
-    const height = bounds.height;
-    const spriteWidth = img.width / AntTypeInfo[this.type].numOfSpriteFrames;
-    const spriteHeight = img.height;
-    const spriteX = useAttackSprite ? spriteWidth * (5 + this.frame) : spriteWidth * this.frame;
-    const spriteY = 0;
-    ctx.drawImage( img, spriteX, spriteY, spriteWidth, spriteHeight,
-      -width / 2, -height / 2, width, height)
-  }
-
   randomlyRotate() {
     this.angle = Math.random() * Math.PI * 2;
   }
@@ -240,40 +218,6 @@ export class Ant implements InteractiveElement{
   onClick(event: React.MouseEvent<HTMLCanvasElement>) {
     this.isSelected = !this.isSelected; // Toggle selection state
     console.log(`Ant clicked: ${this.name}, selected: ${this.isSelected}`);
-  }
-
-  drawSelectedCircle(ctx: CanvasRenderingContext2D) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(
-      0,0,
-      vars.ui.selectedCircleRadius*this.sizeFactor, // Updated to use env
-      0,
-      Math.PI * 2
-    );
-    ctx.strokeStyle = "rgba(82, 196, 21, 0.8)"; // Color of the selection circle
-    ctx.lineWidth = 2; // Width of the selection circle
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  drawHpBar(ctx: CanvasRenderingContext2D) {
-    const htBarWidth = AntTypeInfo[this.type].defaultHp / 4;
-    const hpBarHeight = 4;
-    const hpBarYOffset =
-      -this.sizeFactor * AntTypeInfo[this.type].hpBarYOffset; // Y offset for the HP bar
-    const hpPercent = this.hp / AntTypeInfo[this.type].defaultHp; // Calculate the percentage of HP remaining
-
-    ctx.fillStyle = "black"; // Background color
-    ctx.fillRect(-htBarWidth / 2, hpBarYOffset, htBarWidth, hpBarHeight); // Draw the background bar
-
-    ctx.fillStyle = "green"; // Foreground color
-    ctx.fillRect(
-      -htBarWidth / 2,
-      hpBarYOffset,
-      htBarWidth * hpPercent,
-      hpBarHeight
-    ); // Draw the foreground bar
   }
 
   setPatrolAnchor(coords: { x: number, y: number }) {
@@ -325,75 +269,123 @@ export class Ant implements InteractiveElement{
     this.isDead = true; // Mark the ant as dead
   }
 
-  // Method to create a new Ant object
-  static makeNewAnt(type = getRandomAntType()): Ant {
-    const sizeFactor = Math.random() * 0.15 + 0.925; // Random sizeFactor between 0.95 and 1.05
-    const speed =
-      (type === AntType.Soldier
-        ? vars.ant.soldierBaseSpeed
-        : vars.ant.workerBaseSpeed) *
-      (sizeFactor * sizeFactor);
-    const carryingCapacity = Math.floor(
-      (type === AntType.Soldier
-        ? vars.ant.soldierCarryingCapacity
-        : vars.ant.workerCarryingCapacity) *
-        (Math.random() / 3 + 0.833)
-    );
-    const hp = AntTypeInfo[type].defaultHp;
+  // ---------- Drawing Methods ----------
 
-    const { x: nestX, y: nestY } = getNestEntranceCoords();
+  draw(ctx: CanvasRenderingContext2D) {
+    const { x: viewportLeft, y: viewportTop } = GameMap.getViewportTopLeft();
+    const viewportX = this.coords.x - viewportLeft;
+    const viewportY = this.coords.y - viewportTop;
 
-    const antData: AntData = {
-      id: v4(),
-      name: antNames[Math.floor(Math.random() * antNames.length)],
-      age: 0,
-      type: type,
-      task: type === AntType.Soldier ? TaskType.Patrol : TaskType.Forage,
-      coords: {
-        x: (Math.random() - 1) * 100 + nestX,
-        y: (Math.random() - 1) * 100 + nestY,
-      }, // Absolute coordinates
-      objective: "", // Default value for objective
-      destination: "",
-      carrying: null, // Default value for carrying
-      carryingCapacity: carryingCapacity, // Default value for carryingCapacity
-      speed: speed, // Default value for speed
-      sizeFactor: sizeFactor, // Random sizeFactor between 0.95 and 1.05
-      hp: hp, // Default value for hp
+    ctx.save();
+    ctx.translate(viewportX, viewportY);
+    if (this.hp < AntTypeInfo[this.type].defaultHp) { // has to be done before rotation
+      this.drawHpBar(ctx);
     };
-    return new Ant(antData);
+
+    if (this.task === TaskType.Patrol && (vars.highlightedTask === TaskType.Patrol || vars.showPatrolCircle)) {
+      drawPatrolCircle(ctx, this);
+    } else if (this.task === TaskType.Attack && (vars.highlightedTask === TaskType.Attack || vars.showAttackArrow)) {
+      drawAttackArrow(ctx, this);
+    } else if (this.task === TaskType.Forage && (vars.highlightedTask === TaskType.Forage || vars.showForageArrow)) {
+      drawForageArrow(ctx, this);
+    }
+
+
+    ctx.rotate(this.angle);
+    this.drawSprite(ctx);
+    this.drawCarriedEntity(ctx);
+
+    if (this.isSelected) { this.drawSelectedCircle(ctx); }
+    ctx.restore();
   }
+
+  drawSprite(ctx: CanvasRenderingContext2D) {
+    const bounds = this.getBounds();
+    const { width, height } = bounds;
+    const { getImage } = usePreloadedImagesStore.getState();
+    if (this.type === AntType.Queen) {
+      const antSprites = this.isHovered? getImage("ant_sprites_hovered"): getImage("ant_sprites");
+      if (!antSprites) {
+        console.error("Image not found: ant_sprites");
+        return;
+      }
+      const spriteY = 0;
+      const spriteCol = 2;
+      const spriteWidth = 39;
+      const spriteWidthIncludingPadding = 66;
+      const spriteHeight = 47;
+      const spriteX = spriteWidthIncludingPadding * (spriteCol * 3 + this.frame);
+      ctx.drawImage( antSprites, spriteX, spriteY, spriteWidth, spriteHeight,
+        -width / 2, -height / 2, width, height);
+    } else {
+      const imgName = this.isHovered ? this.type + "_sprites_hovered": this.type + "_sprites";
+      const img = getImage(imgName);
+      if (!img) {
+        console.error("Image not found:", imgName);
+        return;
+      }
+      const useAttackSprite = this.isAttacking && this.type === AntType.Soldier;
+      const spriteWidth = img.width / AntTypeInfo[this.type].numOfSpriteFrames;
+      const spriteHeight = img.height;
+      const spriteX = useAttackSprite ? spriteWidth * (5 + this.frame) : spriteWidth * this.frame;
+      const spriteY = 0;
+      ctx.drawImage(img, spriteX, spriteY, spriteWidth, spriteHeight,
+        -width / 2, -height / 2, width, height)
+    }
+  }
+
+  drawHpBar(ctx: CanvasRenderingContext2D) {
+    const htBarWidth = AntTypeInfo[this.type].defaultHp / 4;
+    const hpBarHeight = 4;
+    const hpBarYOffset =
+      -this.sizeFactor * AntTypeInfo[this.type].hpBarYOffset; // Y offset for the HP bar
+    const hpPercent = this.hp / AntTypeInfo[this.type].defaultHp; // Calculate the percentage of HP remaining
+
+    ctx.fillStyle = "black"; // Background color
+    ctx.fillRect(-htBarWidth / 2, hpBarYOffset, htBarWidth, hpBarHeight); // Draw the background bar
+
+    ctx.fillStyle = "green"; // Foreground color
+    ctx.fillRect(
+      -htBarWidth / 2,
+      hpBarYOffset,
+      htBarWidth * hpPercent,
+      hpBarHeight
+    ); // Draw the foreground bar
+  }
+  drawCarriedEntity(ctx: CanvasRenderingContext2D) {
+    if (this.carriedEntity) {
+      const carriedEntity = this.carriedEntity;
+      var carriedScale = carriedEntity.amount / vars.ant.workerCarryingCapacity; // Updated to use env
+      if (carriedEntity.type === EntityType.ChitinSource) {
+        carriedScale *= 8;
+      }
+      const yOffset = this.type === AntType.Soldier ? -26: -14 - carriedScale * 3;
+      const carriedEntityBounds: Bounds = {
+        left: -carriedEntity.size.width / 2 * carriedScale,
+        top: -carriedEntity.size.height / 2 * carriedScale + yOffset,
+        width: carriedEntity.size.width * carriedScale,
+        height: carriedEntity.size.height * carriedScale,
+      };
+      carriedEntity.draw(ctx, carriedEntityBounds);
+    }
+  }
+
+  drawSelectedCircle(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(
+      0,0,
+      this.type === AntType.Worker ? 20 : 30,
+      0,
+      Math.PI * 2
+    );
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.8)"; // Color of the selection circle
+    ctx.lineWidth = 2; // Width of the selection circle
+    ctx.stroke();
+    ctx.restore();
+  }
+
 }
-
-export const recreateQueen = (): Ant => {
-  const antData: AntData = {
-    id: v4(), // Generate a unique ID
-    name: "Queenie", // Name of the queen
-    age: 2, // Age of the queen
-    type: AntType.Queen, // Type is queen
-    task: TaskType.Idle, // Default task is idle
-    coords: GameMap.getCoordsCloseToCenter(50), // Absolute coordinates
-    objective: "", // No objective initially
-    destination: "", // No destination initially
-    carrying: null, // Default value for carrying
-    carryingCapacity: 0, // Queens do not carry resources
-    speed: vars.ant.queenBaseSpeed, // Updated to use env
-    sizeFactor: 1.0, // Default sizeFactor for the queen
-    hp: AntTypeInfo[AntType.Queen].defaultHp, // Default hp for the queen
-  };
-  return new Ant(antData);
-};
-
-export const convertAnts = (ants: Ant[]): AntData[] => {
-  return ants.map((ant) => ant.toAntData());
-};
-
-export const convertAntData = (antData: AntData[]): Ant[] => {
-  if (!antData) {
-    return [];
-  }
-  return antData.map((data) => new Ant(data));
-};
 
 export const AntTypeInfo: {
   [key in AntType]: {

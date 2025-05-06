@@ -1,9 +1,9 @@
 import { v4 } from "uuid";
-import { useColonyStore } from "../contexts/colonyStore";
-import { vars } from "../contexts/globalVariables"; // Updated to use env
-import { usePreloadedImagesStore } from "../contexts/preloadImages";
-import { findClosestAnt, setOneAntOnEnemy } from "../gameLogic/antHelperFunctions";
-import { calculateDistance } from "../gameLogic/entityHelperFunctions";
+import { useColonyStore } from "../../contexts/colonyStore";
+import { vars } from "../../contexts/globalVariables"; // Updated to use env
+import { usePreloadedImagesStore } from "../../contexts/preloadImages";
+import { findClosestAnt, setOneAntOnEnemy } from "../antHelperFunctions";
+import { calculateDistance } from "../entityHelperFunctions";
 import { Ant } from "./Ant";
 import { generateEnemyCorpse } from "./EnemyCorpse";
 import { GameMap } from "./Map";
@@ -42,7 +42,7 @@ export class Enemy implements InteractiveElement {
   isDead: boolean = false; // Frontend-only field
   clickable: boolean = true;
 
-  hoverable: boolean = false;
+  hoverable: boolean = true;
   isHovered: boolean = false;
 
   static resetObjectiveRange = 100;
@@ -222,7 +222,7 @@ export class Enemy implements InteractiveElement {
 
   draw(ctx: CanvasRenderingContext2D) {
     const { getImage } = usePreloadedImagesStore.getState();
-    const img = getImage(this.type);
+    const img = getImage(this.isHovered ? this.type + "_hovered" : this.type);
     if (!img) {
       console.error(`Image for enemy type ${this.type} not loaded`);
       return;

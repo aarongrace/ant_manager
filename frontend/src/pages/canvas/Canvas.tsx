@@ -9,25 +9,25 @@ import { updateContinuousGameState } from '../../gameLogic/continuousUpdates';
 import { updateDiscreteGameState } from '../../gameLogic/discreteUpdates';
 import { handleMouseDown, handleMouseMove, handleMouseUp } from '../../gameLogic/handleMouse';
 interface CanvasProps {
-  draw: (delta: number) => void;
+  draw: () => void;
   establishContext: (ctx: CanvasRenderingContext2D) => void;
 }
 
 const Canvas: React.FC<CanvasProps> = ({ draw, establishContext }) => {
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const { putColonyInfo } = useColonyStore();
 
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   const animationFrameId = React.useRef<number>(0);
   const lastFrameTime = React.useRef<number>(0);
   const lastSyncedTime = React.useRef<number>(0);
-
   const discreteUpdateTimer = React.useRef<number>(0);
 
   const animate = (timestamp: number) => {
-    const delta = timestamp - lastFrameTime.current;
+    const maxDelta = 100; // Cap the delta to avoid large jumps when tabbing back
+    const delta = Math.min(timestamp - lastFrameTime.current, maxDelta);
     lastFrameTime.current = timestamp;
-    draw(delta);
+    draw();
     updateContinuousGameState(delta);
 
     discreteUpdateTimer.current += delta;
@@ -46,6 +46,7 @@ const Canvas: React.FC<CanvasProps> = ({ draw, establishContext }) => {
   };
 
   useEffect(() => {
+    canvasRef.current?.addEventListener('wheel', (e)=>{e.preventDefault()}, { passive: false });
     setCursor();
     lastFrameTime.current = performance.now();
     lastSyncedTime.current = performance.now();

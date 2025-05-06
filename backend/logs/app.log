@@ -1,8 +1,139 @@
-2025-05-04 21:58:28,309 INFO routers.colony:118 Existing colonies in database: 28
-2025-05-04 21:58:28,322 INFO routers.colony:131 Validation complete. 0 colonies have been reset
-2025-05-04 21:58:28,322 INFO routers.profile:220 Ensuring guest profile exists
-2025-05-04 21:58:28,443 INFO routers.colony:108 Reinitializing guest colony...
-2025-05-04 21:58:28,567 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
-2025-05-04 21:58:28,567 INFO database:29 Database initialization completed successfully.
-2025-05-04 21:58:52,834 INFO routers.colony:61 Dependency called to get colony with ID: guest
-2025-05-04 21:58:53,075 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:13:01,646 INFO routers.colony:118 Existing colonies in database: 31
+2025-05-05 23:13:01,658 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-05 23:13:01,658 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-05 23:13:01,804 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-05 23:13:02,559 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-05 23:13:02,559 INFO database:29 Database initialization completed successfully.
+2025-05-05 23:13:09,476 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:13:09,599 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:14:44,603 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:14:45,021 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:33:22,380 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:34:27,136 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:34:29,139 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:34:54,842 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:58:06,723 INFO routers.colony:118 Existing colonies in database: 31
+2025-05-05 23:58:06,744 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-05 23:58:06,745 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-05 23:58:06,883 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-05 23:58:07,016 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-05 23:58:07,016 INFO database:29 Database initialization completed successfully.
+2025-05-05 23:58:13,262 INFO routers.colony:118 Existing colonies in database: 31
+2025-05-05 23:58:13,273 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-05 23:58:13,273 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-05 23:58:13,389 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-05 23:58:13,503 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-05 23:58:13,503 INFO database:29 Database initialization completed successfully.
+2025-05-05 23:58:17,963 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-05 23:58:18,078 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:29:36,912 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:29:47,517 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:29:55,851 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:33:53,108 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:33:53,240 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:33:53,382 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:33:53,503 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:33:53,650 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:33:53,791 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:34:01,017 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:34:25,289 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:35:11,168 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:36:52,933 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:37:05,759 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:39:45,658 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:56:45,751 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:56:46,837 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:56:46,959 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:56:47,336 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 00:59:46,563 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 01:48:17,200 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:09:47,514 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:13:12,640 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:13:15,821 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:13:41,812 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:13:51,255 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:14:02,089 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:19:02,107 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:20:51,243 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:21:17,840 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:21:56,361 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:32:57,459 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:33:35,725 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:33:36,030 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:42:51,348 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:43:49,838 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:44:22,181 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:45:16,896 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:48:52,748 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:51:13,898 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:51:40,904 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:51:58,296 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:52:32,826 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:53:18,558 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:54:23,328 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:54:25,462 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:54:37,381 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:54:37,517 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:54:37,637 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:54:37,774 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:54:37,981 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 02:57:19,328 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:00:31,972 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:01:10,425 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:01:29,889 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:01:50,849 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:04:21,120 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:08:27,352 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:15:41,293 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:22:19,115 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:41:41,668 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:41:43,120 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:42:31,974 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:45:54,995 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:46:24,008 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:46:31,346 INFO routers.clan:131 Fetching clan with ID: Clanity Clan
+2025-05-06 03:46:31,403 WARN routers.clan:134 Clan with ID Clanity Clan not found
+2025-05-06 03:46:36,473 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:49:46,246 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:50:42,972 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:52:46,333 INFO routers.clan:131 Fetching clan with ID: Clanity Clan
+2025-05-06 03:52:46,386 WARN routers.clan:134 Clan with ID Clanity Clan not found
+2025-05-06 03:55:20,957 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:55:31,698 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:55:41,536 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:59:25,757 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:59:26,198 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:59:26,538 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 03:59:40,321 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 04:54:53,597 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:05:49,605 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:05:51,254 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:06:26,404 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:06:47,076 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:12:32,227 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:44:17,107 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:44:29,410 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:48:13,387 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:49:06,315 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:49:39,688 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 05:55:12,946 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:05:14,867 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:11:46,975 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:11:47,160 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:11:47,310 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:11:47,454 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:11:47,610 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:11:54,440 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:11:54,575 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:11:54,936 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:11:55,018 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:12:47,251 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:14:22,469 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:15:56,370 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:19:31,525 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:19:41,603 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:22:11,631 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:34:46,218 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:36:52,477 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:38:53,752 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-06 06:45:07,361 INFO routers.colony:61 Dependency called to get colony with ID: guest

@@ -1,20 +1,16 @@
 import React from 'react';
-import { Ant, AntType, AntTypeInfo, TaskType } from '../../baseClasses/Ant';
-import { TaskIcon, useIconsStore } from '../../baseClasses/Icon';
-import { GameMap } from '../../baseClasses/Map';
-import { EntityType } from '../../baseClasses/MapEntity';
-import { Bounds } from '../../baseClasses/Models';
 import { useColonyStore } from '../../contexts/colonyStore';
-import { vars } from '../../contexts/globalVariables'; // Updated to use env
 import { usePreloadedImagesStore } from '../../contexts/preloadImages';
-import { drawPatrolCircle } from '../../gameLogic/antHelperFunctions';
+import { Ant } from '../../gameLogic/baseClasses/Ant';
+import { TaskIcon, useIconsStore } from '../../gameLogic/baseClasses/Icon';
+import { GameMap } from '../../gameLogic/baseClasses/Map';
 import { drawDragRectangle } from '../../gameLogic/handleMouse';
 import { default as CustomCanvas } from "./Canvas";
 
 export const GameCanvas: React.FC = (props) => {
     const [ctx, setCtx] = React.useState<CanvasRenderingContext2D | null>(null);
     const { ants, mapEntities, enemies } = useColonyStore.getState();
-    const { isLoaded, getImage } = usePreloadedImagesStore.getState();
+    const { isLoaded } = usePreloadedImagesStore.getState();
     const { taskIcons: icons } = useIconsStore.getState();
 
     const establishContext = (context: CanvasRenderingContext2D) => {
@@ -22,7 +18,7 @@ export const GameCanvas: React.FC = (props) => {
         setCtx(context);
     };
 
-    function draw(delta: number) {
+    function draw() {
         if (!isLoaded) {
             console.error("Images not loaded");
             return;
@@ -70,91 +66,8 @@ export const GameCanvas: React.FC = (props) => {
     }
 
     function drawAnts(ctx: CanvasRenderingContext2D, ants: Ant[]) {
-        const antSprites = getImage("ant_sprites");
-        const spriteWidth = 39;
-        const spriteWidthIncludingPadding = 66;
-        const spriteHeight = 47;
-
-        if (!antSprites) {
-            console.error("Ant sprites not loaded");
-            return;
-        }
-
         ants.forEach((ant) => {
-            const { x: viewportLeft, y: viewportTop } = GameMap.getViewportTopLeft();
-
-            const viewportX = ant.coords.x - viewportLeft;
-            const viewportY = ant.coords.y - viewportTop;
-
-            const spriteY = 0;
-            let spriteCol = 0;
-            switch (ant.type) {
-                case "queen":
-                    spriteCol = 2;
-                    break;
-                case "worker":
-                    spriteCol = 0;
-                    break;
-                case "soldier":
-                    spriteCol = 1;
-            }
-            const spriteX = spriteWidthIncludingPadding * (spriteCol * 3 + ant.frame);
-            const bounds = ant.getBounds();
-            const width = bounds.width;
-            const height = bounds.height;
-
-            ctx.save();
-            ctx.translate(viewportX, viewportY);
-            if (ant.hp < AntTypeInfo[ant.type].defaultHp) { // has to be done before rotation
-                ant.drawHpBar(ctx);
-            };
-
-            if (ant.task === TaskType.Patrol && (vars.highlightedTasks.includes(TaskType.Patrol) || vars.managingPatrol)) {
-                drawPatrolCircle(ctx, ant);
-            } else if (ant.task === TaskType.Attack && vars.highlightedTasks.includes(TaskType.Attack)) {
-                // drawAttackArrow(ctx, ant);
-            }
-
-            if (ant.isSelected) {
-                ant.drawSelectedCircle(ctx);
-            }
-
-
-            ctx.rotate(ant.angle);
-            if (ant.type === AntType.Worker || ant.type === AntType.Soldier) {
-                ant.drawSprite(ctx);
-            } else {
-                ctx.drawImage(
-                    antSprites,
-                    spriteX,
-                    spriteY,
-                    spriteWidth,
-                    spriteHeight,
-                    -width / 2,
-                    -height / 2,
-                    width,
-                    height
-                );
-            }
-
-            if (ant.carriedEntity) {
-                const carriedObject = ant.carriedEntity;
-                var carriedScale = carriedObject.amount / vars.ant.workerCarryingCapacity; // Updated to use env
-                if (carriedObject.type === EntityType.ChitinSource){
-                    carriedScale *= 8;
-                }
-                const heightOffset = ant.type === AntType.Soldier ? -spriteHeight / 2.2 : -spriteHeight / 2.8;
-                ctx.translate(0, heightOffset);
-                const carriedBounds: Bounds = {
-                    left: -carriedObject.size.width / 2 * carriedScale,
-                    top: -carriedObject.size.height / 2 * carriedScale,
-                    width: carriedObject.size.width * carriedScale,
-                    height: carriedObject.size.height * carriedScale,
-                };
-                carriedObject.draw(ctx, carriedBounds);
-            }
-
-            ctx.restore();
+            ant.draw(ctx);
         });
     }
 

@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
 
 /* Dashboard container */
-.dashboard-container {
-  padding: 2rem 3rem 0rem 0rem;
+#dashboard-container {
+  position: relative;
+  padding: 0.9rem 0rem 0rem 0rem;
   color: #333; /* Dark text color */
   font-family: 'Comic Neue', Arial, sans-serif; /* Font family */
   display: flex;
   flex-direction: row;
   justify-content: center;
-  height: 100vh;
   width: 100%;
-  overflow: auto;
+  overflow: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
-.dashboard-container::-webkit-scrollbar {
+#dashboard-container::-webkit-scrollbar {
   display: none;
 }
 
-.dashboard-container button {
+#dashboard-container button {
   padding: 0.5rem 1rem;
   margin: 0.2rem;
   background-color: rgb(120, 120, 130);
@@ -30,16 +30,19 @@
   transition: background-color 0.3s ease;
 }
 
-.dashboard-container button:hover {
+#dashboard-container button:hover {
   background-color: rgb(90, 90, 100);
 }
 
 /* Panels container */
 .panels-container {
-  width: 38%;
-  padding: 1px;
-  margin-right: 2%;
+  position: absolute;
+  left: 9%;
+  top: 7%;
+
+  padding: 1px 1rem;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   flex: 0.8 0.9 0%;
 }
@@ -66,62 +69,86 @@
 /* Section styling */
 .dashboard-section {
   flex: 1 1 calc(33.333% - 1.5rem); /* Each section takes up 1/3 of the row, minus the gap */
-  max-width: 300px; /* Limit the maximum width of each section */
-  padding: 1rem;
+  padding: 0.3rem 0.7rem;
   border: 2px solid #d4a373; /* Soft brown border */
   border-radius: 1rem; /* Rounded corners for bubble effect */
-  background-color: #fff; /* White background for sections */
+  background-color: #ffffffd4; /* White background for sections */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
-/* Section title styling */
-.dashboard-section h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  color: #e76f51; /* Warm orange */
-}
-
-/* Reproduction Panel */
-.reproduction-panel {
-  display: flex;
-  flex-direction: row;
-}
-
-.reproduction-panel .reproduction-left {
+.dashboard-section table {
+  border-collapse: collapse;
+  padding: 0.2rem;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   justify-content: center;
+  align-items: center;
+}
+.colony-overview-table button{
+  margin: 0;
+  padding: 0;
 }
 
-.reproduction-panel button {
-  background-color: #4caf50; /* Green button */
+/* Icon with label */
+.icon-with-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 1;
+  color: #4d402d;
+  margin: 0;
+  padding: 0;
 }
 
-.reproduction-panel button:hover {
-  background-color: #257729; /* Darker green on hover */
+.icon-with-label img {
+  width: 3rem;
+  margin-right: 0.3rem; /* Add spacing between the icon and the text */
+}
+/* Icon with label */
+.eggs-icon-with-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  text-align: center;
+  line-height: 2;
+  color: #4d402d;
 }
 
-/* Controls Panel */
-.controls-panel ul {
-  list-style-type: disc;
-  padding-left: 0.7rem;
-  text-align: left;
+.eggs-icon-with-label img {
+  width: 2.5rem;
+  margin-right: 0.3rem; /* Add spacing between the icon and the text */
 }
 
-.controls-panel ul ul {
-  list-style-type: circle;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.controls-panel li {
-  margin-bottom: 0.5rem;
+/* Icon with label */
+.clickable-with-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 1rem;
-  color: #333; /* Dark text color */
+  text-align: center;
+  line-height: 2;
+  color: #221904;
+  padding: 0.3rem;
+  border-radius: 0.5rem;
+  background-color: #56cb49;
+  margin-bottom: 0.4rem;
 }
+
+.clickable-with-label:hover {
+  background-color: #318735; /* Darker green on hover */
+}
+
+.clickable-with-label img {
+  width: 2rem;
+  margin-right: 0.3rem; /* Add spacing between the icon and the text */
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

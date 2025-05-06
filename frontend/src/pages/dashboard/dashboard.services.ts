@@ -1,8 +1,9 @@
-import { Ant, AntType } from "../../baseClasses/Ant";
-import { useIconsStore } from "../../baseClasses/Icon";
-import { GameMap } from "../../baseClasses/Map";
 import { createFreshColony, useColonyStore } from "../../contexts/colonyStore";
 import { vars } from "../../contexts/globalVariables";
+import { makeNewAnt } from "../../gameLogic/antHelperFunctions";
+import { AntType } from "../../gameLogic/baseClasses/Ant";
+import { useIconsStore } from "../../gameLogic/baseClasses/Icon";
+import { GameMap } from "../../gameLogic/baseClasses/Map";
 
 export const makeAnt = async (type: AntType) => {
     console.log("Making an ant...");
@@ -17,7 +18,7 @@ export const makeAnt = async (type: AntType) => {
         return;
     }
 
-    const newAnt = Ant.makeNewAnt(type);
+    const newAnt = makeNewAnt(type);
 
     updateColony({
         ants: [...ants, newAnt],

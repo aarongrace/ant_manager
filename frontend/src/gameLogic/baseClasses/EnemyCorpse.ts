@@ -1,10 +1,10 @@
 import { v4 } from "uuid";
-import { usePreloadedImagesStore } from "../contexts/preloadImages";
+import { usePreloadedImagesStore } from "../../contexts/preloadImages";
 import { EntityType, MapEntity } from "./MapEntity";
 import { Bounds } from "./Models";
 
 export class EnemyCorpse extends MapEntity{
-    hoverable = false;
+    hoverable = true;
     isHovered = false;
     spriteFrames: number;
 
@@ -36,7 +36,7 @@ export class EnemyCorpse extends MapEntity{
             return;
         }
         const { getImage } = usePreloadedImagesStore.getState();
-        const img = getImage(this.imgName);
+        const img = getImage(this.isHovered ? this.imgName + "_hovered" : this.imgName);
         const frame = this.spriteFrames - Math.floor((this.amount * 1.1 / this.initial_amount) * this.spriteFrames);
         
         if (!img) {

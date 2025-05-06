@@ -1,9 +1,11 @@
-import { Ant, AntType, AntTypeInfo, TaskType } from "../baseClasses/Ant";
-import { Enemy } from "../baseClasses/Enemy";
-import { GameMap } from "../baseClasses/Map";
-import { EntityType, MapEntity } from "../baseClasses/MapEntity";
+import { v4 } from "uuid";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vars } from "../contexts/globalVariables"; // Use env for constants
+import { Ant, AntData, AntType, AntTypeInfo, TaskType } from "./baseClasses/Ant";
+import { antNames } from "./baseClasses/antNames";
+import { Enemy } from "./baseClasses/Enemy";
+import { GameMap } from "./baseClasses/Map";
+import { EntityType, MapEntity } from "./baseClasses/MapEntity";
 import { findEnemyByCondition } from "./enemyHelperFunctions";
 import { findMapEntity, getNestEntranceCoords, getRandomCoordsInViewport } from "./entityHelperFunctions";
 
@@ -277,7 +279,7 @@ export const drawPatrolCircle = (ctx: CanvasRenderingContext2D, ant: Ant) => {
     ctx.save();
     ctx.beginPath();
     ctx.arc(0, 0, vars.ant.patrolRange, 0, Math.PI * 2);
-    ctx.strokeStyle = "rgba(222, 161, 47, 0.7)";
+    ctx.strokeStyle = "rgba(135, 235, 255, 0.7)";
     ctx.lineWidth = 3;
     ctx.stroke();
     ctx.restore();
@@ -288,29 +290,39 @@ export const drawAttackArrow = (ctx: CanvasRenderingContext2D, ant: Ant) => {
     if (!enemy) {
         return;
     }
-    drawAarow(ctx, ant.coords, enemy.coords, "rgba(236, 4, 4, 0.7)");
+    drawArrow(ctx, ant.coords, enemy.coords, "rgba(236, 4, 4, 0.7)");
+}
+
+export const drawForageArrow = (ctx: CanvasRenderingContext2D, ant: Ant) => {
+    console.log("Drawing forage arrow");
+    const entity = findMapEntity(ant.destination);
+    if (!entity) {
+        return;
+    }
+    drawArrow(ctx, ant.coords, entity.coords, "rgba(94, 255, 94, 0.7)");
 }
 //add debugging by printing the coords for a unique ant
-const drawAarow = (ctx: CanvasRenderingContext2D, from: { x: number, y: number }, to: { x: number, y: number }, color: string) => {
+const drawArrow = (ctx: CanvasRenderingContext2D, from: { x: number, y: number }, to: { x: number, y: number }, color: string) => {
     const distance = Math.sqrt((to.x - from.x) ** 2 + (to.y - from.y) ** 2);
     if (distance < 20){
         return;
     }
-    const headLength = 10;
-    const offset = 0;
+    // const headLength = 10;
+    const offset = 13;
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
+    // console.log("Angle for arrow:", angle);
 
-    const startX = from.x + offset * Math.cos(angle);
-    const startY = from.y + offset * Math.sin(angle);   
-    const endX = to.x - offset * Math.cos(angle);
-    const endY = to.y - offset * Math.sin(angle);
+    const startX = offset * Math.cos(angle);
+    const startY = offset * Math.sin(angle);   
+    const endX = to.x - from.x   - offset * Math.cos(angle);
+    const endY = to.y - from.y - offset * Math.sin(angle);
 
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
     ctx.strokeStyle = color;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 5;
     ctx.stroke();
     ctx.restore();
 }
@@ -327,3 +339,71 @@ export const checkIfAtCapacity = (ant: Ant) => {
     }
     return false;
 }
+ // Method to create a new Ant object
+export function makeNewAnt(type = getRandomAntType()): Ant {
+    const sizeFactor = Math.random() * 0.15 + 0.925; // Random sizeFactor between 0.95 and 1.05
+    const speed =
+      (type === AntType.Soldier
+        ? vars.ant.soldierBaseSpeed
+        : vars.ant.workerBaseSpeed) *
+      (sizeFactor * sizeFactor);
+    const carryingCapacity = Math.floor(
+      (type === AntType.Soldier
+        ? vars.ant.soldierCarryingCapacity
+        : vars.ant.workerCarryingCapacity) *
+        (Math.random() / 3 + 0.833)
+    );
+    const hp = AntTypeInfo[type].defaultHp;
+
+    const { x: nestX, y: nestY } = getNestEntranceCoords();
+
+    const antData: AntData = {
+      id: v4(),
+      name: antNames[Math.floor(Math.random() * antNames.length)],
+      age: 0,
+      type: type,
+      task: type === AntType.Soldier ? TaskType.Patrol : TaskType.Forage,
+      coords: {
+        x: (Math.random() - 1) * 100 + nestX,
+        y: (Math.random() - 1) * 100 + nestY,
+      }, // Absolute coordinates
+      objective: "", // Default value for objective
+      destination: "",
+      carrying: null, // Default value for carrying
+      carryingCapacity: carryingCapacity, // Default value for carryingCapacity
+      speed: speed, // Default value for speed
+      sizeFactor: sizeFactor, // Random sizeFactor between 0.95 and 1.05
+      hp: hp, // Default value for hp
+    };
+    return new Ant(antData);
+  }
+
+export const recreateQueen = (): Ant => {
+  const antData: AntData = {
+    id: v4(), // Generate a unique ID
+    name: "Queenie", // Name of the queen
+    age: 2, // Age of the queen
+    type: AntType.Queen, // Type is queen
+    task: TaskType.Idle, // Default task is idle
+    coords: GameMap.getCoordsCloseToCenter(50), // Absolute coordinates
+    objective: "", // No objective initially
+    destination: "", // No destination initially
+    carrying: null, // Default value for carrying
+    carryingCapacity: 0, // Queens do not carry resources
+    speed: vars.ant.queenBaseSpeed, // Updated to use env
+    sizeFactor: 1.0, // Default sizeFactor for the queen
+    hp: AntTypeInfo[AntType.Queen].defaultHp, // Default hp for the queen
+  };
+  return new Ant(antData);
+};
+
+export const convertAnts = (ants: Ant[]): AntData[] => {
+  return ants.map((ant) => ant.toAntData());
+};
+
+export const convertAntData = (antData: AntData[]): Ant[] => {
+  if (!antData) {
+    return [];
+  }
+  return antData.map((data) => new Ant(data));
+};

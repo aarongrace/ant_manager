@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { useColonyStore } from "../contexts/colonyStore";
-import { vars } from "../contexts/globalVariables"; // Updated to use env
-import { usePreloadedImagesStore } from "../contexts/preloadImages";
-import { setOneAntToTask } from "../gameLogic/antHelperFunctions";
+import { useColonyStore } from "../../contexts/colonyStore";
+import { vars } from "../../contexts/globalVariables"; // Updated to use env
+import { usePreloadedImagesStore } from "../../contexts/preloadImages";
+import { setOneAntToTask } from "../antHelperFunctions";
 import { AntType, TaskType } from "./Ant";
 import { InteractiveElement } from "./Models";
 

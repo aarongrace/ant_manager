@@ -1,10 +1,10 @@
-import { Ant } from "../baseClasses/Ant";
-import { Fruit } from "../baseClasses/Fruit";
-import { GameMap } from "../baseClasses/Map";
-import { EntityType, foodSources, MapEntity } from "../baseClasses/MapEntity";
-import { Bounds } from "../baseClasses/Models";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vars } from "../contexts/globalVariables"; // Updated to use env
+import { Ant } from "./baseClasses/Ant";
+import { Fruit } from "./baseClasses/Fruit";
+import { GameMap } from "./baseClasses/Map";
+import { EntityType, foodSources, MapEntity } from "./baseClasses/MapEntity";
+import { Bounds } from "./baseClasses/Models";
 
 export const findMapEntity = (id: string) => {
     const mapEntities = useColonyStore.getState().mapEntities;

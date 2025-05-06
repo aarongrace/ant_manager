@@ -1,9 +1,15 @@
 import React, { useEffect } from 'react';
-import { AntType, AntTypeInfo } from '../../baseClasses/Ant';
+import ants_icon from '../../assets/imgs/icons/ants_icon.png';
+import chitin_icon from '../../assets/imgs/icons/chitin_icon.png';
+import eggs_icon from '../../assets/imgs/icons/eggs_icon.png';
+import food_icon from '../../assets/imgs/icons/food_icon.png';
+import soldier_icon from '../../assets/imgs/icons/soldier_icon.png';
+import worker_icon from '../../assets/imgs/icons/worker_icon.png';
 import { useColonyStore } from '../../contexts/colonyStore';
 import { vars } from '../../contexts/globalVariables';
 import { usePreloadedImagesStore } from '../../contexts/preloadImages';
 import { initializeAntLogic } from '../../gameLogic/antLogic';
+import { AntType, AntTypeInfo } from '../../gameLogic/baseClasses/Ant';
 import { handleKeyDown, handleKeyUp } from '../../gameLogic/handleKeyboard';
 import GameCanvas from '../canvas/GameCanvas';
 import './dashboard.css';
@@ -11,7 +17,7 @@ import { makeAnt, resetColony, resizeCanvas } from './dashboard.services';
 
 
 const Dashboard: React.FC = () => {
-  const { name: colonyName, ants, eggs, food, chitin, age, perks: perkPurchased, fetchColonyInfo } = useColonyStore();
+  const { ants, eggs, food, chitin, fetchColonyInfo } = useColonyStore();
   const { isLoaded, preloadImages } = usePreloadedImagesStore();
 
   useEffect(() => {
@@ -42,49 +48,32 @@ const Dashboard: React.FC = () => {
   }, {} as Record<string, number>);
 
   return (
-    <div className="dashboard-container">
+    <div id="dashboard-container">
       {/* Panels Container */}
       <div className="panels-container">
-        <main className="dashboard-content">
           {/* Colony Overview */}
           <section className="dashboard-section colony-overview">
-            <p><strong>Number of Ants:</strong> {ants.length}</p>
-            <p><strong>Food:</strong> {Math.floor(food)}</p>
-            <p><strong>Chitin:</strong> {Math.ceil(chitin)}</p>
-            <button onClick={()=>resetColony()}>Reset Colony</button>
+            <table>
+              <tbody>
+                <tr> <td className="icon-with-label"><img src={ants_icon} alt="Ants" /> <strong>:</strong> {ants.length}</td> </tr>
+                <tr> <td className="icon-with-label"><img src={food_icon} alt="Food" /> <strong>:</strong> {Math.floor(food)}</td> </tr>
+                <tr> <td className="icon-with-label"><img src={chitin_icon} alt="Chitin" /> <strong>:</strong> {Math.ceil(chitin)}</td> </tr>
+              </tbody>
+            </table>
+            <button onClick={()=>resetColony()}>Reset</button>
           </section>
 
           {/* Reproduction Panel */}
           <section className="dashboard-section reproduction-panel">
-            <div className="reproduction-left">
-              <h3>Make Ant</h3>
-              <p>Eggs: {eggs}</p>
-            </div>
-            <div className="reproduction-buttons">
-              <button onClick={() => makeAnt(AntType.Worker)}>+ Worker (-{AntTypeInfo[AntType.Worker].cost} food)</button>
-              <button onClick={() => makeAnt(AntType.Soldier)}>+ Soldier (-{AntTypeInfo[AntType.Soldier].cost} food)</button>
-            </div>
+              <p>Hatch eggs!</p>
+            <table>
+              <tr><td className='eggs-icon-with-label'><img src ={eggs_icon} alt="Eggs"/>:{eggs}</td></tr>
+            <tr className="reproduction-buttons">
+              <tr ><td  onClick={() => makeAnt(AntType.Worker)} className='clickable-with-label'><img src={worker_icon}/>({AntTypeInfo[AntType.Worker].cost} food)</td></tr>
+              <tr><td  onClick={() => makeAnt(AntType.Soldier)} className='clickable-with-label'><img src={soldier_icon}/> ({AntTypeInfo[AntType.Soldier].cost} food)</td></tr>
+              </tr>
+            </table>
           </section>
-
-          {/* Controls Section */}
-          <section className="dashboard-section controls-panel">
-            <h3>Controls</h3>
-            <ul>
-              <li>Click on food source to collect</li>
-              <li>Right-click to undo</li>
-              <li>Hold <strong>Control</strong> to toggle selection</li>
-              <li>Drag to select ants</li>
-              <li>When selected, click to set target:</li>
-              <ul>
-                <li>Closest food source when collecting</li>
-                <li>Closest enemy when attacking</li>
-                <li>Target anchor point when patrolling</li>
-              </ul>
-              <li>Click on task icons to assign tasks.</li>
-            </ul>
-          </section>
-
-        </main>
       </div>
       <div className="map-container">
         <GameCanvas />

@@ -3,26 +3,32 @@
   height: 100vh; /* Full viewport height */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: top;
   align-items: center;
   background-color: #f4e4c1; /* Light beige background */
   color: #333; /* Dark text color */
-  padding: 2rem;
+  padding: 20px;
   text-align: center;
 }
 
 /* Title styling */
 .guide-title {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 20px;
   color: #7c691f; /* Earthy brown color */
+  text-align: center;
+}
+
+/* Subtitle styling */
+.guide-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
 /* Description styling */
 .guide-description {
   font-size: 1.2rem;
   margin-bottom: 1.5rem;
-  max-width: 600px;
   line-height: 1.6;
 }
 
@@ -30,23 +36,42 @@
 .guide-list {
   list-style-type: disc;
   margin: 1rem 0;
-  padding-left: 1.5rem;
+  padding-left: 20px;
   text-align: left;
   max-width: 600px;
 }
 
+.guide-list ul {
+  padding-left: 30px; /* Indent nested lists */
+  list-style-type: circle; /* Optional: Change bullet style for nested lists */
+}
+
+/* Columns container */
+.guide-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Individual column */
+.guide-column {
+  flex: 1;
+}
+
 /* Back button styling */
 .guide-back-button {
-  margin-top: 2rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #4caf50; /* Green background */
-  color: #fff; /* White text */
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
   text-decoration: none;
-  border-radius: 0.5rem;
+  border-radius: 5px;
   font-size: 1rem;
   transition: background-color 0.3s ease;
+  text-align: center;
 }
 
 .guide-back-button:hover {
-  background-color: #388e3c; /* Darker green on hover */
+  background-color: #0056b3;
 }

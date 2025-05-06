@@ -1,4 +1,4 @@
-import { TaskType } from "../baseClasses/Ant";
+import { TaskType } from "../gameLogic/baseClasses/Ant";
 
 export const defaultVars = {
     // Ant-related stats
@@ -29,15 +29,14 @@ export const defaultVars = {
         canvasWidth: 600, // Moved from SettingsStore
         canvasHeight: 400, // Moved from SettingsStore
         canvasProportions: {
-            width: 0.7,
-            height: 0.77,
+            width: 0.85,
+            height: 0.79,
         },
         carriedEntitySize: {
             width: 15,
             height: 15,
         },
         edgeMargin: 12,
-        selectedCircleRadius: 20,
         scrollDirection: {x: 0, y: 0},
         scrollEdgeOffset: 50,
         scrollSpeed: 1.5, 
@@ -73,8 +72,10 @@ export const defaultVars = {
         baseEnemySpawnChance: 0.05,
     },
 
-    highlightedTasks: [] as TaskType[],
-    managingPatrol: false,
+    highlightedTask: null as TaskType | null,
+    showPatrolCircle: false,
+    showAttackArrow: false,
+    showForageArrow: false,
     seasonLength: 30,
     season: 0,
     offline_mode: false,

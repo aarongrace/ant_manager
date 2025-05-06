@@ -1,14 +1,15 @@
 import { create } from "zustand";
 import { getUserID } from "./userStore";
 
-import { Ant, AntData, AntType, convertAntData, convertAnts, recreateQueen } from "../baseClasses/Ant";
-import { createEnemy, Enemy, EnemyData } from "../baseClasses/Enemy";
-import { EnemyCorpse, generateEnemyCorpse } from "../baseClasses/EnemyCorpse";
-import { Fruit, FruitData } from "../baseClasses/Fruit";
-import { GameMap, Tile } from "../baseClasses/Map";
-import { MapEntity, MapEntityData } from "../baseClasses/MapEntity"; // Import MapEntity
-import Perk, { Cosmetic, initializeDefaultUpgrades, PerkData, reapplyPerks, Upgrade } from "../baseClasses/Perk";
 import { useWarningStore } from "../components/WarningBar";
+import { convertAntData, convertAnts, makeNewAnt, recreateQueen } from "../gameLogic/antHelperFunctions";
+import { Ant, AntData } from "../gameLogic/baseClasses/Ant";
+import { createEnemy, Enemy, EnemyData } from "../gameLogic/baseClasses/Enemy";
+import { EnemyCorpse, generateEnemyCorpse } from "../gameLogic/baseClasses/EnemyCorpse";
+import { Fruit, FruitData } from "../gameLogic/baseClasses/Fruit";
+import { GameMap, Tile } from "../gameLogic/baseClasses/Map";
+import { MapEntity, MapEntityData } from "../gameLogic/baseClasses/MapEntity"; // Import MapEntity
+import Perk, { Cosmetic, initializeDefaultUpgrades, PerkData, reapplyPerks, Upgrade } from "../gameLogic/baseClasses/Perk";
 import { vars } from "./globalVariables";
 
 type ColonyData = {
@@ -232,8 +233,9 @@ export const createFreshColony = () => {
     y: nestEntrance.coords.y + nestEntrance.size.height / 3,
   };
   const enemies = [createEnemy(), createEnemy()]; // Create an enemy
-  const ants = [queen, Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Soldier), Ant.makeNewAnt(AntType.Worker),
-    Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(AntType.Worker), Ant.makeNewAnt(),Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(), Ant.makeNewAnt(),]
+  const ants = [queen, makeNewAnt(), makeNewAnt(), makeNewAnt(), makeNewAnt(), makeNewAnt(), makeNewAnt(), 
+    makeNewAnt(), makeNewAnt(), makeNewAnt(), makeNewAnt(), makeNewAnt(), makeNewAnt(), makeNewAnt(), makeNewAnt()];
+
   const perks = initializeDefaultUpgrades();
   GameMap.initializeMap();
 

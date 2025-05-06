@@ -1,0 +1,8 @@
+2025-05-04 21:58:28,309 INFO routers.colony:118 Existing colonies in database: 28
+2025-05-04 21:58:28,322 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-04 21:58:28,322 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-04 21:58:28,443 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-04 21:58:28,567 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-04 21:58:28,567 INFO database:29 Database initialization completed successfully.
+2025-05-04 21:58:52,834 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-04 21:58:53,075 INFO routers.colony:61 Dependency called to get colony with ID: guest

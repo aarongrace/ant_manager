@@ -1,4 +1,4 @@
-import { defaultVars, vars } from "../contexts/globalVariables";
+import { defaultVars, vars } from "../../contexts/globalVariables";
 
 export interface Perk {
   apply(): void;

@@ -1,7 +1,7 @@
 import { random } from "lodash";
-import { tileData } from "../assets/tileData";
-import { vars } from "../contexts/globalVariables";
-import { maybeGrowFruit } from "../gameLogic/entityHelperFunctions";
+import { tileData } from "../../assets/tileData";
+import { vars } from "../../contexts/globalVariables";
+import { maybeGrowFruit } from "../entityHelperFunctions";
 export type Tile = [number, number]; // row, col
 type Pixel = [number, number, number]; // r, g, b
 

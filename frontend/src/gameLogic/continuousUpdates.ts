@@ -1,12 +1,14 @@
-import { Ant, AntType, AntTypeInfo, TaskType } from "../baseClasses/Ant";
-import { GameMap } from "../baseClasses/Map";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { reignInCoords } from "./antHelperFunctions";
 import { initializeAntLogic } from "./antLogic";
+import { Ant, AntType, AntTypeInfo, TaskType } from "./baseClasses/Ant";
+import { GameMap } from "./baseClasses/Map";
 
 export const updateContinuousGameState = (delta: number) => {
-    updateAntMovements(delta);
+    
+
+    updateAnts(delta);
     handleScrolling(delta);
 };
 
@@ -60,7 +62,7 @@ const handleScrolling = (delta: number)=>{
     GameMap.cropImageData();
 }
 
-const updateAntMovements = (delta: number) => {
+const updateAnts = (delta: number) => {
     const { ants, enemies } = useColonyStore.getState();
 
     ants.forEach((ant) => {
@@ -109,7 +111,3 @@ const moveAnt = (ant: Ant, delta: number) => {
     }
 };
 
-export const findMapEntity = (id: string) => {
-    const mapEntities = useColonyStore.getState().mapEntities;
-    return mapEntities.find((entity) => entity.id === id);
-};

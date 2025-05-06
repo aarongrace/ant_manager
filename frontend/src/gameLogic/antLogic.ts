@@ -1,12 +1,12 @@
 import { v4 } from "uuid";
-import { Ant, AntType, TaskType } from "../baseClasses/Ant";
-import { Enemy } from "../baseClasses/Enemy";
-import { Fruit } from "../baseClasses/Fruit";
-import { GameMap } from "../baseClasses/Map";
-import { EntityType, MapEntity } from "../baseClasses/MapEntity";
 import { useColonyStore } from "../contexts/colonyStore";
 import { vars } from "../contexts/globalVariables"; // Updated to use env
 import { checkIfAtCapacity, findIdleCoords, findNewPatrolCoords, hasArrived, moveWhileBusy, setAntObjective, setAntToIdle, setDestination, startPatrol } from "./antHelperFunctions";
+import { Ant, AntType, TaskType } from "./baseClasses/Ant";
+import { Enemy } from "./baseClasses/Enemy";
+import { Fruit } from "./baseClasses/Fruit";
+import { GameMap } from "./baseClasses/Map";
+import { EntityType, MapEntity } from "./baseClasses/MapEntity";
 import { findEnemyByCondition } from "./enemyHelperFunctions";
 import { calculateDistance, findClosestSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
 
