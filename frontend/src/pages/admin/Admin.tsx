@@ -7,6 +7,7 @@ const Admin: React.FC = () => {
   const [username, setUsername] = useState("");
   const [number, setNumber] = useState<number>(0);
   const [Option, setOption] = useState<string>("food");
+  const [Option2, setOption2] = useState<string>("=");
 
   const handleRoleChange = (newRole: string) => async (
     e: React.MouseEvent<HTMLButtonElement>
@@ -119,7 +120,7 @@ const Admin: React.FC = () => {
       return;
     }
     try {
-      await modifyResource(username,number,Option);
+      await modifyResource(username,number,Option,Option2);
     } catch (error: any) {
       console.error("Error displaying pending trades:", error);
       if (error.message.includes("Profile not found")) {
@@ -128,12 +129,12 @@ const Admin: React.FC = () => {
         alert("Error modifying resource: " + error.message);
       }
     }
-    alert(`Username: ${username} now has ${number} ${Option}`);
+    alert(`Username: ${username} ${Option2} ${number} ${Option}`);
   };
 
   const roleButtons = [
-    { label: "Promote", role: "admin" },
-    { label: "Set as User", role: "user" },
+    { label: "Make Admin", role: "admin" },
+    { label: "Make User", role: "user" },
     { label: "Ban", role: "banned" },
   ];
 
@@ -179,6 +180,15 @@ const Admin: React.FC = () => {
           </div>
         </div>
         <div className="admin-inline">
+        <select
+            className="admin-input"
+            value={Option2}
+            onChange={(e) => setOption2(e.target.value)}
+          >
+            <option value="=">=</option>
+            <option value="+">+</option>
+            <option value="-">-</option>
+          </select>
           <input
             type="number"
             placeholder="Integer value"
