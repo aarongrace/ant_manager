@@ -8,8 +8,10 @@ interface AdminRouteProps {
 
 const AdminRoute: React.FC<AdminRouteProps> = ({children}) => {
   const {role} = useProfileStore();
-
-  if (role != "admin" ) {
+  if (!role || role == "banned") {
+    return <Navigate to="/" replace />;
+  }
+  else if (role != "admin" ) {
     return <Navigate to="/dashboard" replace />;
   }
   return <>{children}</>;
