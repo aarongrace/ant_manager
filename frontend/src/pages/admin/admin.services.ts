@@ -72,9 +72,7 @@ export const deleteUserProfile = async (
 };
 
 
-export const getData = async (
-  username: string
-): Promise<string> => {
+export const getData = async (username: string): Promise<string> => {
   const response = await fetch(`${API_BASE_URL}/profiles/get-data/${username}`, {
     method: "GET",
     headers: {
@@ -135,12 +133,21 @@ export const getColony = async (username: string): Promise<string> => {
   }
   
   const result = await colonyResponse.json();
+
+  let perks = "";
+  for (let i = 0; i < 6; i++) {
+    if (result.perks[i]) {
+      perks += "\n";
+      perks += result.perks[i].name + " tier " + result.perks[i].timesUpgraded;
+    }
+  }
+                
   const stringResult = "Username: " + JSON.stringify(username) +
   "\nEggs: " + JSON.stringify(result.eggs) +
   "\nFood: " + JSON.stringify(result.food) + 
   "\nChitin: " + JSON.stringify(result.chitin) + 
   "\nAge: " + JSON.stringify(result.age) + 
-  "\nPerks: " + JSON.stringify(result.perks);
+  "\nPerks: " + perks;
   return stringResult;
 };
 
@@ -197,4 +204,63 @@ export const getTrades = async (username: string): Promise<any> => {
   const result2 = await colonyResponse2.json();
 
   return "to: " + JSON.stringify(result, null, 2) + "\nfrom: " + JSON.stringify(result2, null, 2);
+};
+
+export const modifyResource = async (
+  name: string,
+  num: number,
+  mat: string
+): Promise<void> => {
+  
+  const idResponse = await fetch(`${API_BASE_URL}/profiles/get-id/${name}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const idData = await idResponse.json();
+  const id = idData.id;
+
+  const colonyResponse = await fetch(`${API_BASE_URL}/colonies/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  
+  if (!colonyResponse.ok) {
+    let errorMsg = "Error getting colony";
+    try {
+      const errorData = await colonyResponse.json();
+      errorMsg = errorData.detail || errorMsg;
+    } catch (err) {
+      console.error("Failed to parse error response", err);
+    }
+    throw new Error(errorMsg);
+  }
+  
+  const Colony = await colonyResponse.json();
+  Colony[mat] = num;
+  
+  const response = await fetch(`${API_BASE_URL}/colonies/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(Colony)
+  });
+
+  if (!response.ok) {
+    let errorMsg = "Error updating role";
+    try {
+      const errorData = await response.json();
+      errorMsg = errorData.detail || errorMsg;
+    } catch (err) {
+      console.error("Failed to parse error response", err);
+    }
+    throw new Error(errorMsg);
+  }
+
+ await response.json();
 };
