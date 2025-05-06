@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { updateUserRole, deleteUserProfile, getData, getColony, getTrades } from "./admin.services";
+import { updateUserRole, deleteUserProfile, getData, getColony, getTrades, modifyResource } from "./admin.services";
 import "./admin.css";
 
 const Admin: React.FC = () => {
   const [username, setUsername] = useState("");
+  const [number, setNumber] = useState<number>(0);
+  const [Option, setOption] = useState<string>("food");
 
   const handleRoleChange = (newRole: string) => async (
     e: React.MouseEvent<HTMLButtonElement>
@@ -35,7 +37,7 @@ const Admin: React.FC = () => {
     }
     if (
       !window.confirm(
-        "Are you sure you want to delete this profile? This action cannot be undone."
+        "Are you sure you want to permanently delete this profile?"
       )
     ) {
       return;
@@ -61,9 +63,14 @@ const Admin: React.FC = () => {
     }
     try {
       const Info = await getData(username);
-      alert(JSON.stringify(Info, null, 2));
+      alert(Info);
     } catch (error: any) {
       console.error("Error displaying user info:", error);
+      if (error.message.includes("Profile not found")) {
+        alert("User with the entered name was not found.");
+      } else {
+        alert("Error getting profile data: " + error.message);
+      }
     }
   };
 
@@ -75,9 +82,14 @@ const Admin: React.FC = () => {
     }
     try {
       const Info = await getColony(username);
-      alert(JSON.stringify(Info, null, 2));
+      alert(Info);
     } catch (error: any) {
       console.error("Error displaying user info:", error);
+      if (error.message.includes("Profile not found")) {
+        alert("User with the entered name was not found.");
+      } else {
+        alert("Error getting colony data: " + error.message);
+      }
     }
   };
 
@@ -92,7 +104,31 @@ const Admin: React.FC = () => {
       alert(Info);
     } catch (error: any) {
       console.error("Error displaying pending trades:", error);
+      if (error.message.includes("Profile not found")) {
+        alert("User with the entered name was not found.");
+      } else {
+        alert("Error getting trades: " + error.message);
+      }
     }
+  };
+
+  const handleModifyResource = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!username.trim()||!Number.isInteger(number)) {
+      alert("Enter a username and integer");
+      return;
+    }
+    try {
+      await modifyResource(username,number,Option);
+    } catch (error: any) {
+      console.error("Error displaying pending trades:", error);
+      if (error.message.includes("Profile not found")) {
+        alert("User with the entered name was not found.");
+      } else {
+        alert("Error modifying resource: " + error.message);
+      }
+    }
+    alert(`Username: ${username} now has ${number} ${Option}`);
   };
 
   const roleButtons = [
@@ -105,7 +141,7 @@ const Admin: React.FC = () => {
     <div className="admin-container">
       <h1 className="admin-title">Admin Panel</h1>
       <p className="admin-description">
-        Manage players with one convenient interface.
+        Enter a username to manage that user's account.
       </p>
       <form className="admin-form">
         <input
@@ -142,6 +178,28 @@ const Admin: React.FC = () => {
             </button>
           </div>
         </div>
+        <div className="admin-inline">
+          <input
+            type="number"
+            placeholder="Integer value"
+            className="admin-input"
+            value={number}
+            onChange={(e) => setNumber(parseInt(e.target.value, 10))}
+            step="1"
+          />
+          <select
+            className="admin-input"
+            value={Option}
+            onChange={(e) => setOption(e.target.value)}
+          >
+            <option value="eggs">Eggs</option>
+            <option value="food">Food</option>
+            <option value="chitin">Chitin</option>
+          </select>
+        </div>
+        <button onClick={handleModifyResource} className="admin-submit" type="button">
+          Execute
+        </button>
       </form>
       <Link to="/dashboard" className="admin-back-button">
         Back to Dashboard
@@ -149,6 +207,5 @@ const Admin: React.FC = () => {
     </div>
   );
 };
-
 
 export default Admin;
