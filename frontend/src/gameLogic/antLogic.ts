@@ -78,7 +78,12 @@ const handleForage = (ant: Ant) => {
         const destinationEntity = findMapEntity(ant.destination);
         if (!destinationEntity) {
             console.warn("Destination entity not found");
-            setAntToIdle(ant);
+            const closestSource = findClosestSource(ant.coords, true);
+            if (closestSource) {
+                setAntObjective(ant, closestSource);
+            } else {
+                setDestination(ant, findGateway());
+            }
             return;
         }
         switch (destinationEntity.type) {

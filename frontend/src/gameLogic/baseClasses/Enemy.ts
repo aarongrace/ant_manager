@@ -117,8 +117,8 @@ export class Enemy implements InteractiveElement {
     const { enemies, mapEntities, updateColony } = useColonyStore.getState();
     this.isDead = true;
 
-    const enemyCorpse = generateEnemyCorpse("mantis", this.coords, 
-      EnemyTypeInfo[this.type].chitinAmount, EnemyTypeInfo[this.type].defaultSize);
+    const enemyCorpse = generateEnemyCorpse(this.type, this.coords, 
+      EnemyTypeInfo[this.type].chitinAmount, EnemyTypeInfo[this.type].corpseSize);
 
     updateColony({ enemies: enemies.filter((enemy) => enemy.id !== this.id),
       mapEntities: [...mapEntities, enemyCorpse] }); // Add the corpse to the colony state
@@ -333,6 +333,7 @@ export const EnemyTypeInfo: {
     attackDamage: number; // Added attack damage field
     hpBarYOffset: number; // Added hpBarYOffset
     chitinAmount: number; // Added chitinAmount field
+    corpseSize: { width: number; height: number }; // Added corpseSize field
   };
 } = {
   [EnemyType.Maggot]: {
@@ -350,6 +351,7 @@ export const EnemyTypeInfo: {
     attackDamage: 30, // Added attack damage value
     hpBarYOffset: 20, // Added hpBarYOffset
     chitinAmount: 5, // Added chitinAmount value
+    corpseSize: { width: 35, height: 25 }, // Added corpseSize
   },
   [EnemyType.Mantis]: {
     speed: 7,
@@ -366,6 +368,7 @@ export const EnemyTypeInfo: {
     attackDamage: 25, // Added attack damage value
     hpBarYOffset: 29, // Added hpBarYOffset
     chitinAmount: 10, // Added chitinAmount value
+    corpseSize: { width: 55, height: 55 }, 
   },
   [EnemyType.Beetle]: {
     speed: 10,
@@ -382,5 +385,6 @@ export const EnemyTypeInfo: {
     attackDamage: 17, // Added attack damage value
     hpBarYOffset: 27, // Added hpBarYOffset
     chitinAmount: 8, // Added chitinAmount value
+    corpseSize: { width: 40, height: 40 }, // Added corpseSize
   },
 };

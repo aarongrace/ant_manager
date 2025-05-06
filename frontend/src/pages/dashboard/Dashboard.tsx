@@ -55,8 +55,10 @@ const Dashboard: React.FC = () => {
           <section className="dashboard-section colony-overview">
             <table>
               <tbody>
-                <tr> <td className="icon-with-label"><img src={ants_icon} alt="Ants" /> <strong>:</strong> {ants.length}</td> </tr>
-                <tr> <td className="icon-with-label"><img src={food_icon} alt="Food" /> <strong>:</strong> {Math.floor(food)}</td> </tr>
+                <tr> <td className="icon-with-label"><img src={ants_icon} alt="Ants" /> 
+                <strong>: </strong> {ants.length}</td> </tr>
+                <tr> <td className="icon-with-label"><img src={food_icon} alt="Food" /> 
+                <strong>:  </strong> {Math.floor(food)}</td> </tr>
                 <tr> <td className="icon-with-label"><img src={chitin_icon} alt="Chitin" /> <strong>:</strong> {Math.ceil(chitin)}</td> </tr>
               </tbody>
             </table>
@@ -65,7 +67,7 @@ const Dashboard: React.FC = () => {
 
           {/* Reproduction Panel */}
           <section className="dashboard-section reproduction-panel">
-              <p>Hatch eggs!</p>
+              <h3>Hatch eggs!</h3>
             <table>
               <tr><td className='eggs-icon-with-label'><img src ={eggs_icon} alt="Eggs"/>:{eggs}</td></tr>
             <tr className="reproduction-buttons">

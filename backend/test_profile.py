@@ -1,6 +1,9 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
 from main import app
+from fastapi import HTTPException
+from datetime import datetime
+from enum import Enum
 
 
 @pytest.mark.anyio
@@ -57,3 +60,4 @@ async def test_register_success(monkeypatch):
         "message": "User registered successfully",
         "userId": "testId"
     }
+

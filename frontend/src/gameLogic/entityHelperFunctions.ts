@@ -67,9 +67,10 @@ export const checkIfObjectiveExists = (ant: Ant) => {
 export const decaySources = () => {
     const { mapEntities } = useColonyStore.getState();
     const foodSources = mapEntities.filter((entity) => entity.type === EntityType.FoodResource);
+    const decayFactor = vars.food.decayFactor * (1 + foodSources.length * vars.food.decayFactorMultiplier);
     foodSources.forEach((foodSource) => {
         if (foodSource.amount > 0) {
-            foodSource.amount -= vars.food.decayFactor; // Updated to use env
+            foodSource.amount -= decayFactor; // Updated to use env
         }
     });
     const chitinSources = mapEntities.filter((entity) => entity.type === EntityType.ChitinSource);
@@ -121,7 +122,7 @@ export const getEntityBounds = (entity: MapEntity): Bounds => {
 
     if (entity.type === EntityType.FoodResource) {
         const defaultAmount = foodSources.find((source) => source.name === entity.imgName)?.default_amount || vars.food.defaultFruitAmount; // Updated to use env
-        sizeFactor = entity.amount / defaultAmount + 0.5;
+        sizeFactor = entity.amount / defaultAmount + 0.6;
     }
 
     const posX = entity.coords.x - viewportTopLeft.x;
@@ -162,14 +163,21 @@ export const getNestEntranceCoords = () => {
     return nestEntrance.coords;
 };
 
-export const maybeGrowFruit = (coords: { x: number; y: number }) => {
+export const ifGrowFruit = () => {
     const { mapEntities } = useColonyStore.getState();
-    const { updateColony } = useColonyStore.getState();
     const foodCount = mapEntities.filter((entity) => entity.type === EntityType.FoodResource).length;
     const k = vars.food.growFruitRateOfDecrease;
     const fruitFactor = Math.exp(-k * (foodCount - 1));
     if (fruitFactor > Math.random()) {
-        const fruit = Fruit.createRandomFruit(coords);
-        updateColony({ mapEntities: [...mapEntities, fruit] });
+        return true;
+    } else {
+        return false;
     }
+}
+
+export const growFruitAtCoords = (coords: { x: number; y: number }) => {
+    const { mapEntities } = useColonyStore.getState();
+    const { updateColony } = useColonyStore.getState();
+    const fruit = Fruit.createRandomFruit(coords);
+    updateColony({ mapEntities: [...mapEntities, fruit] });
 }

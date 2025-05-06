@@ -5,7 +5,6 @@ import './antsPage.css';
 import deleteIcon from './delete_icon.png'; // Import the delete icon
 
 const AntsPage: React.FC = () => {
-
     const { ants } = useColonyStore();
 
     return (
@@ -21,20 +20,13 @@ const AntsPage: React.FC = () => {
 };
 
 const UnitBubble: React.FC<{ ant: Ant }> = ({ ant: ant }) => {
-
-    // const updateTask = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    //     const newTask = event.target.value as TaskType;
-    //     if (ant instanceof AdultUnit) {
-    //         ant.task = newTask;
-    //         await ant.update();
-    //     }
-    //     refetchUnits();
-    // };
+    const { updateColony, ants } = useColonyStore();
 
     const handleDelete = async () => {
         console.log(`Deleting unit with id: ${ant.id}`);
-        // await deleteUnit(ant.id);
-        // refetchUnits();
+        updateColony({
+            ants: ants.filter((a) => a.id !== ant.id),
+        });
     };
     
     return (
