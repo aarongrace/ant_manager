@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { updateUserRole, deleteUserProfile, getData, getColony, getTrades } from "./admin.services";
+import { updateUserRole, deleteUserProfile, getData, getColony, getTrades, modifyResource } from "./admin.services";
 import "./admin.css";
 
 const Admin: React.FC = () => {
@@ -112,13 +112,23 @@ const Admin: React.FC = () => {
     }
   };
 
-  const handleModifyResource = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleModifyResource = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!username.trim()||!Number.isInteger(number)) {
       alert("Enter a username and integer");
       return;
     }
-    alert(`Username: ${username}\nNumber: ${number}\nOption: ${Option}`);
+    try {
+      await modifyResource(username,number,Option);
+    } catch (error: any) {
+      console.error("Error displaying pending trades:", error);
+      if (error.message.includes("Profile not found")) {
+        alert("User with the entered name was not found.");
+      } else {
+        alert("Error modifying resource: " + error.message);
+      }
+    }
+    alert(`Username: ${username} now has ${number} ${Option}`);
   };
 
   const roleButtons = [
