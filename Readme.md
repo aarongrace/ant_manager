@@ -81,10 +81,11 @@ Trades simply move resources from one user to another and are initiated by a mem
 
 ## Admin Functions
 
+Admin functions include deleting a profile, changing the role of a profile (banned, user, and admin), seeing information about a profile, and changing the amount of certain resources held by the colony associated with a profile. These functions are on an admin page that only the admin can access.
+
 ## Navigation
 
 ## Shop
-
 
 
 
@@ -123,14 +124,12 @@ Trades simply move resources from one user to another and are initiated by a mem
 #### Admin View
 - The first admin is hardcoded.
 - Admins can:
+  - Access the admin page.
   - Make other players admins, and remove admin privilege.
   - Ban and unban users.
   - Delete user accounts.
   - See data related to any users profile, colony and trades.
   - Modify how much of certain resources any user has.
-
-#### Leaderboard
-- Displays the colony size of each player.
 
 ---
 
