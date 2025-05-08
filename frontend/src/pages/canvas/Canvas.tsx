@@ -14,7 +14,7 @@ interface CanvasProps {
 }
 
 const Canvas: React.FC<CanvasProps> = ({ draw, establishContext }) => {
-  const { putColonyInfo } = useColonyStore();
+  const { putColonyInfo } = useColonyStore.getState();
 
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 

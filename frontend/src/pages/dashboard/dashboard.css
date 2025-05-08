@@ -72,7 +72,7 @@
   padding: 0.3rem 0.7rem;
   border: 2px solid #d4a373; /* Soft brown border */
   border-radius: 1rem; /* Rounded corners for bubble effect */
-  background-color: #ffffffd4; /* White background for sections */
+  background-color: #fffcf7c2; /* White background for sections */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   text-align: center;
   margin-bottom: 1rem;
@@ -80,7 +80,7 @@
 
 .dashboard-section h3 {
   font-size: 1.4rem;
-  color: #4a5015; /* Dark brown color */
+  color: #4c4600; /* Dark brown color */
   margin: 0.2rem 0 0 0;
 
 }

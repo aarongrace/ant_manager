@@ -13,29 +13,24 @@ import { MapEntity } from "./baseClasses/MapEntity";
 import { decaySources } from "./entityHelperFunctions";
 
 export const updateDiscreteGameState = (setCursor:()=>void) => {
-    const { ants } = useColonyStore.getState();
+    const { ants, enemies } = useColonyStore.getState();
+    const { setTaskNumbers } = useIconsStore.getState();
 
     ants.forEach((ant) => {
         handleAntLogic(ant); // Use the new combined function
     });
 
-    const { enemies } = useColonyStore.getState();
     enemies.forEach((enemy) => {
         enemy.discreteUpdate();
     });
 
-    const { setTaskNumbers } = useIconsStore.getState();
     setTaskNumbers();
-
-    // addRandomMapEntity();
     deleteEmptyMapEntities();
     spawnRandomEnemy();
     consumeFoodAndRestoreHp();
     decaySources();
     layEgg();
-
     incrementAge(setCursor);
-
     checkIfAllDead();
 };
 

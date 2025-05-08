@@ -38,15 +38,6 @@ const Dashboard: React.FC = () => {
     vars.dashBoardInitialized = true;
   }, []);
 
-
-  
-  const taskCounts = ants.reduce((acc: Record<string, number>, ant) => {
-    if (ant.type != AntType.Queen) { // queen should not be counted as she technically doesn't have a task
-      acc[ant.task] = (acc[ant.task] || 0) + 1;
-    }
-    return acc;
-  }, {} as Record<string, number>);
-
   return (
     <div id="dashboard-container">
       {/* Panels Container */}

@@ -244,9 +244,9 @@ export const createFreshColony = () => {
     enemies: enemies, // Initialize enemies
     name: "New Colony",
     map: GameMap.tilesGrid,
-    eggs: 10,
-    food: 200,
-    chitin: 200,
+    eggs: 15,
+    food: 400,
+    chitin: 400,
     age: 0,
     mapEntities: mapEntities,
     perks: perks,

@@ -53,61 +53,89 @@ export class GameMap {
         }
     }
 
+    static getNextTileType(tile: Tile, i: number, j: number): Tile {
+        const randomFactor = Math.random();
+
+        const seasonalGrassDeathChances = [0.2, 0.1, 0.2, 0.3];
+        const shouldDie = (1-randomFactor) < seasonalGrassDeathChances[vars.season];
+        const seasonalGrassGrowChances = [0.4, 0.5, 0.3, 0.3];
+        const shouldGrow = randomFactor < seasonalGrassGrowChances[vars.season];
+
+        switch (tile) {
+            case GameMap.normalTile:
+                const seasonalGrassGrowthModifiers = [4, 2, 1, 0.2];
+                if (randomFactor < 0.003 * seasonalGrassGrowthModifiers[vars.season]) {
+                    return GameMap.grassOneTile;
+                } break;
+
+            case GameMap.grassOneTile:
+                if (shouldGrow) {
+                    return GameMap.grassTwoTile;
+                } else if (shouldDie) {
+                    return GameMap.normalTile;
+                }break;
+
+            case GameMap.grassTwoTile:
+                if (shouldGrow) {
+                    return GameMap.grassThreeTile;
+                } else if (shouldDie) {
+                    return GameMap.normalTile;
+                } break;
+
+            case GameMap.grassThreeTile:
+                if (shouldGrow ) {
+                    return ifGrowFruit() ? GameMap.sproutOneTile : GameMap.normalTile;
+                }  else if (shouldDie) {
+                    return GameMap.grassTwoTile;
+                }
+                break;
+
+            case GameMap.sproutOneTile:
+                return GameMap.sproutTwoTile;
+
+            case GameMap.sproutTwoTile:
+                return GameMap.sproutThreeTile;
+
+            case GameMap.sproutThreeTile:
+                return GameMap.sproutFourTile;
+
+            case GameMap.sproutFourTile:
+                const coords = {
+                    x: j * GameMap.mapTileSize + GameMap.mapTileSize / 2,
+                    y: i * GameMap.mapTileSize + GameMap.mapTileSize / 2
+                };
+                if (vars.season !== 3) {
+                    growFruitAtCoords(coords);
+                }
+                return GameMap.normalTile;
+
+            case GameMap.rockOneTile:
+            case GameMap.rockTwoTile:
+            case GameMap.rockThreeTile:
+                if (randomFactor < 0.001) {
+                    const tileType = randomFactor % 3 === 0 ? GameMap.rockOneTile
+                        : randomFactor % 3 === 1 ? GameMap.rockTwoTile
+                        : GameMap.rockThreeTile;
+                    const neighborRow = Math.min(GameMap.mapTileHeight - 1, Math.max(0, i + Math.floor(Math.random() * 3) - 1));
+                    const neighborCol = Math.min(GameMap.mapTileWidth - 1, Math.max(0, j + Math.floor(Math.random() * 3) - 1));
+                    GameMap.tilesGrid[neighborRow][neighborCol] = tileType;
+                    return GameMap.normalTile;
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        return tile; // Return the same tile if no change occurs
+    }
 
     static updateTiles() {
         try {
             for (let i = 0; i < GameMap.mapTileHeight; i++) {
                 for (let j = 0; j < GameMap.mapTileWidth; j++) {
                     const tile = GameMap.tilesGrid[i][j];
-                    const randomFactor = Math.random();
-                    if (tile === GameMap.normalTile) {
-                        const seasonFactor = vars.season === 0 ? 4 :
-                        vars.season === 1 ? 2:
-                        vars.season === 2 ? 1: 0.2
-
-                        if (randomFactor < 0.003 * seasonFactor) {
-                            GameMap.tilesGrid[i][j] = GameMap.grassOneTile;
-                        }
-                    } else if (tile === GameMap.grassOneTile) {
-                        if (randomFactor < 0.4) {
-                            GameMap.tilesGrid[i][j] = GameMap.grassTwoTile;
-                        }
-                    } else if (tile === GameMap.grassTwoTile) {
-                        if (randomFactor < 0.4) {
-                            GameMap.tilesGrid[i][j] = GameMap.grassThreeTile;
-                        }
-                    } else if (tile === GameMap.grassThreeTile) {
-                        if (randomFactor < 0.4) {
-                            if (ifGrowFruit()) {
-                                GameMap.tilesGrid[i][j] = GameMap.sproutOneTile;
-                            } else {
-                                GameMap.tilesGrid[i][j] = GameMap.normalTile;
-                            }
-                        } 
-                    } else if (tile === GameMap.sproutOneTile) {
-                        GameMap.tilesGrid[i][j] = GameMap.sproutTwoTile;
-                    } else if (tile === GameMap.sproutTwoTile) {
-                        GameMap.tilesGrid[i][j] = GameMap.sproutThreeTile;
-                    } else if (tile === GameMap.sproutThreeTile) {
-                        GameMap.tilesGrid[i][j] = GameMap.sproutFourTile;
-                    } else if (tile === GameMap.sproutFourTile) {
-                        const coords = { x: j * GameMap.mapTileSize + GameMap.mapTileSize / 2, y: i * GameMap.mapTileSize + GameMap.mapTileSize / 2 };
-                        if (vars.season !== 3) {
-                            growFruitAtCoords(coords);
-                        }
-                        GameMap.tilesGrid[i][j] = GameMap.normalTile;
-                    } else if (tile === GameMap.rockOneTile || tile === GameMap.rockTwoTile || tile === GameMap.rockThreeTile) {
-
-                        if (randomFactor < 0.001) {
-                            GameMap.tilesGrid[i][j] = GameMap.normalTile;
-                            const tileType = randomFactor % 3 === 0 ? GameMap.rockOneTile
-                                : randomFactor % 3 === 1 ? GameMap.rockTwoTile
-                                : GameMap.rockThreeTile;
-                            const neighborRow = Math.min(GameMap.mapTileHeight - 1, Math.max(0, i + Math.floor(Math.random() * 3) - 1));
-                            const neighborCol = Math.min(GameMap.mapTileWidth - 1, Math.max(0, j + Math.floor(Math.random() * 3) - 1));
-                            GameMap.tilesGrid[neighborRow][neighborCol] = tileType;
-                        }
-                    }
+                    GameMap.tilesGrid[i][j] = GameMap.getNextTileType(tile, i, j);
                 }
             }
             GameMap.createFullImageData();
