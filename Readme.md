@@ -123,10 +123,11 @@ Trades simply move resources from one user to another and are initiated by a mem
 #### Admin View
 - The first admin is hardcoded.
 - Admins can:
-  - Make other players admins.
-  - Ban users.
-  - Change game variables.
-  - Impersonate players.
+  - Make other players admins, and remove admin privilege.
+  - Ban and unban users.
+  - Delete user accounts.
+  - See data related to any users profile, colony and trades.
+  - Modify how much of certain resources any user has.
 
 #### Leaderboard
 - Displays the colony size of each player.
