@@ -1,34 +1,10 @@
 # Clash of Colonies
 
-## Executive Summary
-
-Ants are fascinating species with a complex social organization. A simulation game featuring ant colonies can be both entertaining and educational in terms of sociological behaviors and biology.
-
----
-
-## Problem Overview
-
-- How to effectively simulate a colony of ants?
-- How to create a web-based solution that allows users to have their own colonies, join clans, trade resources, and send messages?
-- How to store data securely and ensure consistency of game data across different play sessions?
-
----
-
-## Proposed Solution
-
-A web application using **React** for the frontend. User inputs will be sent to the backend, powered by **FastAPI**, and data will be stored securely in **MongoDB**.
-
----
-
-## Scope of Work
-
-This project seeks to simulate a colony of ants in terms of reproduction, resource gathering, and colony expansion.
-
----
+Ants are fascinating species with a complex social organization, making them an ideal subject for a simulation game that is both entertaining and educational. This project aims to create a web-based solution that effectively simulates ant colonies, focusing on reproduction, resource gathering, and colony expansion. Users will manage their own colonies, join clans, trade resources, and send messages, all within a React-powered frontend. The backend, built with FastAPI, will handle user inputs and ensure secure, consistent data storage in MongoDB across play sessions.
 
 # Descriptions and Implementations of Major Systems
 
-## Core Game
+## Core Game Display and Mechanics
 
 ### Canvas
 
@@ -117,7 +93,7 @@ How grass tiles sprout into fruits. Note that fruits decay over time
 - Growth and death rates for grass and sprouts are determined by `seasonalGrassGrowChances` and `seasonalGrassDeathChances`, which vary by season.
 - Seasonal modifiers affect the probability of grass growth (`seasonalGrassGrowthModifiers`), with higher growth rates in spring and lower rates in winter.
 
-### Ant Rendering and Behaviors
+### Ant Rendering and Mechanics
 
 #### Class Definition
 
@@ -126,7 +102,7 @@ How grass tiles sprout into fruits. Note that fruits decay over time
 - **Ant Data**: Represents the raw state of an ant, used for syncing with the backend and backups. Does not include any display specific information such a angle and spriteFrame.
   - By separating frontend-specific logic from the core data, the `Ant` class ensures smooth synchronization with the backend and backups while reducing data transfer overhead by only syncing essential fields.
 
-#### Display
+#### Ant Display
 - **Positioning**: The ant's position is calculated relative to the viewport, ensuring it is drawn in the correct location on the canvas.
 - **Rotation**: The ant's angle is set based on its movement direction, and the canvas is rotated accordingly.
 - **Sprite Animation**:
@@ -138,6 +114,39 @@ How grass tiles sprout into fruits. Note that fruits decay over time
 - **Health Bar**: A health bar is displayed above the ant if its health is below the default value.
 - **Carried Entity**: If the ant is carrying an item, it is drawn above the ant with scaling based on the item's size.
 - **Selection Highlight**: A circle is drawn around the ant when it is selected, providing visual feedback to the user.
+
+#### Ant Logic
+
+##### Foraging
+Ants tasked with foraging will seek out the nearest resource, prioritizing food or chitin based on their current load. If carrying resources, they return to the gateway to deposit them. Upon reaching a resource, they collect it incrementally until full or the resource is depleted. If no resources are found, they hover near the gateway.
+
+##### Attacking
+Ants assigned to attack will locate and pursue enemies within range. Upon reaching an enemy, they engage in combat. If no enemies are found or the target is lost, soldier ants begin patrolling, while other types return to idle behavior.
+
+##### Patrolling
+Patrolling ants move between designated points, scanning for nearby enemies. If an enemy is detected, they switch to attack mode. When reaching a patrol point, they randomly select a new destination within their patrol range.
+
+### Enemy Rendering and Mechanics
+The enemies are implemented similarly to the ants but with significantly simpler logic. They pursue the nearest ant and attack it when in range
+
+### Map Entities
+
+Map entities represent interactive elements on the game map, such as gateways, food resources, and chitin sources. These entities are displayed dynamically on the canvas using preloaded images.
+
+#### Rendering and Interaction
+
+- **Rendering**: Each entity is drawn on the canvas using its associated image. If the entity is hovered over, a highlighted version of the image (if available) is displayed.
+- **Dynamic Sizing**: The size of the entity is determined by its `width` and `height` properties, ensuring accurate scaling on the map.
+- **Click Handling**: Entities can respond to user clicks. For example, right-clicking a food resource triggers ant interactions, such as assigning or removing ants from the resource.
+
+#### Fruit
+
+Fruits are a specialized type of map entity, inheriting from `MapEntity`. They are defined by their position (`row` and `col`) on a sprite sheet and progress through stages based on their remaining amount. Key features include:
+
+#### EnemyCorpse
+Enemy corpses are a unique type of map entity that represent the remains of defeated enemies. They serve as a source of chitin, which can be harvested by ants.
+  - Is displayed as chitin when carried by an ant
+  - Has a decay animation that progresses based 
 
 
 ## Users/Profile
