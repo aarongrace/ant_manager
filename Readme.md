@@ -142,17 +142,28 @@ How grass tiles sprout into fruits. Note that fruits decay over time
 
 ## Users/Profile
 
+Profiles contain information about each user as well as the ability to 
+- update their profile information (including profile picture)
+
+- download / upload any backups they've made of their colony
 
 ## Clans
 
+Clans allow users to trade resources amongst other members within their clan. If a user is not in a clan, all clans will be listed and they can choose to join one. Clans bring in several levels of users including "members" and "leaders".
+
+Leaders have the ability to kick members in their clan.
+
 ## Trades
 
+Trades simply move resources from one user to another and are initiated by a member within a clan. Once initiated the outgoing request is marked as pending and is displayed to the receipient who can then choose to accept / deny the trade request.
+
 ## Admin Functions
+
+Admin functions include deleting a profile, changing the role of a profile (banned, user, and admin), seeing information about a profile, and changing the amount of certain resources held by the colony associated with a profile. These functions are on an admin page that only the admin can access.
 
 ## Navigation
 
 ## Shop
-
 
 
 
@@ -191,13 +202,12 @@ How grass tiles sprout into fruits. Note that fruits decay over time
 #### Admin View
 - The first admin is hardcoded.
 - Admins can:
-  - Make other players admins.
-  - Ban users.
-  - Change game variables.
-  - Impersonate players.
-
-#### Leaderboard
-- Displays the colony size of each player.
+  - Access the admin page.
+  - Make other players admins, and remove admin privilege.
+  - Ban and unban users.
+  - Delete user accounts.
+  - See data related to any users profile, colony and trades.
+  - Modify how much of certain resources any user has.
 
 ---
 

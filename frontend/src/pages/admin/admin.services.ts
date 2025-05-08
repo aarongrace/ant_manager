@@ -209,9 +209,9 @@ export const getTrades = async (username: string): Promise<any> => {
 export const modifyResource = async (
   name: string,
   num: number,
-  mat: string
+  mat: string,
+  opt: string
 ): Promise<void> => {
-  
   const idResponse = await fetch(`${API_BASE_URL}/profiles/get-id/${name}`, {
     method: "GET",
     headers: {
@@ -241,7 +241,15 @@ export const modifyResource = async (
   }
   
   const Colony = await colonyResponse.json();
-  Colony[mat] = num;
+  if (opt == "+") {
+    Colony[mat] = Colony[mat] + num;
+  }
+  else if (opt == "-") {
+    Colony[mat] = Colony[mat] - num;
+  }
+  else {
+    Colony[mat] = num;
+  }
   
   const response = await fetch(`${API_BASE_URL}/colonies/${id}`, {
     method: "PUT",
