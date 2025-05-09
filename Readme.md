@@ -5,8 +5,7 @@ Ants are fascinating species with a complex social organization, making them an 
 Players will manage their own colonies, join clans, and trade resources within a React-powered frontend. The backend, built with FastAPI, ensures persistence and multiplayer features using MongoDB
 
 ![game-demo](./docs-images/game-demo.gif)
-
-# Descriptions and Implementations of Major Systems
+---
 
 ## Core Game Display and Mechanics
 
@@ -98,12 +97,14 @@ The `updateTiles` function is responsible for iterating through `GameMap.tilesGr
       - Seasonal growth and death rates influence tile transitions (e.g., grass growing or dying, sprouting fruit).
 
 ![Sprouting](./docs-images/sprouting.gif)
+
 How grass tiles sprout into fruits. Note that fruits decay over time
 
 #### Seasonal Effects
 
-- Growth and death rates for grass and sprouts are determined by `seasonalGrassGrowChances` and `seasonalGrassDeathChances`, which vary by season.
-- Seasonal modifiers affect the probability of grass growth (`seasonalGrassGrowthModifiers`), with higher growth rates in spring and lower rates in winter.
+- Growth and death rates for grass and sprouts vary by season
+- Fruits can only sprout during Spring, Summer, and Fall
+
 
 ### Ant Rendering and Mechanics
 
@@ -112,7 +113,8 @@ How grass tiles sprout into fruits. Note that fruits decay over time
 - **Ant Class**: Stores all crucial data for the rendering and behaviors of the ants. Also contains methods primarily relating to graphic rendering of the ants.
 
 - **Ant Data**: Represents the raw state of an ant, used for syncing with the backend and backups. Does not include any display specific information such a angle and spriteFrame.
-  - By separating frontend-specific logic from the core data, the `Ant` class ensures smooth synchronization with the backend and backups while reducing data transfer overhead by only syncing essential fields.
+
+By separating frontend-specific logic from the core data, the `Ant` class ensures smooth synchronization with the backend and backups while reducing data transfer overhead by only syncing essential fields.
 
 #### Ant Display
 - **Positioning**: The ant's position is calculated relative to the viewport, ensuring it is drawn in the correct location on the canvas.
@@ -159,35 +161,40 @@ Fruits are a specialized type of map entity, inheriting from `MapEntity`. They a
 Enemy corpses are a unique type of map entity that represent the remains of defeated enemies. They serve as a source of chitin, which can be harvested by ants.
   - Is displayed as chitin when carried by an ant
   - Has a decay animation that progresses based 
+---
 
+## Profile
 
-## Users/Profile
-
-Profiles contain information about each user as well as the ability to 
+The Profile page contain information about each user as well as the ability to 
 - update their profile information (including profile picture)
 
 - download / upload any backups they've made of their colony
 
 ![profile](./docs-images/profile-page.png)
 
-## Clans
+---
+## Clan
 
-Clans allow users to trade resources amongst other members within their clan. If a user is not in a clan, all clans will be listed and they can choose to join one. Clans bring in several levels of users including "members" and "leaders".
+The Clan page allow users to trade resources amongst other members within their clan. If a user is not in a clan, all clans will be listed and they can choose to join one. Clans bring in several levels of users including "members" and "leaders".
 
 Leaders have the ability to kick members in their clan.
 ![clans](./docs-images/clan-page.png)
 
-## Trades
+#### Trades
 
 Trades simply move resources from one user to another and are initiated by a member within a clan. Once initiated the outgoing request is marked as pending and is displayed to the receipient who can then choose to accept / deny the trade request.
 
+---
 ## Ants
 The basic information of each ant is displayed in the ants page. Each can be removed by clicking the x on top right
 ![ants](./docs-images/ants-page.png)
 
+---
 ## Guide
 A basic game guide can be accessed by clicking on the ? icon on the navbar.
 ![guide](./docs-images/guide-page.png)
+
+---
 
 ## Admin Functions
 The admin page provides a suite of tools for managing user accounts and colonies. This page is accessible only to users with the "admin" role. The available features include:
@@ -203,10 +210,11 @@ The admin page provides a suite of tools for managing user accounts and colonies
     - Adjust the amount of specific resources (e.g., food, eggs, chitin) held by a colony.
     - Supported operations include setting a value (`=`), adding (`+`), or subtracting (`-`) a specified amount.
   - **View Pending Trades**: Lists all pending trade requests associated with a user's profile, allowing admins to monitor resource exchanges within clans.
-
+---
 ## Navigation
 A navigation bar takes the user to the different pages. It dynamically adjusts based on the user's role, ensuring that only admins can see the admin page
 
+---
 ## Shop
 
 The shop allows players to exchange chitin, a key in-game resource, for various upgrades and cosmetic items. 
