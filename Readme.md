@@ -1,20 +1,17 @@
 # Clash of Colonies
 
-Ants are fascinating species with a complex social organization, making them an ideal subject for a simulation game that is both entertaining and educational. This project aims to create a web-based solution that effectively simulates ant colonies, focusing on reproduction, resource gathering, and colony expansion. Users will manage their own colonies, join clans, trade resources, and send messages, all within a React-powered frontend. The backend, built with FastAPI, will handle user inputs and ensure secure, consistent data storage in MongoDB across play sessions.
+Ants are fascinating species with a complex social organization, making them an ideal subject for a simulation game that is both entertaining and educational. This project aims to create a web-based solution that effectively simulates ant colonies, focusing on reproduction, resource gathering, and colony expansion. 
+
+Players will manage their own colonies, join clans, and trade resources within a React-powered frontend. The backend, built with FastAPI, ensures persistence and multiplayer features using MongoDB
+
 ![game-demo](./docs-images/game-demo.gif)
-Game demo.
 
 # Descriptions and Implementations of Major Systems
 
 ## Core Game Display and Mechanics
 
 ### Canvas
-
-The entire visual output of Clash of Colonies is rendered onto a HTML5 `<canvas>` element. To ensure a clean and maintainable architecture, we've implemented a separation of concerns:
-
-* **`GameCanvas` (Conceptual Parent):** displays the game elements
-
-* **Base `Canvas` Component (React):** manages the underlying HTML `<canvas>` element and the fundamental rendering and update loop
+The entire visual output of Clash of Colonies is rendered onto a HTML5 `<canvas>` element.
 
 **Time Management and Animation Loop:**
 
@@ -22,34 +19,28 @@ The `Canvas` component meticulously tracks the passage of time using React refs 
 
 * **Efficient Animation:** `requestAnimationFrame` is used for the animation loop. This browser API synchronizes rendering with the browser's refresh rate (typically 60fps), leading to fluid visuals. Critically, it **pauses automatically** when the browser tab or window is not active, significantly reducing CPU and battery consumption.
 
-
-**Browser Background Optimization:**
-
-A key benefit of `requestAnimationFrame` is its inherent efficiency. Modern browsers are designed to automatically pause or significantly throttle the execution of `requestAnimationFrame` callbacks when the tab or window is not in focus. This dramatically reduces CPU and battery usage when the game is running in the background.
-
 **`animate` Function:**
 
-1.  **Time Tracking:** It calculates the elapsed time (`delta`) since the last frame
-2.  **Drawing Game Elements:** calls draw provided by `GameCanvas`
-3.  **Updating Game State:** calls update functions based on `delta` and intervals timers
+1.  **Display**: calls the draw function of each game object 
+1.  **Update:** It calculates the elapsed time (`delta`) since the last frame and calls the update functions 
 
-**`continuousUpdate`**
-- **`handleScrolling(delta)`:** Adjusts the visible map area based on user scroll input and speed, respecting map boundaries.
-- **`updateAnt(delta)`:** Changes ant positions and animations over time; updates enemy behaviors.
+  **`continuousUpdate`**
+  - **`handleScrolling(delta)`:** Adjusts the visible map area based on user scroll input and speed, respecting map boundaries.
+  - **`updateAnt(delta)`:** Changes ant positions and animations over time; updates enemy behaviors.
 
-**`discreteUpdate`**
-- Runs at a set interval to update:
-  - Ant tasks and logic.
-  - Enemy behaviors.
-  - Colony resource consumption and health restoration.
-  - Egg laying and colony reproduction.
-  - Map entity cleanup and spawning.
-  - Seasonal changes and colony age progression.
-  - Game-over conditions if all ants are dead.
+  **`discreteUpdate`**
+  - Runs at a set interval to update:
+    - Ant tasks and logic.
+    - Enemy behaviors.
+    - Colony resource consumption and health restoration.
+    - Egg laying and colony reproduction.
+    - Map entity cleanup and spawning.
+    - Seasonal changes and colony age progression.
+    - Game-over conditions if all ants are dead.
 
-**`synchronization`**
+  **`synchronization`**
 
-  Periodically updates the colony state to the backend if the time since the last sync exceeds `vars.update.syncInterval`. The `putColonyInfo` function handles the update, and `lastSyncedTime.current` prevents redundant requests.
+    - Periodically updates the colony state to the backend if the time since the last sync exceeds `vars.update.syncInterval`. The `putColonyInfo` function handles the update, and `lastSyncedTime.current` prevents redundant requests.
 
 ### Dashboard UI
 Aside from the canvas, the dashboard includes:
