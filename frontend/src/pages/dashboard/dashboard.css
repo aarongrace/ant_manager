@@ -35,11 +35,10 @@
 }
 
 /* Panels container */
-.panels-container {
+#dashboard-panels-container {
   position: absolute;
   left: 9%;
   top: 7%;
-
   padding: 1px 1rem;
   display: flex;
   flex-direction: column;

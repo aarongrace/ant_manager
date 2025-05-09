@@ -5,7 +5,6 @@ import { checkIfAtCapacity, findIdleCoords, findNewPatrolCoords, hasArrived, mov
 import { Ant, AntType, TaskType } from "./baseClasses/Ant";
 import { Enemy } from "./baseClasses/Enemy";
 import { Fruit } from "./baseClasses/Fruit";
-import { GameMap } from "./baseClasses/Map";
 import { EntityType, MapEntity } from "./baseClasses/MapEntity";
 import { findEnemyByCondition } from "./enemyHelperFunctions";
 import { calculateDistance, findClosestSource, findGateway, findMapEntity, checkIfObjectiveExists as hasValidObjective } from "./entityHelperFunctions";
@@ -63,10 +62,9 @@ const handleForage = (ant: Ant) => {
         const searchingForChitin = ! ant.carriedEntity || ant.carriedEntity.type === EntityType.ChitinSource;
         if (!setAntObjective(ant, findClosestSource(ant.coords, searchingForChitin))) {
             // if no food source is found, set the ant to hover around the gateway without setting it to idle
-            const gateWayCoords = findGateway()?.coords ?? { x: GameMap.center.x, y: GameMap.center.y };
-            ant.movingTo.x = gateWayCoords.x + Math.random() * 20 - 10;
-            ant.movingTo.y = gateWayCoords.y + Math.random() * 20 - 10;
-            ant.setAngle();
+            // const gateWayCoords = findGateway()?.coords ?? { x: GameMap.center.x, y: GameMap.center.y }; ant.movingTo.x = gateWayCoords.x + Math.random() * 20 - 10;
+            // ant.movingTo.y = gateWayCoords.y + Math.random() * 20 - 10;
+            // ant.setAngle();
         };
         // if at carrying capacity, return to deposit the food
         if (checkIfAtCapacity(ant)) {

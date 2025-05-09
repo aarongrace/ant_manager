@@ -72,6 +72,10 @@ const Canvas: React.FC<CanvasProps> = ({ draw, establishContext }) => {
     if (canvas) {
       canvas.style.cursor = `url(${cursor}) 1 1, auto`;
     }
+    const panelsContainer = document.getElementById("dashboard-panels-container");
+    if (panelsContainer) {
+      panelsContainer.style.cursor = `url(${cursor}) 1 1, auto`;
+    }
   }
 
   return (

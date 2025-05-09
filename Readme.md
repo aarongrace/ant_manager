@@ -1,6 +1,8 @@
 # Clash of Colonies
 
 Ants are fascinating species with a complex social organization, making them an ideal subject for a simulation game that is both entertaining and educational. This project aims to create a web-based solution that effectively simulates ant colonies, focusing on reproduction, resource gathering, and colony expansion. Users will manage their own colonies, join clans, trade resources, and send messages, all within a React-powered frontend. The backend, built with FastAPI, will handle user inputs and ensure secure, consistent data storage in MongoDB across play sessions.
+![game-demo](./docs-images/game-demo.gif)
+Game demo.
 
 # Descriptions and Implementations of Major Systems
 
@@ -48,6 +50,21 @@ A key benefit of `requestAnimationFrame` is its inherent efficiency. Modern brow
 **`synchronization`**
 
   Periodically updates the colony state to the backend if the time since the last sync exceeds `vars.update.syncInterval`. The `putColonyInfo` function handles the update, and `lastSyncedTime.current` prevents redundant requests.
+
+### Dashboard UI
+Aside from the canvas, the dashboard includes:
+
+- **Information Panel**: Displays critical colony statistics such as food, sand, and ant count. It also provides options like resetting the colony to its initial state.
+- **Reproduction Panel**: Allows players to create new ants by spending resources like food and eggs, provided the necessary conditions are met.
+
+These panels are implemented as React components and are superimposed on the canvas
+
+![panels](./docs-images/dashboard-panels.png)
+
+
+#### Seasonal Cursor Updates
+- When hovering over the canvas or the dashboard panels, the cursor is dynamically linked to a specific season and updates automatically as the seasons change.
+![spring](./frontend/src/assets/cursors/spring.png) ![summer](./frontend/src/assets/cursors/summer.png) ![fall](./frontend/src/assets/cursors/fall.png) ![winter](./frontend/src/assets/cursors/winter.png)
 
 ### Map
 
@@ -156,84 +173,72 @@ Profiles contain information about each user as well as the ability to
 
 - download / upload any backups they've made of their colony
 
+![profile](./docs-images/profile-page.png)
+
 ## Clans
 
 Clans allow users to trade resources amongst other members within their clan. If a user is not in a clan, all clans will be listed and they can choose to join one. Clans bring in several levels of users including "members" and "leaders".
 
 Leaders have the ability to kick members in their clan.
+![clans](./docs-images/clan-page.png)
 
 ## Trades
 
 Trades simply move resources from one user to another and are initiated by a member within a clan. Once initiated the outgoing request is marked as pending and is displayed to the receipient who can then choose to accept / deny the trade request.
 
-## Admin Functions
+## Ants
+The basic information of each ant is displayed in the ants page. Each can be removed by clicking the x on top right
+![ants](./docs-images/ants-page.png)
 
-Admin functions include deleting a profile, changing the role of a profile (banned, user, and admin), seeing information about a profile, and changing the amount of certain resources held by the colony associated with a profile. These functions are on an admin page that only the admin can access.
+## Guide
+A basic game guide can be accessed by clicking on the ? icon on the navbar.
+![guide](./docs-images/guide-page.png)
+
+## Admin Functions
+The admin page provides a suite of tools for managing user accounts and colonies. This page is accessible only to users with the "admin" role. The available features include:
+
+  - **Delete Profile**: Permanently removes a user's profile from the system.
+  - **Change Role**: Updates a user's role to one of the following:
+    - `admin`: Grants administrative privileges.
+    - `user`: Assigns standard user permissions.
+    - `banned`: Restricts access to the game.
+  - **View Profile Information**: Displays detailed information about a user's profile, including their username, email, and role.
+  - **View Colony Data**: Retrieves and displays information about the colony associated with a user's profile, such as the number of ants, resources, and colony age.
+  - **Modify Colony Resources**:
+    - Adjust the amount of specific resources (e.g., food, eggs, chitin) held by a colony.
+    - Supported operations include setting a value (`=`), adding (`+`), or subtracting (`-`) a specified amount.
+  - **View Pending Trades**: Lists all pending trade requests associated with a user's profile, allowing admins to monitor resource exchanges within clans.
 
 ## Navigation
+A navigation bar takes the user to the different pages. It dynamically adjusts based on the user's role, ensuring that only admins can see the admin page
 
 ## Shop
 
+The shop allows players to exchange chitin, a key in-game resource, for various upgrades and cosmetic items. 
+![shop](./docs-images/shop-page.png)
+
+### Gameplay Upgrades
+Players can enhance colony performance by purchasing upgrades, such as boosting worker ant speed or improving resource collection. Each upgrade is an instance of the `Upgrade` class, which dynamically tracks its cost and effect based on the number of times it has been purchased (`timesUpgraded`). Costs scale exponentially using the formula: `base_cost * 1.7^timesUpgraded`.
+
+### Cosmetic Upgrades
+Not yet implemented
 
 
-
-
-### React UI
-
-#### Dashboard
-- Displays several components:
-  - **Resource Panel**
-  - **Reproduction Panel**
-  - **Map**
-  - **Basic User and Clan Info**
-
-#### Sign-In Page
-- Users are prompted to sign in.
-- If they do not have an account, they can create one through a separate sign-up page.
-
-#### Clan View
-- Players can add clans and initiate trades.
-- Clan leaders have extra options.
-
-#### Profile View
-- Players can customize their name, details, and profile photo.
-- Players can download a backup of their colony or import a backup.
-
-#### About View
-- A guide for players to understand how to play the game.
-
-#### Units View
-- Displays unit information (adults and broods) and allows for operations such as changing tasks or removing specific ants from the colony.
-
-#### Store View
-- Allows for cosmetic and gameplay upgrades.
-
-#### Admin View
-- The first admin is hardcoded.
-- Admins can:
-  - Access the admin page.
-  - Make other players admins, and remove admin privilege.
-  - Ban and unban users.
-  - Delete user accounts.
-  - See data related to any users profile, colony and trades.
-  - Modify how much of certain resources any user has.
-
----
-
-### Backend Setup
+# Backend Setup
 
 The backend is built with **FastAPI**, which handles all routes and business logic.
 
-#### FastAPI Router
+## FastAPI Router
 - Routes requests from the frontend to the backend.
 - Different routers are set up for:
-  - Colony information
-  - User information
-  - Clan information
+  - Colonies
+  - Profiles
+  - Clans
+  - Trades
 
 ---
 
-### MongoDB Database
+## MongoDB Database
 
 The database consists of four collections:
 
@@ -241,58 +246,58 @@ The database consists of four collections:
    - Fields: `id`, `name`, `region`, `clan`, `images`, `createdDate`, `password`, `email`, `role`.
 
 2. **Colony Collection**:
-   - Fields: `id` (same as user ID), `name`, `ants`, `food`, `sand`, `age`, `map`, `perkPurchased`.
+  - Fields: `id`, `name`, `ants`, `mapEntities`, `enemies`, `fruits`, `eggs`, `food`, `chitin`, `age`, `map`, `perks`, `initialized`.
 
-3. **Store Collection**:
-   - Fields: `id`, `cosmetic or gameplay`, `associated bonus`.
+3. **Trades Collection**:
+  - Fields: `id`, `from_user_id`, `to_user_id`, `offer_resource`, `offer_amount`, `request_resource`, `request_amount`, `status`, `created_at`
 
 4. **Clan Collection**:
    - Fields: `users` (separated into leader/officer/member), `clan score`.
 
 ---
 
-### Tests
+### Backend Tests
+To run the backend tests, use the following command in the root folder:
 
-A series of manual tests and unit tests will be implemented for operations such as:
-- Creation of users.
-- Game functions such as the creation of new ants.
-- Creation and deletion of clans.
+```bash
+pytest
+```
 
----
+#### `test_register_success`
 
-### Timeline
+Verifies successful user registration using `monkeypatch`
 
-| Week | Tasks                                                                 |
-|------|----------------------------------------------------------------------|
-| 1    | Backend setup, objects and interfaces, unit tests                   |
-| 2    | Core game logic                                                     |
-| 3    | Users, clans, profiles, and admin functions                         |
-| 4    | Store, units view, leaderboard, debugging                           |
+  - Mocked `Profile` and `Colony` models.
+  - Dependencies like `httpx.AsyncClient` for HTTP requests and `pytest` for testing.
+  - Send POST request to `/profiles/register` with test data.
+  - Assert status code `200` and success message.
 
----
+#### `test_update_role_to_admin`
+
+Ensures a user's role can be updated to "admin" using mock dependency injection
+
+  - Mock profile with initial role as "user."
+  - Override `fetch_profile_by_username` to return the mock profile.
+  - Send PUT request to `/profiles/update-role/testuser` with role "admin."
+  - Assert status code `200` and verify updated role.
+
+#### `test_root`
+Verifies the root endpoint returns the expected greeting message.
+
+
+### Backend Logging
+
+The backend utilizes Python's `logging` module to provide robust logging functionality. 
+All essential router operations are logged in the `app.log` file located in the root directory of the backend. 
 
 
 ## Development Notes
 
 The conversion between camel case and snake case is NOT automatic when sending data between frontend and backend. Please only use camel case for all class fields relating to backend data such as tasks or units!!! Mismatches in field names will result in **422 Unprocessable Entity** when sending objects.
 
-### Coordinate System
-
-The coordinates are set up so that (1,1) is in the lower right quadrant, and (-1,-1) is in the top left quadrant, and (0,0) is in the center. It is conceived this way so to allow expansion on all sides and to accommodate for the fact that y coordinates for display and for handling inputs start from the top. 
-
 ### npm Modules
 
 If you want to install a npm module for the frontend, you need to cd to the frontend folder and install it there with npm install .... The npm package.json and node modules in the root folder are only used for concurrently and installing packages there might confuse VSCode into thinking that certain modules are enabled for the frontend when they are not.
-
-## Todos
-
-### Dashboard
-- add a fourth picture for fruit spawns
-- add background music and sound effects
-- Create sprites for ant attack.
-- Make task icons hoverable. When hovered, the icons should display a range indicator or a path indicator for ants doing that task. The hover can be implemented as part of the global settings store.
-- Add icons for food/debris and ant production.
-- add a custom cursor display
 
 ---
 
@@ -312,5 +317,9 @@ If you want to install a npm module for the frontend, you need to cd to the fron
 - Improved consistency between frontend and backend models by enforcing camel case across all fields.
 - Added new features to the **Clan View**, **Admin View**, and **Store View**.
 
-# Known Bugs
-- Refreshing the page at an unlucky time might cause put requests to the colony router to malfunction and mess up the ant array. Only happened once so far
+### 4.0
+- Fully implemented clans, trades, admin features
+- Added original art assets
+- Added game map, enemies and chitin resource
+- Added shop
+

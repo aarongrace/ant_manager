@@ -41,7 +41,7 @@ const Dashboard: React.FC = () => {
   return (
     <div id="dashboard-container">
       {/* Panels Container */}
-      <div className="panels-container">
+      <div id="dashboard-panels-container">
           {/* Colony Overview */}
           <section className="dashboard-section colony-overview">
             <table>

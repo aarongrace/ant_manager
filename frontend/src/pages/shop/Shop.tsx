@@ -18,7 +18,8 @@ const Shop = () => {
   }, [perks]);
 
   const handlePurchase = (perk: Upgrade | Cosmetic) => {
-    if (perk.cost > chitin) {
+    const cost = perk.cost;
+    if (cost > chitin) {
       console.error("Not enough chitin to purchase this perk.");
       return;
     }
@@ -30,7 +31,7 @@ const Shop = () => {
       // Add logic to deduct coins and mark the cosmetic as purchased
     }
     updateColony({
-      chitin: chitin - perk.cost,
+      chitin: chitin - cost,
     });
     reapplyPerks(perks);
     console.log(vars.ant.workerBaseSpeed);

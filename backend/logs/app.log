@@ -276,3 +276,265 @@
 2025-05-06 09:55:50,981 INFO routers.colony:61 Dependency called to get colony with ID: guest
 2025-05-06 09:55:51,128 INFO routers.colony:61 Dependency called to get colony with ID: guest
 2025-05-06 09:56:34,299 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:11,494 INFO routers.colony:118 Existing colonies in database: 35
+2025-05-08 18:51:11,520 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-08 18:51:11,520 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-08 18:51:11,595 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-08 18:51:11,669 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-08 18:51:11,669 INFO database:29 Database initialization completed successfully.
+2025-05-08 18:51:17,661 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:17,748 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:33,474 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:33,718 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:33,885 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:34,376 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:34,650 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:35,094 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:35,597 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:36,129 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:36,815 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:37,284 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:37,433 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:37,882 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:51:38,116 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:52:43,125 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:57:50,832 INFO routers.colony:118 Existing colonies in database: 35
+2025-05-08 18:57:50,871 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-08 18:57:50,871 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-08 18:57:50,941 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-08 18:57:51,008 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-08 18:57:51,009 INFO database:29 Database initialization completed successfully.
+2025-05-08 18:57:58,615 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 18:57:58,727 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:00:30,687 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:01:45,286 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:02:29,781 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:11:38,782 INFO routers.trades:54 Fetching pending trades for user ID: guest
+2025-05-08 19:11:38,813 INFO routers.trades:58 Found 0 pending trades for user ID: guest
+2025-05-08 19:11:38,851 INFO routers.trades:54 Fetching pending trades for user ID: guest
+2025-05-08 19:11:38,867 INFO routers.clan:131 Fetching clan with ID: Clanity Clan
+2025-05-08 19:11:38,883 INFO routers.trades:58 Found 0 pending trades for user ID: guest
+2025-05-08 19:11:38,899 WARN routers.clan:134 Clan with ID Clanity Clan not found
+2025-05-08 19:11:38,937 INFO routers.clan:131 Fetching clan with ID: Clanity Clan
+2025-05-08 19:11:38,965 WARN routers.clan:134 Clan with ID Clanity Clan not found
+2025-05-08 19:11:38,999 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:11:39,028 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:11:39,064 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:11:39,091 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:11:41,214 INFO routers.profile:157 Logging out user
+2025-05-08 19:11:41,215 INFO routers.profile:159 User logged out successfully
+2025-05-08 19:11:52,708 INFO routers.profile:132 User aarongrace logged in successfully
+2025-05-08 19:11:56,768 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:11:56,797 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:11:56,836 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:11:56,842 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:11:56,870 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:11:56,870 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:11:56,906 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:11:56,936 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:11:59,333 INFO routers.clan:89 User 3dc41ce8-e5bb-431d-921b-b7e6de440812 is attempting to join clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:11:59,405 INFO routers.clan:104 User 3dc41ce8-e5bb-431d-921b-b7e6de440812 successfully joined clan liao's test
+2025-05-08 19:11:59,477 INFO routers.clan:111 User 3dc41ce8-e5bb-431d-921b-b7e6de440812's profile updated with clan ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:11:59,571 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:11:59,941 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:11:59,972 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:12:45,951 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:12:46,012 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:15:19,729 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:19,758 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:19,797 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:19,803 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:15:19,829 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:19,874 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:15:20,730 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:15:20,762 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:15:20,803 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:15:20,832 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:15:32,672 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:32,815 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:33,099 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:33,378 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:33,569 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:33,627 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:33,924 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:34,359 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:34,611 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:34,777 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:35,073 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:35,319 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:35,330 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:35,498 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:15:35,615 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:16:17,678 INFO routers.profile:157 Logging out user
+2025-05-08 19:16:17,679 INFO routers.profile:159 User logged out successfully
+2025-05-08 19:18:43,094 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:43,237 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:43,561 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:43,564 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:43,647 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:43,819 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:43,997 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:44,099 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:44,299 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:44,386 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:18:44,506 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:21,242 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:21,587 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:24,101 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:24,330 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:24,751 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:24,948 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:25,154 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:25,342 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:25,687 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:25,848 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:26,030 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:43,398 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:19:50,419 INFO routers.colony:118 Existing colonies in database: 35
+2025-05-08 19:19:50,445 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-08 19:19:50,445 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-08 19:19:50,514 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-08 19:19:50,589 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-08 19:19:50,589 INFO database:29 Database initialization completed successfully.
+2025-05-08 19:20:01,745 INFO routers.profile:132 User aarongrace logged in successfully
+2025-05-08 19:20:01,835 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:08,381 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:08,411 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:08,450 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:08,459 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:20:08,480 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:08,531 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:20:08,964 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:20:08,996 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:20:09,186 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:20:09,219 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:20:23,541 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:23,864 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:50,642 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:50,922 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:51,537 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:51,813 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:52,241 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:52,422 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:52,664 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:53,163 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:53,531 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:54,100 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:54,330 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:54,675 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:54,676 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:54,839 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:20:55,378 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:21:50,618 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:21:51,995 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:22:38,927 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:26:01,748 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:30:13,067 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:30:38,676 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:30:38,930 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:30:38,933 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:30:39,312 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:30:39,325 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:30:39,847 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:30:40,099 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:30:40,275 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:36,949 INFO routers.colony:118 Existing colonies in database: 35
+2025-05-08 19:31:36,980 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-08 19:31:36,980 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-08 19:31:37,043 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-08 19:31:37,102 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-08 19:31:37,102 INFO database:29 Database initialization completed successfully.
+2025-05-08 19:31:45,469 INFO routers.profile:132 User aarongrace logged in successfully
+2025-05-08 19:31:45,537 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:56,939 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:57,187 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:57,668 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:57,726 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:58,207 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:58,352 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:58,568 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:58,729 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:59,118 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:31:59,280 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:32:35,864 INFO routers.colony:118 Existing colonies in database: 35
+2025-05-08 19:32:35,886 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-08 19:32:35,886 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-08 19:32:35,942 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-08 19:32:36,000 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-08 19:32:36,000 INFO database:29 Database initialization completed successfully.
+2025-05-08 19:32:42,201 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:42,283 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:54,511 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:54,741 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:54,771 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:55,277 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:55,450 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:56,056 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:56,057 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:56,228 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:32:56,491 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 19:33:34,869 INFO routers.clan:131 Fetching clan with ID: Clanity Clan
+2025-05-08 19:33:34,898 WARN routers.clan:134 Clan with ID Clanity Clan not found
+2025-05-08 19:33:36,654 INFO routers.trades:54 Fetching pending trades for user ID: guest
+2025-05-08 19:33:36,684 INFO routers.trades:58 Found 0 pending trades for user ID: guest
+2025-05-08 19:33:36,717 INFO routers.trades:54 Fetching pending trades for user ID: guest
+2025-05-08 19:33:36,718 INFO routers.clan:131 Fetching clan with ID: Clanity Clan
+2025-05-08 19:33:36,748 INFO routers.trades:58 Found 0 pending trades for user ID: guest
+2025-05-08 19:33:36,750 WARN routers.clan:134 Clan with ID Clanity Clan not found
+2025-05-08 19:33:36,787 INFO routers.clan:131 Fetching clan with ID: Clanity Clan
+2025-05-08 19:33:36,819 WARN routers.clan:134 Clan with ID Clanity Clan not found
+2025-05-08 19:33:36,835 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:33:36,868 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:33:36,911 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:33:36,941 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:37:46,097 INFO routers.colony:118 Existing colonies in database: 35
+2025-05-08 19:37:46,124 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-08 19:37:46,124 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-08 19:37:46,201 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-08 19:37:46,273 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-08 19:37:46,274 INFO database:29 Database initialization completed successfully.
+2025-05-08 19:42:48,369 INFO routers.colony:118 Existing colonies in database: 35
+2025-05-08 19:42:48,398 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-08 19:42:48,398 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-08 19:42:48,463 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-08 19:42:48,535 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-08 19:42:48,535 INFO database:29 Database initialization completed successfully.
+2025-05-08 19:42:57,303 INFO routers.profile:132 User aarongrace logged in successfully
+2025-05-08 19:42:57,363 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:43:32,315 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:43:32,385 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:43:36,676 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:43:36,709 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:43:36,758 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:43:36,760 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:43:36,794 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:43:36,841 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:43:37,291 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:43:37,326 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:43:37,501 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:43:37,533 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:44:14,140 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:44:14,214 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:44:19,289 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:44:19,323 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:44:19,364 INFO routers.trades:54 Fetching pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:44:19,373 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:44:19,403 INFO routers.trades:58 Found 0 pending trades for user ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812
+2025-05-08 19:44:19,457 INFO routers.clan:131 Fetching clan with ID: 446556fd-8ef8-4f31-aa03-0736a7717208
+2025-05-08 19:44:19,769 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:44:19,802 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:44:19,872 INFO routers.clan:120 Fetching all clans
+2025-05-08 19:44:19,905 INFO routers.clan:122 Fetched 1 clans
+2025-05-08 19:44:30,756 INFO routers.profile:157 Logging out user
+2025-05-08 19:44:30,756 INFO routers.profile:159 User logged out successfully
+2025-05-08 19:44:38,779 WARN routers.profile:64 Authentication failed: User with username ADMIN not found
+2025-05-08 19:44:42,030 WARN routers.profile:64 Authentication failed: User with username ADMIN not found
+2025-05-08 19:44:42,935 WARN routers.profile:64 Authentication failed: User with username ADMIN not found
+2025-05-08 21:17:08,416 INFO routers.colony:118 Existing colonies in database: 35
+2025-05-08 21:17:08,484 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-08 21:17:08,484 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-08 21:17:08,612 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-08 21:17:08,730 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-08 21:17:08,730 INFO database:29 Database initialization completed successfully.
+2025-05-08 21:17:12,380 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 21:17:12,561 INFO routers.colony:61 Dependency called to get colony with ID: guest
