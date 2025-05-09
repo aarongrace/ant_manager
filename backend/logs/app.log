@@ -538,3 +538,11 @@
 2025-05-08 21:17:08,730 INFO database:29 Database initialization completed successfully.
 2025-05-08 21:17:12,380 INFO routers.colony:61 Dependency called to get colony with ID: guest
 2025-05-08 21:17:12,561 INFO routers.colony:61 Dependency called to get colony with ID: guest
+2025-05-08 21:41:05,887 INFO routers.colony:118 Existing colonies in database: 35
+2025-05-08 21:41:05,940 INFO routers.colony:131 Validation complete. 0 colonies have been reset
+2025-05-08 21:41:05,942 INFO routers.profile:220 Ensuring guest profile exists
+2025-05-08 21:41:06,079 INFO routers.colony:108 Reinitializing guest colony...
+2025-05-08 21:41:06,196 INFO routers.colony:112 Guest colony initialized: id='guest' revision_id=None name='' ants=[] mapEntities=[] enemies=[] fruits=[] eggs=0 food=0.0 chitin=0.0 age=0 map=[[[]]] perks=[] initialized=False
+2025-05-08 21:41:06,196 INFO database:29 Database initialization completed successfully.
+2025-05-08 21:41:16,463 INFO routers.profile:132 User aarongrace logged in successfully
+2025-05-08 21:41:16,554 INFO routers.colony:61 Dependency called to get colony with ID: 3dc41ce8-e5bb-431d-921b-b7e6de440812

@@ -5,6 +5,13 @@ Ants are fascinating species with a complex social organization, making them an 
 Players will manage their own colonies, join clans, and trade resources within a React-powered frontend. The backend, built with FastAPI, ensures persistence and multiplayer features using MongoDB
 
 ![game-demo](./docs-images/game-demo.gif)
+
+### Note on MongoDB connection
+The backend requires a valid connection string specified in a `.env` file located in the root directory. The format should be:  
+```CONNECT_STRING="mongodb+srv://[your connection string].mongodb.net/"```  
+
+If the connection cannot be established, the game will still function in offline mode, allowing players to continue as guests.
+
 ---
 
 ## Core Game Display and Mechanics
@@ -210,6 +217,8 @@ The admin page provides a suite of tools for managing user accounts and colonies
     - Adjust the amount of specific resources (e.g., food, eggs, chitin) held by a colony.
     - Supported operations include setting a value (`=`), adding (`+`), or subtracting (`-`) a specified amount.
   - **View Pending Trades**: Lists all pending trade requests associated with a user's profile, allowing admins to monitor resource exchanges within clans.
+
+  ![admin](./docs-images/admin-page.png)
 ---
 ## Navigation
 A navigation bar takes the user to the different pages. It dynamically adjusts based on the user's role, ensuring that only admins can see the admin page
@@ -301,6 +310,13 @@ The conversion between camel case and snake case is NOT automatic when sending d
 ### npm Modules
 
 If you want to install a npm module for the frontend, you need to cd to the frontend folder and install it there with npm install .... The npm package.json and node modules in the root folder are only used for concurrently and installing packages there might confuse VSCode into thinking that certain modules are enabled for the frontend when they are not.
+
+---
+## Contributors
+
+- **Mitchell Gage**: Developed the Admin page and implemented all administrative functions
+- **Aaron Grace (Wang)**: Designed and implemented core game mechanics, dashboard UI, art assets, graphic display, initial backend setup, colony router, and MongoDB integration
+- **Liao Zhu**: Created the Profile and Clan pages along with the trade functionalities. Set up their corresponding backend routes and database collections
 
 ---
 
